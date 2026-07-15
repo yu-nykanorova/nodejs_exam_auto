@@ -49,7 +49,7 @@ export default [
             "import/newline-after-import": ["error", { count: 1 }],
             "import/no-duplicates": "error",
             "prettier/prettier": ["error"],
-            "no-console": "warn",
+            "no-console": "off",
         },
     },
 ];
