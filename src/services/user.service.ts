@@ -1,7 +1,5 @@
 class UserService {
-
-    public async getAllUsers(){}
-
+    public async getAllUsers() {}
 }
 
 export const userService = new UserService();
