@@ -2,7 +2,7 @@ import { AdvertStatusEnum } from "../enums/advert-status.enum";
 
 export interface IAdvert {
     _id: string;
-    name: string;
+    title: string;
     description: string;
     price: number;
     status: AdvertStatusEnum;
@@ -10,8 +10,8 @@ export interface IAdvert {
     avatar?: string;
 }
 
-export type IAdvertCreateDTO = Pick<IAdvert, "name" | "description" | "price">;
+export type IAdvertCreateDTO = Pick<IAdvert, "title" | "description" | "price">;
 
 export type IAdvertUpdateDTO = Partial<
-    Pick<IAdvert, "name" | "description" | "price" | "avatar">
+    Pick<IAdvert, "title" | "description" | "price" | "avatar">
 >;
