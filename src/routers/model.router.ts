@@ -1,5 +1,7 @@
 import { Router } from "express";
 
+import { modelController } from "../controllers/model.controller";
+
 const router = Router();
 
 router.get("/", modelController.getAllModels);

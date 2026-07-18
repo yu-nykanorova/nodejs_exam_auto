@@ -8,10 +8,14 @@ interface IConfig {
     FRONT_URL: string;
     JWT_ACCESS_SECRET: string;
     JWT_REFRESH_SECRET: string;
+    JWT_ACCESS_LIFETIME: any;
+    JWT_REFRESH_LIFETIME: any;
     EMAIL_USER: string;
     EMAIL_PASSWORD: string;
     ACTION_FORGOT_PASSWORD_SECRET: string;
     ACTION_CREATE_PASSWORD_SECRET: string;
+    ACTION_FORGOT_PASSWORD_LIFETIME: any;
+    ACTION_CREATE_PASSWORD_LIFETIME: any;
 }
 
 export function checkEnv(value: string | undefined, name: string): string {
@@ -33,6 +37,14 @@ export const config: IConfig = {
         process.env.JWT_REFRESH_SECRET,
         "JWT_REFRESH_SECRET",
     ),
+    JWT_ACCESS_LIFETIME: checkEnv(
+        process.env.JWT_ACCESS_LIFETIME,
+        "JWT_ACCESS_LIFETIME",
+    ),
+    JWT_REFRESH_LIFETIME: checkEnv(
+        process.env.JWT_REFRESH_LIFETIME,
+        "JWT_REFRESH_LIFETIME",
+    ),
     EMAIL_USER: checkEnv(process.env.EMAIL_USER, "EMAIL_USER"),
     EMAIL_PASSWORD: checkEnv(process.env.EMAIL_PASSWORD, "EMAIL_PASSWORD"),
     ACTION_FORGOT_PASSWORD_SECRET: checkEnv(
@@ -42,5 +54,13 @@ export const config: IConfig = {
     ACTION_CREATE_PASSWORD_SECRET: checkEnv(
         process.env.ACTION_CREATE_PASSWORD_SECRET,
         "ACTION_CREATE_PASSWORD_SECRET",
+    ),
+    ACTION_FORGOT_PASSWORD_LIFETIME: checkEnv(
+        process.env.ACTION_FORGOT_PASSWORD_LIFETIME,
+        "ACTION_FORGOT_PASSWORD_LIFETIME",
+    ),
+    ACTION_CREATE_PASSWORD_LIFETIME: checkEnv(
+        process.env.ACTION_CREATE_PASSWORD_LIFETIME,
+        "ACTION_CREATE_PASSWORD_LIFETIME",
     ),
 };
