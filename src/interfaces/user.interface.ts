@@ -17,6 +17,13 @@ export interface IUser {
     updatedAt: Date;
 }
 
+export interface IUserQuery {
+    pageSize?: number;
+    page?: number;
+    search?: string;
+    order?: string;
+}
+
 export type IUserCreateDTO = Pick<
     IUser,
     "email" | "password" | "name" | "surname" | "age"
@@ -37,4 +44,8 @@ export type IUserUpdateDTO = Partial<
 
 export type IResetPasswordSendEmail = Pick<IUser, "email">;
 
-export type ISetPassword = Pick<IUser, "password"> & { token: string };
+export type IResetPassword = Pick<IUser, "password"> & { token: string };
+
+export type IChangePassword = Pick<IUser, "password"> & { oldPassword: string };
+
+export type ISetPassword = Pick<IUser, "password">;

@@ -6,6 +6,7 @@ import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { TokenTypeEnum } from "../enums/token-type.enum";
 import { ApiError } from "../errors/api.errors";
 import { ITokenPair, ITokenPayload } from "../interfaces/token.interface";
+import { tokenRepository } from "../repositories/token.repository";
 
 class TokenService {
     public generateTokens(payload: ITokenPayload): ITokenPair {

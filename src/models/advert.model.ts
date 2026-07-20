@@ -7,6 +7,11 @@ import { User } from "./user.model";
 const advertSchema = new Schema(
     {
         title: { type: String, required: true },
+        brand: { type: String, required: true },
+        model: { type: String, required: true },
+        year: { type: Number, required: true },
+        city: { type: String, required: true },
+        region: { type: String, required: true },
         description: { type: String, required: true },
         avatar: { type: String, default: "" },
         price: { type: Number, required: true },
@@ -16,6 +21,7 @@ const advertSchema = new Schema(
             required: true,
         },
         _ownerId: { type: Schema.Types.ObjectId, required: true, ref: User },
+        viewsCount: { type: Number, default: 0 },
     },
     {
         timestamps: true,

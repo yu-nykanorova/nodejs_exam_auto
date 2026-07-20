@@ -1,0 +1,37 @@
+<table style="width:100%;padding:45px 35px;box-sizing:border-box;">
+    <tr>
+        <td style="font-size:18px;text-align:center;">
+            Advert requires manual review
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <p>
+                An advert created by
+                <strong>{{sellerName}}</strong>
+                failed the profanity check three times.
+            </p>
+
+            <p>
+                The advert has been saved with
+                <strong>BLOCKED</strong>
+                status.
+            </p>
+
+            <p>
+                <strong>Title:</strong> {{advertTitle}}<br>
+                <strong>Brand:</strong> {{advertBrand}}<br>
+                <strong>Model:</strong> {{advertModel}}<br>
+                <strong>Description:</strong> ${{advertDescription}}<br>
+                <strong>City:</strong> {{advertCity}}
+            </p>
+
+            <p style="text-align:center;">
+                <a href="{{frontUrl}}/manager/adverts/{{advertId}}">
+                    REVIEW ADVERT
+                </a>
+            </p>
+        </td>
+    </tr>
+</table>

@@ -1,6 +1,6 @@
 import { Filter } from "bad-words";
 
-import { badWordsPatterns } from "../constants/badWordsList";
+import { badWordsPatterns } from "../constants/bad-words-list.constants";
 
 const filter = new Filter();
 

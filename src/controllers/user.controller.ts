@@ -1,10 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
+import { IUserQuery } from "../interfaces/user.interface";
+import { userService } from "../services/user.service";
 
 class UserController {
     public async getAllUsers(req: Request, res: Response, next: NextFunction) {
         try {
+            const { validatedQuery } = req as any as {
+                validatedQuery: IUserQuery;
+            };
+            const data = await userService.getAllUsers(validatedQuery);
             res.status(StatusCodesEnum.OK).json(data);
         } catch (e) {
             next(e);
