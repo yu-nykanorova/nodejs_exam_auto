@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
-import { IUserQuery } from "../interfaces/user.interface";
+import { ITokenPayload } from "../interfaces/token.interface";
+import { IUserQuery, IUserUpdateDTO } from "../interfaces/user.interface";
 import { userService } from "../services/user.service";
 
 class UserController {
@@ -19,6 +20,9 @@ class UserController {
 
     public async getMe(req: Request, res: Response, next: NextFunction) {
         try {
+            const payload = res.locals.tokenPayload as ITokenPayload;
+
+            const data = await userService.getById(payload.userId);
             res.status(StatusCodesEnum.OK).json(data);
         } catch (e) {
             next(e);
@@ -35,6 +39,10 @@ class UserController {
 
     public async updateMe(req: Request, res: Response, next: NextFunction) {
         try {
+            const payload = res.locals.tokenPayload as ITokenPayload;
+            const dto = req.body as IUserUpdateDTO;
+
+            const data = await userService.updateById(payload.userId, dto);
             res.status(StatusCodesEnum.OK).json(data);
         } catch (e) {
             next(e);
@@ -47,6 +55,13 @@ class UserController {
         next: NextFunction,
     ) {
         try {
+            const payload = res.locals.tokenPayload as ITokenPayload;
+            const { accountType } = req.body as IUserUpdateDTO;
+
+            const data = await userService.updateAccountType(
+                payload.userId,
+                accountType,
+            );
             res.status(StatusCodesEnum.OK).json(data);
         } catch (e) {
             next(e);
@@ -55,6 +70,9 @@ class UserController {
 
     public async deleteMe(req: Request, res: Response, next: NextFunction) {
         try {
+            const payload = res.locals.tokenPayload as ITokenPayload;
+
+            await userService.deleteById(payload.userId);
             res.status(StatusCodesEnum.NO_CONTENT).end();
         } catch (e) {
             next(e);
@@ -75,6 +93,8 @@ class UserController {
 
     public async getById(req: Request, res: Response, next: NextFunction) {
         try {
+            const id = req.params.id as string;
+            const data = await userService.getById(id);
             res.status(StatusCodesEnum.OK).json(data);
         } catch (e) {
             next(e);
@@ -83,6 +103,10 @@ class UserController {
 
     public async changeStatus(req: Request, res: Response, next: NextFunction) {
         try {
+            const id = req.params.id as string;
+            const { status } = req.body as IUserUpdateDTO;
+
+            const data = await userService.changeStatus(id, status);
             res.status(StatusCodesEnum.OK).json(data);
         } catch (e) {
             next(e);
@@ -91,6 +115,8 @@ class UserController {
 
     public async deleteById(req: Request, res: Response, next: NextFunction) {
         try {
+            const id = req.params.id as string;
+            await userService.deleteById(id);
             res.status(StatusCodesEnum.NO_CONTENT).end();
         } catch (e) {
             next(e);

@@ -39,6 +39,7 @@ export type IUserUpdateDTO = Partial<
         | "age"
         | "avatar"
         | "accountType"
+        | "status"
     >
 >;
 
