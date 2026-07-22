@@ -3,7 +3,7 @@ import joi from "joi";
 import { AdvertQueryOrderEnum } from "../enums/advert-query-order.enum";
 import { queryValidator } from "./query.validator";
 
-export class UserValidator {
+export class AdvertValidator {
     private static title = joi.string().min(10).max(100).trim();
     private static description = joi.string().min(50).trim();
     private static price = joi.number().min(0);

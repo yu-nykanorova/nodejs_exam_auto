@@ -41,7 +41,7 @@ class TokenService {
                 default:
                     throw new ApiError(
                         "Invalid token type",
-                        StatusCodesEnum.BED_REQUEST,
+                        StatusCodesEnum.BAD_REQUEST,
                     );
             }
             return jwt.verify(token, secret) as ITokenPayload;
@@ -71,7 +71,7 @@ class TokenService {
             default:
                 throw new ApiError(
                     "Invalid token type",
-                    StatusCodesEnum.BED_REQUEST,
+                    StatusCodesEnum.BAD_REQUEST,
                 );
         }
 
@@ -95,7 +95,7 @@ class TokenService {
                 default:
                     throw new ApiError(
                         "Invalid token type",
-                        StatusCodesEnum.BED_REQUEST,
+                        StatusCodesEnum.BAD_REQUEST,
                     );
             }
             return jwt.verify(token, secret) as ITokenPayload;

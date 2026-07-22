@@ -2,7 +2,11 @@ import { NextFunction, Request, Response } from "express";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ITokenPayload } from "../interfaces/token.interface";
-import { IUserQuery, IUserUpdateDTO } from "../interfaces/user.interface";
+import {
+    IUserCreateDTO,
+    IUserQuery,
+    IUserUpdateDTO,
+} from "../interfaces/user.interface";
 import { userService } from "../services/user.service";
 
 class UserController {
@@ -85,6 +89,8 @@ class UserController {
         next: NextFunction,
     ) {
         try {
+            const body = req.body as IUserCreateDTO;
+            const data = await userService.createManager(body);
             res.status(StatusCodesEnum.OK).json(data);
         } catch (e) {
             next(e);

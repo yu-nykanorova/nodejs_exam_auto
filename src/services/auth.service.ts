@@ -1,26 +1,40 @@
+import { config } from "../configs/config";
+import { emailConstants } from "../constants/email.constants";
+import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
+import { EmailEnum } from "../enums/email.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
+import { UserRoleEnum } from "../enums/user-role.enum";
 import { ApiError } from "../errors/api.errors";
-import { passwordService } from "./password.service";
-import { IResetPasswordSendEmail, IResetPassword, IUser, IUserCreateDTO, IChangePassword, ISetPassword } from "../interfaces/user.interface";
+import { IAuth } from "../interfaces/auth.interface";
 import { ITokenPair, ITokenPayload } from "../interfaces/token.interface";
-import { userService } from "./user.service";
+import {
+    IChangePassword,
+    IResetPassword,
+    IResetPasswordSendEmail,
+    ISetPassword,
+    IUser,
+    IUserCreateDTO,
+} from "../interfaces/user.interface";
 import { actionTokenRepository } from "../repositories/action-token.repository";
 import { oldHashesRepository } from "../repositories/old-hashes.repository";
-import { userRepository } from "../repositories/user.repository";
 import { tokenRepository } from "../repositories/token.repository";
-import { tokenService } from "./token.service";
+import { userRepository } from "../repositories/user.repository";
 import { emailService } from "./email.service";
-import { emailConstants } from "../constants/email.constants";
-import { EmailEnum } from "../enums/email.enum";
-import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
-import { config } from "../configs/config";
-import { IAuth } from "../interfaces/auth.interface";
+import { passwordService } from "./password.service";
+import { tokenService } from "./token.service";
+import { userService } from "./user.service";
 
 class AuthService {
-    public async signUp(user: IUserCreateDTO): Promise<{ user: IUser; tokens: ITokenPair }> {
+    public async signUp(
+        user: IUserCreateDTO,
+        role: UserRoleEnum,
+    ): Promise<{ user: IUser; tokens: ITokenPair }> {
         await userService.isEmailUnique(user.email);
         const password = await passwordService.hashPassword(user.password);
-        const newUser = await userRepository.create({ ...user, password });
+        const newUser = await userRepository.create(
+            { ...user, password },
+            role,
+        );
         const tokens = tokenService.generateTokens({
             userId: newUser._id,
             role: newUser.role,
@@ -35,7 +49,9 @@ class AuthService {
         return { user: newUser, tokens };
     }
 
-    public async login(dto: IAuth): Promise< { user: IUser; tokens: ITokenPair }> {
+    public async login(
+        dto: IAuth,
+    ): Promise<{ user: IUser; tokens: ITokenPair }> {
         const user = await userRepository.getByEmail(dto.email);
 
         if (!user) {
@@ -67,7 +83,10 @@ class AuthService {
         return { user, tokens };
     }
 
-    public async refresh(refreshToken: string, payload: ITokenPayload,): Promise<ITokenPair> {
+    public async refresh(
+        refreshToken: string,
+        payload: ITokenPayload,
+    ): Promise<ITokenPair> {
         await tokenRepository.deleteTokenPair(refreshToken);
 
         const tokens = tokenService.generateTokens({
@@ -80,7 +99,9 @@ class AuthService {
         return tokens;
     }
 
-    public async forgotPasswordSendEmail(dto: IResetPasswordSendEmail): Promise<void> {
+    public async forgotPasswordSendEmail(
+        dto: IResetPasswordSendEmail,
+    ): Promise<void> {
         const user = await userRepository.getByEmail(dto.email);
 
         if (!user) {
@@ -105,13 +126,19 @@ class AuthService {
         );
     }
 
-    public async forgotPasswordChange(dto: IResetPassword, payload: ITokenPayload): Promise<IUser> {
-        const newPassword = await passwordService.hashPassword(dto.password);
+    public async forgotPasswordChange(
+        dto: IResetPassword,
+        payload: ITokenPayload,
+    ): Promise<IUser> {
         const user = await userRepository.getById(payload.userId);
 
         if (!user) {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
+
+        const newPassword = await passwordService.hashPassword(dto.password);
+
+        await this.checkPasswordsEquality(dto.password, payload.userId);
 
         const updatedUser = await userRepository.updateById(payload.userId, {
             password: newPassword,
@@ -124,7 +151,10 @@ class AuthService {
         return updatedUser;
     }
 
-    public async changePassword(dto: IChangePassword, payload: ITokenPayload): Promise<void>  {
+    public async changePassword(
+        dto: IChangePassword,
+        payload: ITokenPayload,
+    ): Promise<void> {
         const user = await userRepository.getById(payload.userId);
 
         if (!user) {
@@ -137,17 +167,19 @@ class AuthService {
         );
 
         if (!isPasswordCorrect) {
-            throw new ApiError("Wrong previous password", StatusCodesEnum.UNAUTHORIZED);
+            throw new ApiError(
+                "Wrong previous password",
+                StatusCodesEnum.UNAUTHORIZED,
+            );
         }
 
-        const password = await passwordService.hashPassword(dto.password);
+        const newPassword = await passwordService.hashPassword(dto.password);
 
-        await this.checkPasswordsEquality(
-            dto.password,
-            payload.userId,
-        );
+        await this.checkPasswordsEquality(dto.password, payload.userId);
 
-        await userRepository.updateById(payload.userId, { password });
+        await userRepository.updateById(payload.userId, {
+            password: newPassword,
+        });
 
         await oldHashesRepository.create({
             _userId: payload.userId,
@@ -157,7 +189,29 @@ class AuthService {
         await tokenRepository.deleteAllByParams({ _userId: payload.userId });
     }
 
-    public async setPassword(dto: ISetPassword, payload: ITokenPayload): Promise<void> {}
+    public async setPassword(
+        dto: ISetPassword,
+        payload: ITokenPayload,
+    ): Promise<void> {
+        const user = await userRepository.getById(payload.userId);
+
+        if (!user) {
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        const password = await passwordService.hashPassword(dto.password);
+
+        await userRepository.updateById(payload.userId, { password });
+
+        await oldHashesRepository.create({
+            _userId: payload.userId,
+            hash: user.password,
+        });
+
+        await actionTokenRepository.deleteActionToken({
+            _userId: payload.userId,
+        });
+    }
 
     public async logout(refreshToken: string): Promise<void> {
         await tokenRepository.deleteTokenPair(refreshToken);
@@ -179,7 +233,10 @@ class AuthService {
         );
 
         if (isCurrentPassword) {
-            throw new ApiError("New password must differ from the previous one", StatusCodesEnum.BED_REQUEST);
+            throw new ApiError(
+                "New password must differ from the previous one",
+                StatusCodesEnum.BAD_REQUEST,
+            );
         }
 
         const oldHashes = await oldHashesRepository.findByParams({
@@ -196,13 +253,12 @@ class AuthService {
                 if (isPasswordEqual) {
                     throw new ApiError(
                         "New password must differ from the previous one",
-                        StatusCodesEnum.BED_REQUEST,
+                        StatusCodesEnum.BAD_REQUEST,
                     );
                 }
             }
         }
     }
-}
 }
 
 export const authService = new AuthService();

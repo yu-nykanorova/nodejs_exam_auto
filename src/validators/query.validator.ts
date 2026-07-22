@@ -2,7 +2,7 @@ import joi from "joi";
 
 export const queryValidator = (
     queryOrderEnum: object,
-    additionalFields: Record<string, joi.Schema>,
+    additionalFields?: Record<string, joi.Schema>,
 ) => {
     return joi.object({
         pageSize: joi.number().min(1).max(100).default(10),

@@ -22,9 +22,19 @@ export class UserValidator {
     public static update = joi.object({
         email: this.email,
         password: this.password,
+        oldPassword: this.password,
         name: this.name,
         surname: this.surname,
         age: this.age,
+    });
+
+    public static login = joi.object({
+        email: this.email.required(),
+        password: this.password.required(),
+    });
+
+    public static sendEmail = joi.object({
+        email: this.email.required(),
     });
 
     public static setNewPassword = joi

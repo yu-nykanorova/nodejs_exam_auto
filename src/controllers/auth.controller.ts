@@ -1,21 +1,33 @@
 import { NextFunction, Request, Response } from "express";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
+import { UserRoleEnum } from "../enums/user-role.enum";
 import { IAuth } from "../interfaces/auth.interface";
 import { IToken, ITokenPayload } from "../interfaces/token.interface";
 import {
     IChangePassword,
     IResetPassword,
     IResetPasswordSendEmail,
+    ISetPassword,
     IUserCreateDTO,
 } from "../interfaces/user.interface";
 import { authService } from "../services/auth.service";
 
 class AuthController {
-    public async signUp(req: Request, res: Response, next: NextFunction) {
+    public async signUpSeller(req: Request, res: Response, next: NextFunction) {
         try {
             const body = req.body as IUserCreateDTO;
-            const data = await authService.signUp(body);
+            const data = await authService.signUp(body, UserRoleEnum.SELLER);
+            res.status(StatusCodesEnum.CREATED).json(data);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    public async signUpBuyer(req: Request, res: Response, next: NextFunction) {
+        try {
+            const body = req.body as IUserCreateDTO;
+            const data = await authService.signUp(body, UserRoleEnum.BUYER);
             res.status(StatusCodesEnum.CREATED).json(data);
         } catch (e) {
             next(e);
@@ -93,6 +105,12 @@ class AuthController {
 
     public async setPassword(req: Request, res: Response, next: NextFunction) {
         try {
+            const payload = res.locals.tokenPayload as ITokenPayload;
+            const password = req.body as ISetPassword;
+            const updatedUser = await authService.setPassword(
+                password,
+                payload,
+            );
             res.status(StatusCodesEnum.OK).json(updatedUser);
         } catch (e) {
             next(e);

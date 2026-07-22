@@ -4,6 +4,8 @@ import { userController } from "../controllers/user.controller";
 import { PermissionsEnum } from "../enums/permissions.enum";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { permissionsMiddleware } from "../middlewares/permissions.middleware";
+import { commonMiddleware } from "../middlewares/common.middleware";
+import { UserValidator } from "../validators/user.validator";
 
 const router = Router();
 
@@ -11,6 +13,7 @@ router.get(
     "/",
     authMiddleware.checkAccessToken,
     permissionsMiddleware.checkPermission(PermissionsEnum.READ_USERS),
+    commonMiddleware.isQueryValid(UserValidator.query),
     userController.getAllUsers,
 );
 
@@ -30,6 +33,7 @@ router.put(
     "/me",
     authMiddleware.checkAccessToken,
     permissionsMiddleware.checkPermission(PermissionsEnum.UPDATE_PROFILE),
+    commonMiddleware.isBodyValid(UserValidator.update),
     userController.updateMe,
 );
 router.patch(
@@ -49,6 +53,7 @@ router.post(
     "/managers",
     authMiddleware.checkAccessToken,
     permissionsMiddleware.checkPermission(PermissionsEnum.CREATE_MANAGER),
+    commonMiddleware.isBodyValid(UserValidator.create),
     userController.createManager,
 );
 
@@ -56,6 +61,7 @@ router.get(
     "/:id",
     authMiddleware.checkAccessToken,
     permissionsMiddleware.checkPermission(PermissionsEnum.READ_USERS),
+    commonMiddleware.isIdValid("id"),
     userController.getById,
 );
 router.patch(
@@ -68,6 +74,7 @@ router.delete(
     "/:id",
     authMiddleware.checkAccessToken,
     permissionsMiddleware.checkPermission(PermissionsEnum.DELETE_USER),
+    commonMiddleware.isIdValid("id"),
     userController.deleteById,
 );
 
