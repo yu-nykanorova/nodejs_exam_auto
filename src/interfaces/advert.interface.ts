@@ -3,8 +3,8 @@ import { AdvertStatusEnum } from "../enums/advert-status.enum";
 export interface IAdvert {
     _id: string;
     title: string;
-    brand: string;
-    model: string;
+    brandId: string;
+    modelId: string;
     year: number;
     region: string;
     city: string;
@@ -21,8 +21,8 @@ export interface IAdvertQuery {
     page?: number;
     search?: string;
     order?: string;
-    brand?: string;
-    model?: string;
+    brandId?: string;
+    modelId?: string;
     yearFrom?: number;
     yearTo?: number;
     city?: string;
@@ -36,8 +36,8 @@ export type IAdvertCreateDTO = Pick<
     | "title"
     | "description"
     | "price"
-    | "brand"
-    | "model"
+    | "brandId"
+    | "modelId"
     | "year"
     | "city"
     | "region"
@@ -50,11 +50,12 @@ export type IAdvertUpdateDTO = Partial<
         | "description"
         | "price"
         | "avatar"
-        | "brand"
-        | "model"
+        | "brandId"
+        | "modelId"
         | "year"
         | "city"
         | "region"
         | "viewsCount"
+        | "status"
     >
 >;

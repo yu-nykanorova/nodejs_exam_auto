@@ -8,12 +8,7 @@ import { UserRoleEnum } from "../enums/user-role.enum";
 import { UserStatusEnum } from "../enums/user-status.enum";
 import { ApiError } from "../errors/api.errors";
 import { IPaginatedResponse } from "../interfaces/paginated-response.interface";
-import {
-    IUser,
-    IUserCreateDTO,
-    IUserQuery,
-    IUserUpdateDTO,
-} from "../interfaces/user.interface";
+import { IUser, IUserCreateDTO, IUserQuery, IUserUpdateDTO } from "../interfaces/user.interface";
 import { actionTokenRepository } from "../repositories/action-token.repository";
 import { userRepository } from "../repositories/user.repository";
 import { emailService } from "./email.service";
@@ -45,7 +40,7 @@ class UserService {
     public async getById(userId: string): Promise<IUser> {
         const user = await userRepository.getById(userId);
 
-        if (!user) {
+        if (!user || user.status === UserStatusEnum.DELETED) {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
 
@@ -58,21 +53,11 @@ class UserService {
     ): Promise<IUser | null> {
         const user = await userRepository.getById(userId);
 
-        if (!user) {
+        if (!user || user.status === UserStatusEnum.DELETED) {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
 
         return await userRepository.updateById(userId, userDataToUpdate);
-    }
-
-    public async deleteById(userId: string): Promise<void> {
-        const user = await userRepository.getById(userId);
-
-        if (!user) {
-            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
-        }
-
-        await userRepository.deleteById(userId);
     }
 
     public async getMeAdverts() {}
@@ -83,7 +68,7 @@ class UserService {
     ) {
         const user = await userRepository.getById(userId);
 
-        if (!user) {
+        if (!user || user.status === UserStatusEnum.DELETED) {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
 
@@ -95,6 +80,7 @@ class UserService {
         const newManager = await userRepository.create(
             manager,
             UserRoleEnum.MANAGER,
+            UserStatusEnum.ACTIVE,
         );
 
         const actionToken = tokenService.generateActionToken(
@@ -133,6 +119,10 @@ class UserService {
 
         if (!user) {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        if (user.status === UserStatusEnum.DELETED) {
+            throw new ApiError("User was deleted", StatusCodesEnum.BAD_REQUEST);
         }
 
         return await userRepository.updateById(userId, { status });

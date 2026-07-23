@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
+import { UserStatusEnum } from "../enums/user-status.enum";
 import { ITokenPayload } from "../interfaces/token.interface";
 import {
     IUserCreateDTO,
@@ -76,7 +77,10 @@ class UserController {
         try {
             const payload = res.locals.tokenPayload as ITokenPayload;
 
-            await userService.deleteById(payload.userId);
+            await userService.changeStatus(
+                payload.userId,
+                UserStatusEnum.DELETED,
+            );
             res.status(StatusCodesEnum.NO_CONTENT).end();
         } catch (e) {
             next(e);
@@ -122,7 +126,7 @@ class UserController {
     public async deleteById(req: Request, res: Response, next: NextFunction) {
         try {
             const id = req.params.id as string;
-            await userService.deleteById(id);
+            await userService.changeStatus(id, UserStatusEnum.DELETED);
             res.status(StatusCodesEnum.NO_CONTENT).end();
         } catch (e) {
             next(e);

@@ -4,17 +4,11 @@ import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
 import { EmailEnum } from "../enums/email.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { UserRoleEnum } from "../enums/user-role.enum";
+import { UserStatusEnum } from "../enums/user-status.enum";
 import { ApiError } from "../errors/api.errors";
 import { IAuth } from "../interfaces/auth.interface";
 import { ITokenPair, ITokenPayload } from "../interfaces/token.interface";
-import {
-    IChangePassword,
-    IResetPassword,
-    IResetPasswordSendEmail,
-    ISetPassword,
-    IUser,
-    IUserCreateDTO,
-} from "../interfaces/user.interface";
+import { IChangePassword, IResetPassword, IResetPasswordSendEmail, ISetPassword, IUser, IUserCreateDTO } from "../interfaces/user.interface";
 import { actionTokenRepository } from "../repositories/action-token.repository";
 import { oldHashesRepository } from "../repositories/old-hashes.repository";
 import { tokenRepository } from "../repositories/token.repository";
@@ -34,6 +28,7 @@ class AuthService {
         const newUser = await userRepository.create(
             { ...user, password },
             role,
+            UserStatusEnum.ACTIVE,
         );
         const tokens = tokenService.generateTokens({
             userId: newUser._id,
@@ -54,7 +49,7 @@ class AuthService {
     ): Promise<{ user: IUser; tokens: ITokenPair }> {
         const user = await userRepository.getByEmail(dto.email);
 
-        if (!user) {
+        if (!user || user.status === UserStatusEnum.DELETED) {
             throw new ApiError(
                 "Email or password invalid",
                 StatusCodesEnum.UNAUTHORIZED,
@@ -104,7 +99,7 @@ class AuthService {
     ): Promise<void> {
         const user = await userRepository.getByEmail(dto.email);
 
-        if (!user) {
+        if (!user || user.status === UserStatusEnum.DELETED) {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
 
@@ -132,7 +127,7 @@ class AuthService {
     ): Promise<IUser> {
         const user = await userRepository.getById(payload.userId);
 
-        if (!user) {
+        if (!user || user.status === UserStatusEnum.DELETED) {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
 
@@ -157,7 +152,7 @@ class AuthService {
     ): Promise<void> {
         const user = await userRepository.getById(payload.userId);
 
-        if (!user) {
+        if (!user || user.status === UserStatusEnum.DELETED) {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
 
@@ -195,7 +190,7 @@ class AuthService {
     ): Promise<void> {
         const user = await userRepository.getById(payload.userId);
 
-        if (!user) {
+        if (!user || user.status === UserStatusEnum.DELETED) {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
 
@@ -223,7 +218,7 @@ class AuthService {
     ): Promise<void> {
         const user = await userRepository.getById(userId);
 
-        if (!user) {
+        if (!user || user.status === UserStatusEnum.DELETED) {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
 

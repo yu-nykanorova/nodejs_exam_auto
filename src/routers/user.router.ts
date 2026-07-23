@@ -3,8 +3,8 @@ import { Router } from "express";
 import { userController } from "../controllers/user.controller";
 import { PermissionsEnum } from "../enums/permissions.enum";
 import { authMiddleware } from "../middlewares/auth.middleware";
-import { permissionsMiddleware } from "../middlewares/permissions.middleware";
 import { commonMiddleware } from "../middlewares/common.middleware";
+import { permissionsMiddleware } from "../middlewares/permissions.middleware";
 import { UserValidator } from "../validators/user.validator";
 
 const router = Router();
@@ -68,6 +68,7 @@ router.patch(
     "/:id/status",
     authMiddleware.checkAccessToken,
     permissionsMiddleware.checkPermission(PermissionsEnum.UPDATE_USER_STATUS),
+    commonMiddleware.isIdValid("id"),
     userController.changeStatus,
 );
 router.delete(

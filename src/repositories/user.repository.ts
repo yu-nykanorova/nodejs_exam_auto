@@ -17,11 +17,13 @@ class UserRepository {
 
         const limit = Number(query.pageSize) || 10;
 
-        const filterObject: Record<string, any> = {
-            status: {
-                $ne: UserStatusEnum.DELETED,
-            },
-        };
+        const filterObject: Record<string, any> = {};
+
+        // const filterObject: Record<string, any> = {
+        //     status: {
+        //         $ne: UserStatusEnum.DELETED,
+        //     },
+        // };
 
         if (query.search) {
             filterObject.$or = [
@@ -60,8 +62,9 @@ class UserRepository {
     public async create(
         user: IUserCreateDTO,
         role: UserRoleEnum,
+        status: UserStatusEnum,
     ): Promise<IUser> {
-        return await User.create({ ...user, role });
+        return await User.create({ ...user, role, status });
     }
 
     public async getById(userId: string): Promise<IUser> {
@@ -77,10 +80,6 @@ class UserRepository {
         user: IUserUpdateDTO,
     ): Promise<IUser> {
         return await User.findByIdAndUpdate(userId, user, { new: true });
-    }
-
-    public async deleteById(userId: string): Promise<void> {
-        await User.findByIdAndDelete(userId);
     }
 }
 
