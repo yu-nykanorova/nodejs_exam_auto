@@ -57,7 +57,7 @@ router.delete(
     authMiddleware.checkAccessToken,
     permissionsMiddleware.checkPermission(PermissionsEnum.DELETE_ADVERT),
     commonMiddleware.isIdValid("id"),
-    advertController.deleteById,
+    advertController.deleteOwnAdvert,
 );
 
 export const advertRouter = router;

@@ -8,6 +8,7 @@ import {
     IAdvertQuery,
     IAdvertUpdateDTO,
 } from "../interfaces/advert.interface";
+import { ITokenPayload } from "../interfaces/token.interface";
 import {
     IUserCreateDTO,
     IUserQuery,
@@ -15,7 +16,6 @@ import {
 } from "../interfaces/user.interface";
 import { advertService } from "../services/advert.service";
 import { userService } from "../services/user.service";
-import { ITokenPayload } from "../interfaces/token.interface";
 
 class AdvertController {
     public async getAllAdverts(
@@ -58,8 +58,12 @@ class AdvertController {
         try {
             const payload = res.locals.tokenPayload as ITokenPayload;
             const dto = req.body as IAdvertUpdateDTO;
-
-            const data = await advertService.updateAdvert(payload.userId, dto);
+            const id = req.params.id as string;
+            const data = await advertService.updateAdvert(
+                id,
+                payload.userId,
+                dto,
+            );
             res.status(StatusCodesEnum.OK).json(data);
         } catch (e) {
             next(e);
@@ -90,10 +94,18 @@ class AdvertController {
         }
     }
 
-    public async deleteById(req: Request, res: Response, next: NextFunction) {
+    public async deleteOwnAdvert(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
         try {
+            const payload = res.locals.tokenPayload as ITokenPayload;
             const id = req.params.id as string;
-            await advertService.changeStatus(id, AdvertStatusEnum.DELETED);
+            await advertService.updateAdvert(id, payload.userId, {
+                status: AdvertStatusEnum.DELETED,
+            });
+
             res.status(StatusCodesEnum.NO_CONTENT).end();
         } catch (e) {
             next(e);

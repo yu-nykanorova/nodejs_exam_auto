@@ -6,6 +6,7 @@ import {
     IAdvertUpdateDTO,
 } from "../interfaces/advert.interface";
 import { Advert } from "../models/advert.model";
+import { User } from "../models/user.model";
 
 class AdvertRepository {
     public async getAllAdverts(query: IAdvertQuery): Promise<any> {
@@ -123,7 +124,12 @@ class AdvertRepository {
 
     public async getUserAdverts(userId: string): Promise<IAdvert[]> {}
 
-    public async createAdvert(dto: IAdvertCreateDTO): Promise<IAdvert> {}
+    public async createAdvert(
+        dto: IAdvertCreateDTO,
+        status: AdvertStatusEnum,
+    ): Promise<IAdvert> {
+        return await Advert.create({ ...dto, status });
+    }
 
     public async getById(advertId: string): Promise<IAdvert> {
         return await Advert.findById(advertId);

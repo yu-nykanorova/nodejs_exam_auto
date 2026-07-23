@@ -49,7 +49,7 @@ class UserService {
 
     public async updateById(
         userId: string,
-        userDataToUpdate: IUserUpdateDTO,
+        dto: IUserUpdateDTO,
     ): Promise<IUser | null> {
         const user = await userRepository.getById(userId);
 
@@ -57,7 +57,7 @@ class UserService {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        return await userRepository.updateById(userId, userDataToUpdate);
+        return await userRepository.updateById(userId, dto);
     }
 
     public async getMeAdverts() {}

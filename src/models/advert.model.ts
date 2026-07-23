@@ -24,6 +24,7 @@ const advertSchema = new Schema(
         },
         _ownerId: { type: Schema.Types.ObjectId, required: true, ref: User },
         viewsCount: { type: Number, default: 0 },
+        attemptModerate: { type: Number, default: 0 },
     },
     {
         timestamps: true,

@@ -14,6 +14,7 @@ export interface IAdvert {
     _ownerId: string;
     avatar?: string;
     viewsCount: number;
+    attemptModerate: number;
 }
 
 export interface IAdvertQuery {
@@ -57,5 +58,6 @@ export type IAdvertUpdateDTO = Partial<
         | "region"
         | "viewsCount"
         | "status"
+        | "attemptModerate"
     >
 >;
