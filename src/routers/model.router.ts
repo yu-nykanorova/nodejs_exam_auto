@@ -1,17 +1,47 @@
 import { Router } from "express";
 
 import { modelController } from "../controllers/model.controller";
+import { PermissionsEnum } from "../enums/permissions.enum";
+import { authMiddleware } from "../middlewares/auth.middleware";
+import { commonMiddleware } from "../middlewares/common.middleware";
+import { permissionsMiddleware } from "../middlewares/permissions.middleware";
+import { ModelValidator } from "../validators/model.validator";
 
 const router = Router();
 
 router.get("/", modelController.getAllModels);
 
-router.post("/", modelController.createModel);
+router.post(
+    "/",
+    authMiddleware.checkAccessToken,
+    permissionsMiddleware.checkPermission(PermissionsEnum.CREATE_MODEL),
+    commonMiddleware.isBodyValid(ModelValidator.create),
+    modelController.createModel,
+);
 
-router.get("/requests", modelController.getModelRequests);
+router.get(
+    "/requests",
+    authMiddleware.checkAccessToken,
+    permissionsMiddleware.checkPermission(PermissionsEnum.READ_MODEL_REQUESTS),
+    modelController.getModelRequests,
+);
 
-router.post("/requests", modelController.createModelRequest);
+router.post(
+    "/requests",
+    authMiddleware.checkAccessToken,
+    permissionsMiddleware.checkPermission(PermissionsEnum.SEND_MODEL_REQUEST),
+    commonMiddleware.isBodyValid(ModelValidator.create),
+    modelController.createModelRequest,
+);
 
-router.patch("/requests/:id", modelController.updateModelRequest);
+router.patch(
+    "/requests/:id",
+    authMiddleware.checkAccessToken,
+    permissionsMiddleware.checkPermission(
+        PermissionsEnum.UPDATE_MODEL_REQUEST_STATUS,
+    ),
+    commonMiddleware.isIdValid("id"),
+    modelController.updateModelRequest,
+);
 
 export const modelRouter = router;

@@ -2,20 +2,13 @@ import { NextFunction, Request, Response } from "express";
 
 import { AdvertStatusEnum } from "../enums/advert-status.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
-import { UserStatusEnum } from "../enums/user-status.enum";
 import {
     IAdvertCreateDTO,
     IAdvertQuery,
     IAdvertUpdateDTO,
 } from "../interfaces/advert.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
-import {
-    IUserCreateDTO,
-    IUserQuery,
-    IUserUpdateDTO,
-} from "../interfaces/user.interface";
 import { advertService } from "../services/advert.service";
-import { userService } from "../services/user.service";
 
 class AdvertController {
     public async getAllAdverts(

@@ -75,6 +75,10 @@ class UserRepository {
         return await User.findOne({ email });
     }
 
+    public async getByRole(role: UserRoleEnum): Promise<IUser[]> {
+        return await User.find({ role });
+    }
+
     public async updateById(
         userId: string,
         user: IUserUpdateDTO,

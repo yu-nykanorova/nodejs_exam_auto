@@ -1,6 +1,4 @@
-import { emailConstants } from "../constants/email.constants";
 import { AdvertStatusEnum } from "../enums/advert-status.enum";
-import { EmailEnum } from "../enums/email.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ApiError } from "../errors/api.errors";
 import {
@@ -11,8 +9,7 @@ import {
 } from "../interfaces/advert.interface";
 import { IPaginatedResponse } from "../interfaces/paginated-response.interface";
 import { advertRepository } from "../repositories/advert.repository";
-import { includesProfanity } from "../utils/profanity-filter";
-import { emailService } from "./email.service";
+import { moderationService } from "./moderation.service";
 
 class AdvertService {
     public async getAllAdverts(
@@ -43,19 +40,7 @@ class AdvertService {
             AdvertStatusEnum.PENDING,
         );
 
-        const checkedTitle = includesProfanity(advert.title);
-        const checkedDescription = includesProfanity(advert.description);
-
-        if (checkedTitle || checkedDescription) {
-            throw new ApiError(
-                "Advert includes profanity, fix it, please",
-                StatusCodesEnum.BAD_REQUEST,
-            );
-        }
-
-        return await advertRepository.updateById(newAdvert._id, {
-            status: AdvertStatusEnum.ACTIVE,
-        });
+        return await moderationService.processModeration(newAdvert);
     }
 
     public async getById(advertId: string): Promise<IAdvert> {
@@ -101,7 +86,7 @@ class AdvertService {
             return await advertRepository.updateById(advertId, dto);
         }
 
-        return await this.processModeration(advert, dto);
+        return await moderationService.processModeration(advert, dto);
     }
 
     public async changeStatus(
@@ -125,68 +110,6 @@ class AdvertService {
     }
 
     public async getStatistics() {}
-
-    private async processModeration(
-        advert: IAdvert,
-        dto: IAdvertUpdateDTO,
-    ): Promise<IAdvert | null> {
-        const newCheckedTitle = includesProfanity(dto.title);
-        const newCheckedDescription = includesProfanity(dto.description);
-
-        if (newCheckedTitle || newCheckedDescription) {
-            if (advert.status === AdvertStatusEnum.ACTIVE) {
-                await advertRepository.updateById(advert._id, {
-                    ...dto,
-                    status: AdvertStatusEnum.PENDING,
-                    attemptModerate: 0,
-                });
-
-                throw new ApiError(
-                    "Advert includes profanity. Please edit your advert.",
-                    StatusCodesEnum.BAD_REQUEST,
-                );
-            }
-
-            const attempts = advert.attemptModerate + 1;
-
-            if (attempts >= 3) {
-                await advertRepository.updateById(advert._id, {
-                    ...dto,
-                    status: AdvertStatusEnum.BLOCKED,
-                    attemptModerate: attempts,
-                });
-
-                // get all managers and send them emails
-
-                // await emailService.sendEmail(
-                //     newUser.email,
-                //     emailConstants[EmailEnum.WELCOME],
-                //     { name: newUser.name },
-                // );
-
-                throw new ApiError(
-                    "Advert has been blocked and sent to the manager.",
-                    StatusCodesEnum.BAD_REQUEST,
-                );
-            }
-
-            await advertRepository.updateById(advert._id, {
-                ...dto,
-                status: AdvertStatusEnum.PENDING,
-                attemptModerate: attempts,
-            });
-
-            throw new ApiError(
-                `Advert includes profanity. ${3 - attempts} attempts left to edit this one.`,
-                StatusCodesEnum.BAD_REQUEST,
-            );
-        }
-
-        return await advertRepository.updateById(advert._id, {
-            ...dto,
-            status: AdvertStatusEnum.ACTIVE,
-        });
-    }
 }
 
 export const advertService = new AdvertService();

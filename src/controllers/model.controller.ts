@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 
+import { ModelRequestStatusEnum } from "../enums/model-request-status.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
+import { IModelCreateDTO } from "../interfaces/model.interface";
+import { modelService } from "../services/model.service";
 
 class ModelController {
-    public async getAllModels(
-        req: Request,
-        res: Response,
-        next: NextFunction,
-    ) {
+    public async getAllModels(req: Request, res: Response, next: NextFunction) {
         try {
+            const data = await modelService.getAllModels();
             res.status(StatusCodesEnum.OK).json(data);
         } catch (e) {
             next(e);
@@ -17,6 +17,8 @@ class ModelController {
 
     public async createModel(req: Request, res: Response, next: NextFunction) {
         try {
+            const { name } = req.body as IModelCreateDTO;
+            const data = await modelService.createModel(name);
             res.status(StatusCodesEnum.CREATED).json(data);
         } catch (e) {
             next(e);
@@ -29,6 +31,7 @@ class ModelController {
         next: NextFunction,
     ) {
         try {
+            const data = await modelService.getModelRequests();
             res.status(StatusCodesEnum.OK).json(data);
         } catch (e) {
             next(e);
@@ -41,6 +44,8 @@ class ModelController {
         next: NextFunction,
     ) {
         try {
+            const { name } = req.body as IModelCreateDTO;
+            const data = await modelService.createModel(name);
             res.status(StatusCodesEnum.CREATED).json(data);
         } catch (e) {
             next(e);
@@ -53,6 +58,10 @@ class ModelController {
         next: NextFunction,
     ) {
         try {
+            const id = req.params.id as string;
+            const status = req.body.status as ModelRequestStatusEnum;
+
+            const data = await modelService.updateModelRequest(id, status);
             res.status(StatusCodesEnum.OK).json(data);
         } catch (e) {
             next(e);

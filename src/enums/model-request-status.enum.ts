@@ -1,4 +1,4 @@
-export enum AddRequestStatusEnum {
+export enum ModelRequestStatusEnum {
     PENDING = "PENDING",
     ACCEPTED = "ACCEPTED",
     REJECTED = "REJECTED",
