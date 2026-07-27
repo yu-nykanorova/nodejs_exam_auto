@@ -7,6 +7,7 @@ import {
     IAdvertQuery,
     IAdvertUpdateDTO,
 } from "../interfaces/advert.interface";
+import { IAggrigatedResponse } from "../interfaces/aggrigated-response.interface";
 import { IPaginatedResponse } from "../interfaces/paginated-response.interface";
 import { advertRepository } from "../repositories/advert.repository";
 import { moderationService } from "./moderation.service";
@@ -17,26 +18,27 @@ class AdvertService {
     ): Promise<IPaginatedResponse<IAdvert>> {
         const dataFromDB = await advertRepository.getAllAdverts(query);
 
-        const result = dataFromDB[0];
-
-        const data: IAdvert[] = result?.data ?? [];
-        const totalItems = result?.totalItems?.[0]?.count ?? 0;
-        const pageSize = Number(query.pageSize) || 10;
-        const page = Number(query.page) || 1;
-        const totalPages = Math.ceil(totalItems / pageSize);
-
-        return {
-            totalItems,
-            totalPages,
-            prevPage: page > 1,
-            nextPage: page < totalPages,
-            data,
-        };
+        return this.buildPaginatedResponse(dataFromDB, query);
     }
 
-    public async createAdvert(advert: IAdvertCreateDTO): Promise<IAdvert> {
+    public async getUserAdverts(
+        userId: string,
+        query: IAdvertQuery,
+    ): Promise<IPaginatedResponse<IAdvert>> {
+        const dataFromDB = await advertRepository.getUserAdverts(userId, query);
+
+        return this.buildPaginatedResponse(dataFromDB, query);
+    }
+
+    public async createAdvert(
+        dto: IAdvertCreateDTO,
+        ownerId: string,
+    ): Promise<IAdvert> {
         const newAdvert = await advertRepository.createAdvert(
-            advert,
+            {
+                ...dto,
+                _ownerId: ownerId,
+            },
             AdvertStatusEnum.PENDING,
         );
 
@@ -110,6 +112,27 @@ class AdvertService {
     }
 
     public async getStatistics() {}
+
+    private buildPaginatedResponse(
+        dataToPaginate: IAggrigatedResponse<IAdvert>[],
+        query: IAdvertQuery,
+    ): IPaginatedResponse<IAdvert> {
+        const result = dataToPaginate[0];
+
+        const data: IAdvert[] = result?.data ?? [];
+        const totalItems = result?.totalItems?.[0]?.count ?? 0;
+        const pageSize = Number(query.pageSize) || 10;
+        const page = Number(query.page) || 1;
+        const totalPages = Math.ceil(totalItems / pageSize);
+
+        return {
+            totalItems,
+            totalPages,
+            prevPage: page > 1,
+            nextPage: page < totalPages,
+            data,
+        };
+    }
 }
 
 export const advertService = new AdvertService();

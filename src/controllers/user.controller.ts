@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { UserStatusEnum } from "../enums/user-status.enum";
+import { IAdvertQuery } from "../interfaces/advert.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
 import {
     IUserCreateDTO,
@@ -9,6 +10,7 @@ import {
     IUserUpdateDTO,
 } from "../interfaces/user.interface";
 import { userService } from "../services/user.service";
+import { advertService } from "../services/advert.service";
 
 class UserController {
     public async getAllUsers(req: Request, res: Response, next: NextFunction) {
@@ -36,6 +38,14 @@ class UserController {
 
     public async getMeAdverts(req: Request, res: Response, next: NextFunction) {
         try {
+            const { validatedQuery } = req as any as {
+                validatedQuery: IAdvertQuery;
+            };
+            const payload = res.locals.tokenPayload as ITokenPayload;
+            const data = await advertService.getUserAdverts(
+                payload.userId,
+                validatedQuery,
+            );
             res.status(StatusCodesEnum.OK).json(data);
         } catch (e) {
             next(e);

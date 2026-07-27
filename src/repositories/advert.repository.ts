@@ -6,7 +6,8 @@ import {
     IAdvertUpdateDTO,
 } from "../interfaces/advert.interface";
 import { Advert } from "../models/advert.model";
-import { User } from "../models/user.model";
+import { Types } from "mongoose";
+import { IAggrigatedResponse } from "../interfaces/aggrigated-response.interface";
 
 class AdvertRepository {
     public async getAllAdverts(query: IAdvertQuery): Promise<any> {
@@ -17,6 +18,51 @@ class AdvertRepository {
 
         const limit = Number(query.pageSize) || 10;
 
+        const filterObject = this.buildFilter(query);
+
+        const sortOrder = this.buildSortOrder(query);
+
+        return await this.buildAggregate(filterObject, sortOrder, skip, limit);
+    }
+
+    public async getUserAdverts(
+        userId: string,
+        query: IAdvertQuery,
+    ): Promise<any> {
+        const skip =
+            query.pageSize && query.page
+                ? query.pageSize * (query.page - 1)
+                : 0;
+
+        const limit = Number(query.pageSize) || 10;
+
+        const filterObject = this.buildFilter(query);
+        filterObject._ownerId = new Types.ObjectId(userId);
+
+        const sortOrder = this.buildSortOrder(query);
+
+        return await this.buildAggregate(filterObject, sortOrder, skip, limit);
+    }
+
+    public async createAdvert(
+        dto: IAdvertCreateDTO & { _ownerId: string },
+        status: AdvertStatusEnum,
+    ): Promise<IAdvert> {
+        return await Advert.create({ ...dto, status });
+    }
+
+    public async getById(advertId: string): Promise<IAdvert | null> {
+        return await Advert.findById(advertId);
+    }
+
+    public async updateById(
+        advertId: string,
+        dto: IAdvertUpdateDTO,
+    ): Promise<IAdvert | null> {
+        return await Advert.findByIdAndUpdate(advertId, dto, { new: true });
+    }
+
+    private buildFilter(query: IAdvertQuery): Record<string, any> {
         const filterObject: Record<string, any> = {
             status: AdvertStatusEnum.ACTIVE,
         };
@@ -72,7 +118,11 @@ class AdvertRepository {
             };
         }
 
-        const orderObject: Record<string, any> = {};
+        return filterObject;
+    }
+
+    private buildSortOrder(query: IAdvertQuery): Record<string, any> {
+        const orderObject: Record<string, 1 | -1> = {};
 
         if (query.order) {
             if (query.order.startsWith("-")) {
@@ -84,6 +134,15 @@ class AdvertRepository {
             orderObject.createdAt = -1;
         }
 
+        return orderObject;
+    }
+
+    private async buildAggregate(
+        filterObject: Record<string, any>,
+        sortOrder: Record<string, any>,
+        skip: number,
+        limit: number,
+    ): Promise<IAggrigatedResponse<IAdvert>[]> {
         return await Advert.aggregate([
             {
                 $match: filterObject,
@@ -111,7 +170,7 @@ class AdvertRepository {
                 $unwind: "$model",
             },
             {
-                $sort: orderObject,
+                $sort: sortOrder,
             },
             {
                 $facet: {
@@ -120,26 +179,6 @@ class AdvertRepository {
                 },
             },
         ]);
-    }
-
-    public async getUserAdverts(userId: string): Promise<IAdvert[]> {}
-
-    public async createAdvert(
-        dto: IAdvertCreateDTO,
-        status: AdvertStatusEnum,
-    ): Promise<IAdvert> {
-        return await Advert.create({ ...dto, status });
-    }
-
-    public async getById(advertId: string): Promise<IAdvert> {
-        return await Advert.findById(advertId);
-    }
-
-    public async updateById(
-        advertId: string,
-        dto: IAdvertUpdateDTO,
-    ): Promise<IAdvert> {
-        return await Advert.findByIdAndUpdate(advertId, dto, { new: true });
     }
 }
 

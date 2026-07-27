@@ -6,6 +6,7 @@ import { authMiddleware } from "../middlewares/auth.middleware";
 import { commonMiddleware } from "../middlewares/common.middleware";
 import { permissionsMiddleware } from "../middlewares/permissions.middleware";
 import { UserValidator } from "../validators/user.validator";
+import { AdvertValidator } from "../validators/advert.validator";
 
 const router = Router();
 
@@ -27,6 +28,7 @@ router.get(
     "/me/adverts",
     authMiddleware.checkAccessToken,
     permissionsMiddleware.checkPermission(PermissionsEnum.READ_OWN_ADVERTS),
+    commonMiddleware.isQueryValid(AdvertValidator.query),
     userController.getMeAdverts,
 );
 router.put(

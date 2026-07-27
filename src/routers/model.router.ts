@@ -34,6 +34,14 @@ router.post(
     modelController.createModelRequest,
 );
 
+router.get(
+    "/requests/:id",
+    authMiddleware.checkAccessToken,
+    permissionsMiddleware.checkPermission(PermissionsEnum.READ_MODEL_REQUESTS),
+    commonMiddleware.isIdValid("id"),
+    modelController.getModelRequestById,
+);
+
 router.patch(
     "/requests/:id",
     authMiddleware.checkAccessToken,
@@ -41,7 +49,6 @@ router.patch(
         PermissionsEnum.UPDATE_MODEL_REQUEST_STATUS,
     ),
     commonMiddleware.isIdValid("id"),
-    modelController.updateModelRequest,
 );
 
 export const modelRouter = router;

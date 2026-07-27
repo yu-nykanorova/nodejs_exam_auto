@@ -34,6 +34,14 @@ router.post(
     brandController.createBrandRequest,
 );
 
+router.get(
+    "/requests/:id",
+    authMiddleware.checkAccessToken,
+    permissionsMiddleware.checkPermission(PermissionsEnum.READ_BRAND_REQUESTS),
+    commonMiddleware.isIdValid("id"),
+    brandController.getBrandRequestById,
+);
+
 router.patch(
     "/requests/:id",
     authMiddleware.checkAccessToken,
@@ -41,7 +49,7 @@ router.patch(
         PermissionsEnum.UPDATE_BRAND_REQUEST_STATUS,
     ),
     commonMiddleware.isIdValid("id"),
-    brandController.updateBrandRequest,
+    brandController.updateBrandRequestStatus,
 );
 
 export const brandRouter = router;

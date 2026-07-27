@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response } from "express";
-import { ApiError } from "../errors/api.errors";
-import { StatusCodesEnum } from "../enums/status-codes.enum";
-import { tokenService } from "../services/token.service";
-import { TokenTypeEnum } from "../enums/token-type.enum";
-import { IRefresh } from "../interfaces/token.interface";
+
 import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
+import { StatusCodesEnum } from "../enums/status-codes.enum";
+import { TokenTypeEnum } from "../enums/token-type.enum";
+import { ApiError } from "../errors/api.errors";
+import { IRefresh } from "../interfaces/token.interface";
 import { actionTokenRepository } from "../repositories/action-token.repository";
+import { tokenService } from "../services/token.service";
 
 class AuthMiddleware {
     public async checkAccessToken(

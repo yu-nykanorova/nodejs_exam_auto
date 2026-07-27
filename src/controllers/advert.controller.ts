@@ -29,8 +29,9 @@ class AdvertController {
 
     public async createAdvert(req: Request, res: Response, next: NextFunction) {
         try {
+            const payload = res.locals.tokenPayload as ITokenPayload;
             const body = req.body as IAdvertCreateDTO;
-            const data = await advertService.createAdvert(body);
+            const data = await advertService.createAdvert(body, payload.userId);
             res.status(StatusCodesEnum.CREATED).json(data);
         } catch (e) {
             next(e);

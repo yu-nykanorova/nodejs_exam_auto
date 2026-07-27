@@ -8,7 +8,12 @@ import { UserRoleEnum } from "../enums/user-role.enum";
 import { UserStatusEnum } from "../enums/user-status.enum";
 import { ApiError } from "../errors/api.errors";
 import { IPaginatedResponse } from "../interfaces/paginated-response.interface";
-import { IUser, IUserCreateDTO, IUserQuery, IUserUpdateDTO } from "../interfaces/user.interface";
+import {
+    IUser,
+    IUserCreateDTO,
+    IUserQuery,
+    IUserUpdateDTO,
+} from "../interfaces/user.interface";
 import { actionTokenRepository } from "../repositories/action-token.repository";
 import { userRepository } from "../repositories/user.repository";
 import { emailService } from "./email.service";
@@ -59,8 +64,6 @@ class UserService {
 
         return await userRepository.updateById(userId, dto);
     }
-
-    public async getMeAdverts() {}
 
     public async updateAccountType(
         userId: string,
