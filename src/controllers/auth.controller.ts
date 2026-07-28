@@ -9,14 +9,15 @@ import {
     IResetPassword,
     IResetPasswordSendEmail,
     ISetPassword,
-    IUserCreateDTO,
+    IUserCreateBuyerDTO,
+    IUserCreateSellerDTO,
 } from "../interfaces/user.interface";
 import { authService } from "../services/auth.service";
 
 class AuthController {
     public async signUpSeller(req: Request, res: Response, next: NextFunction) {
         try {
-            const body = req.body as IUserCreateDTO;
+            const body = req.body as IUserCreateSellerDTO;
             const data = await authService.signUp(body, UserRoleEnum.SELLER);
             res.status(StatusCodesEnum.CREATED).json(data);
         } catch (e) {
@@ -26,7 +27,7 @@ class AuthController {
 
     public async signUpBuyer(req: Request, res: Response, next: NextFunction) {
         try {
-            const body = req.body as IUserCreateDTO;
+            const body = req.body as IUserCreateBuyerDTO;
             const data = await authService.signUp(body, UserRoleEnum.BUYER);
             res.status(StatusCodesEnum.CREATED).json(data);
         } catch (e) {

@@ -19,6 +19,13 @@ export class UserValidator {
         age: this.age.required(),
     });
 
+    public static createManager = joi.object({
+        email: this.email.required(),
+        name: this.name.required(),
+        surname: this.surname.required(),
+        age: this.age.required(),
+    });
+
     public static update = joi.object({
         email: this.email,
         password: this.password,

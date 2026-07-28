@@ -5,12 +5,12 @@ import { UserStatusEnum } from "../enums/user-status.enum";
 import { IAdvertQuery } from "../interfaces/advert.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
 import {
-    IUserCreateDTO,
+    IUserCreateManagerDTO,
     IUserQuery,
     IUserUpdateDTO,
 } from "../interfaces/user.interface";
-import { userService } from "../services/user.service";
 import { advertService } from "../services/advert.service";
+import { userService } from "../services/user.service";
 
 class UserController {
     public async getAllUsers(req: Request, res: Response, next: NextFunction) {
@@ -103,7 +103,7 @@ class UserController {
         next: NextFunction,
     ) {
         try {
-            const body = req.body as IUserCreateDTO;
+            const body = req.body as IUserCreateManagerDTO;
             const data = await userService.createManager(body);
             res.status(StatusCodesEnum.OK).json(data);
         } catch (e) {

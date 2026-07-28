@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 import { AdvertStatusEnum } from "../enums/advert-status.enum";
 import {
     IAdvert,
@@ -5,12 +7,13 @@ import {
     IAdvertQuery,
     IAdvertUpdateDTO,
 } from "../interfaces/advert.interface";
+import { IAggregatedResponse } from "../interfaces/aggregated-response.interface";
 import { Advert } from "../models/advert.model";
-import { Types } from "mongoose";
-import { IAggrigatedResponse } from "../interfaces/aggrigated-response.interface";
 
 class AdvertRepository {
-    public async getAllAdverts(query: IAdvertQuery): Promise<any> {
+    public async getAllAdverts(
+        query: IAdvertQuery,
+    ): Promise<IAggregatedResponse<IAdvert>> {
         const skip =
             query.pageSize && query.page
                 ? query.pageSize * (query.page - 1)
@@ -18,7 +21,7 @@ class AdvertRepository {
 
         const limit = Number(query.pageSize) || 10;
 
-        const filterObject = this.buildFilter(query);
+        const filterObject = this.buildFilter(query, true);
 
         const sortOrder = this.buildSortOrder(query);
 
@@ -28,7 +31,7 @@ class AdvertRepository {
     public async getUserAdverts(
         userId: string,
         query: IAdvertQuery,
-    ): Promise<any> {
+    ): Promise<IAggregatedResponse<IAdvert>> {
         const skip =
             query.pageSize && query.page
                 ? query.pageSize * (query.page - 1)
@@ -36,7 +39,7 @@ class AdvertRepository {
 
         const limit = Number(query.pageSize) || 10;
 
-        const filterObject = this.buildFilter(query);
+        const filterObject = this.buildFilter(query, false);
         filterObject._ownerId = new Types.ObjectId(userId);
 
         const sortOrder = this.buildSortOrder(query);
@@ -62,10 +65,15 @@ class AdvertRepository {
         return await Advert.findByIdAndUpdate(advertId, dto, { new: true });
     }
 
-    private buildFilter(query: IAdvertQuery): Record<string, any> {
-        const filterObject: Record<string, any> = {
-            status: AdvertStatusEnum.ACTIVE,
-        };
+    private buildFilter(
+        query: IAdvertQuery,
+        onlyActiveAdverts: boolean,
+    ): Record<string, any> {
+        const filterObject: Record<string, any> = {};
+
+        if (onlyActiveAdverts) {
+            filterObject.status = AdvertStatusEnum.ACTIVE;
+        }
 
         if (query.search) {
             filterObject.title = {
@@ -142,10 +150,34 @@ class AdvertRepository {
         sortOrder: Record<string, any>,
         skip: number,
         limit: number,
-    ): Promise<IAggrigatedResponse<IAdvert>[]> {
-        return await Advert.aggregate([
+    ): Promise<IAggregatedResponse<IAdvert>> {
+        const [result] = await Advert.aggregate([
             {
                 $match: filterObject,
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    let: { ownerId: "$_ownerId" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $eq: ["$_id", "$$ownerId"],
+                                },
+                            },
+                        },
+                        {
+                            $project: {
+                                _id: 0,
+                                email: 1,
+                                name: 1,
+                                phone: 1,
+                            },
+                        },
+                    ],
+                    as: "ownerContacts",
+                },
             },
             {
                 $lookup: {
@@ -164,6 +196,9 @@ class AdvertRepository {
                 },
             },
             {
+                $unwind: "$ownerContacts",
+            },
+            {
                 $unwind: "$brand",
             },
             {
@@ -179,6 +214,10 @@ class AdvertRepository {
                 },
             },
         ]);
+        return {
+            data: result?.data ?? [],
+            totalItems: result.totalItems[0]?.count ?? 0,
+        };
     }
 }
 

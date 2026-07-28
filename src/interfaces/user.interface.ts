@@ -5,12 +5,13 @@ import { UserStatusEnum } from "../enums/user-status.enum";
 export interface IUser {
     _id: string;
     email: string;
-    password: string;
+    password?: string;
     role: UserRoleEnum;
     status: UserStatusEnum;
     name: string;
     surname: string;
     age: number;
+    phone?: string;
     avatar?: string;
     accountType?: AccountTypeEnum;
     createdAt: Date;
@@ -24,10 +25,32 @@ export interface IUserQuery {
     order?: string;
 }
 
-export type IUserCreateDTO = Pick<
+export type IUserCreateManagerDTO = Pick<
+    IUser,
+    "email" | "name" | "surname" | "age"
+>;
+
+export type IUserCreateBuyerDTO = Pick<
     IUser,
     "email" | "password" | "name" | "surname" | "age"
 >;
+
+export type IUserCreateSellerDTO = Pick<
+    IUser,
+    "email" | "password" | "name" | "surname" | "age" | "phone"
+>;
+
+export interface IUserCreate {
+    email: string;
+    password?: string;
+    name: string;
+    surname: string;
+    age: number;
+    role: UserRoleEnum;
+    status: UserStatusEnum;
+    phone?: string;
+    accountType?: AccountTypeEnum;
+}
 
 export type IUserUpdateDTO = Partial<
     Pick<
@@ -40,6 +63,7 @@ export type IUserUpdateDTO = Partial<
         | "avatar"
         | "accountType"
         | "status"
+        | "phone"
     >
 >;
 

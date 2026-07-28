@@ -55,7 +55,7 @@ router.post(
     "/managers",
     authMiddleware.checkAccessToken,
     permissionsMiddleware.checkPermission(PermissionsEnum.CREATE_MANAGER),
-    commonMiddleware.isBodyValid(UserValidator.create),
+    commonMiddleware.isBodyValid(UserValidator.createManager),
     userController.createManager,
 );
 

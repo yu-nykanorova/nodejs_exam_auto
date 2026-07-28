@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
 
 import { AdvertStatusEnum } from "../enums/advert-status.enum";
+import { CurrencyEnum } from "../enums/currency.enum";
 import { IAdvert } from "../interfaces/advert.interface";
 import { Brand } from "./brand.model";
 import { Model } from "./model.model";
@@ -16,7 +17,15 @@ const advertSchema = new Schema(
         region: { type: String, required: true },
         description: { type: String, required: true },
         avatar: { type: String, default: "" },
-        price: { type: Number, required: true },
+        initialPrice: { type: Number, required: true },
+        initialCurrency: { type: String, enum: CurrencyEnum, required: true },
+        priceUAH: { type: Number, required: true },
+        priceUSD: { type: Number, required: true },
+        priceEUR: { type: Number, required: true },
+        exchangeRate: {
+            USD: { type: Number, required: true },
+            EUR: { type: Number, required: true },
+        },
         status: {
             type: String,
             enum: AdvertStatusEnum,

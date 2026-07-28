@@ -1,5 +1,6 @@
 import { config } from "../configs/config";
 import { emailConstants } from "../constants/email.constants";
+import { AccountTypeEnum } from "../enums/account-type.enum";
 import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
 import { EmailEnum } from "../enums/email.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
@@ -8,7 +9,15 @@ import { UserStatusEnum } from "../enums/user-status.enum";
 import { ApiError } from "../errors/api.errors";
 import { IAuth } from "../interfaces/auth.interface";
 import { ITokenPair, ITokenPayload } from "../interfaces/token.interface";
-import { IChangePassword, IResetPassword, IResetPasswordSendEmail, ISetPassword, IUser, IUserCreateDTO } from "../interfaces/user.interface";
+import {
+    IChangePassword,
+    IResetPassword,
+    IResetPasswordSendEmail,
+    ISetPassword,
+    IUser,
+    IUserCreateBuyerDTO,
+    IUserCreateSellerDTO,
+} from "../interfaces/user.interface";
 import { actionTokenRepository } from "../repositories/action-token.repository";
 import { oldHashesRepository } from "../repositories/old-hashes.repository";
 import { tokenRepository } from "../repositories/token.repository";
@@ -20,16 +29,20 @@ import { userService } from "./user.service";
 
 class AuthService {
     public async signUp(
-        user: IUserCreateDTO,
+        user: IUserCreateSellerDTO | IUserCreateBuyerDTO,
         role: UserRoleEnum,
     ): Promise<{ user: IUser; tokens: ITokenPair }> {
         await userService.isEmailUnique(user.email);
         const password = await passwordService.hashPassword(user.password);
-        const newUser = await userRepository.create(
-            { ...user, password },
+        const accountType =
+            role === UserRoleEnum.SELLER ? AccountTypeEnum.BASIC : undefined;
+        const newUser = await userRepository.create({
+            ...user,
+            password,
+            accountType,
             role,
-            UserStatusEnum.ACTIVE,
-        );
+            status: UserStatusEnum.ACTIVE,
+        });
         const tokens = tokenService.generateTokens({
             userId: newUser._id,
             role: newUser.role,

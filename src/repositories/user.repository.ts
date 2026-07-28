@@ -1,15 +1,17 @@
 import { UserRoleEnum } from "../enums/user-role.enum";
-import { UserStatusEnum } from "../enums/user-status.enum";
+import { IAggregatedResponse } from "../interfaces/aggregated-response.interface";
 import {
     IUser,
-    IUserCreateDTO,
+    IUserCreate,
     IUserQuery,
     IUserUpdateDTO,
 } from "../interfaces/user.interface";
 import { User } from "../models/user.model";
 
 class UserRepository {
-    public async getAllUsers(query: IUserQuery): Promise<any> {
+    public async getAllUsers(
+        query: IUserQuery,
+    ): Promise<IAggregatedResponse<IUser>> {
         const skip =
             query.pageSize && query.page
                 ? query.pageSize * (query.page - 1)
@@ -18,12 +20,6 @@ class UserRepository {
         const limit = Number(query.pageSize) || 10;
 
         const filterObject: Record<string, any> = {};
-
-        // const filterObject: Record<string, any> = {
-        //     status: {
-        //         $ne: UserStatusEnum.DELETED,
-        //     },
-        // };
 
         if (query.search) {
             filterObject.$or = [
@@ -43,7 +39,7 @@ class UserRepository {
             orderObject.createdAt = -1;
         }
 
-        return await User.aggregate([
+        const [result] = await User.aggregate([
             {
                 $match: filterObject,
             },
@@ -57,14 +53,15 @@ class UserRepository {
                 },
             },
         ]);
+
+        return {
+            data: result?.data ?? [],
+            totalItems: result.totalItems[0]?.count ?? 0,
+        };
     }
 
-    public async create(
-        user: IUserCreateDTO,
-        role: UserRoleEnum,
-        status: UserStatusEnum,
-    ): Promise<IUser> {
-        return await User.create({ ...user, role, status });
+    public async create(user: IUserCreate): Promise<IUser> {
+        return await User.create(user);
     }
 
     public async getById(userId: string): Promise<IUser> {

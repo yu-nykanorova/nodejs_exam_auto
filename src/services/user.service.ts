@@ -10,7 +10,7 @@ import { ApiError } from "../errors/api.errors";
 import { IPaginatedResponse } from "../interfaces/paginated-response.interface";
 import {
     IUser,
-    IUserCreateDTO,
+    IUserCreateManagerDTO,
     IUserQuery,
     IUserUpdateDTO,
 } from "../interfaces/user.interface";
@@ -25,10 +25,8 @@ class UserService {
     ): Promise<IPaginatedResponse<IUser>> {
         const dataFromDB = await userRepository.getAllUsers(query);
 
-        const result = dataFromDB[0];
-
-        const data: IUser[] = result?.data ?? [];
-        const totalItems = result?.totalItems?.[0]?.count ?? 0;
+        const data: IUser[] = dataFromDB.data;
+        const totalItems = dataFromDB.totalItems;
         const pageSize = Number(query.pageSize) || 10;
         const page = Number(query.page) || 1;
         const totalPages = Math.ceil(totalItems / pageSize);
@@ -78,13 +76,13 @@ class UserService {
         return await userRepository.updateById(userId, { accountType });
     }
 
-    public async createManager(manager: IUserCreateDTO): Promise<IUser> {
+    public async createManager(manager: IUserCreateManagerDTO): Promise<IUser> {
         await userService.isEmailUnique(manager.email);
-        const newManager = await userRepository.create(
-            manager,
-            UserRoleEnum.MANAGER,
-            UserStatusEnum.ACTIVE,
-        );
+        const newManager = await userRepository.create({
+            ...manager,
+            role: UserRoleEnum.MANAGER,
+            status: UserStatusEnum.ACTIVE,
+        });
 
         const actionToken = tokenService.generateActionToken(
             {

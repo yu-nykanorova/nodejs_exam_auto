@@ -7,7 +7,7 @@ import {
     IAdvertQuery,
     IAdvertUpdateDTO,
 } from "../interfaces/advert.interface";
-import { IAggrigatedResponse } from "../interfaces/aggrigated-response.interface";
+import { IAggregatedResponse } from "../interfaces/aggregated-response.interface";
 import { IPaginatedResponse } from "../interfaces/paginated-response.interface";
 import { advertRepository } from "../repositories/advert.repository";
 import { moderationService } from "./moderation.service";
@@ -114,13 +114,11 @@ class AdvertService {
     public async getStatistics() {}
 
     private buildPaginatedResponse(
-        dataToPaginate: IAggrigatedResponse<IAdvert>[],
+        dataToPaginate: IAggregatedResponse<IAdvert>,
         query: IAdvertQuery,
     ): IPaginatedResponse<IAdvert> {
-        const result = dataToPaginate[0];
-
-        const data: IAdvert[] = result?.data ?? [];
-        const totalItems = result?.totalItems?.[0]?.count ?? 0;
+        const data: IAdvert[] = dataToPaginate.data;
+        const totalItems = Number(dataToPaginate.totalItems);
         const pageSize = Number(query.pageSize) || 10;
         const page = Number(query.page) || 1;
         const totalPages = Math.ceil(totalItems / pageSize);
