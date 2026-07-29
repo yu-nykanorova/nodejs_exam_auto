@@ -68,6 +68,10 @@ export type IAdvertUpdateDTO = Partial<
         | "description"
         | "initialPrice"
         | "initialCurrency"
+        | "priceUAH"
+        | "priceUSD"
+        | "priceEUR"
+        | "exchangeRate"
         | "avatar"
         | "brandId"
         | "modelId"
@@ -79,3 +83,25 @@ export type IAdvertUpdateDTO = Partial<
         | "attemptModerate"
     >
 >;
+
+export interface IAdvertCreate {
+    title: string;
+    brandId: string;
+    modelId: string;
+    year: number;
+    region: string;
+    city: string;
+    description: string;
+    initialPrice: number;
+    initialCurrency: CurrencyEnum;
+    priceUAH: number;
+    priceUSD: number;
+    priceEUR: number;
+    exchangeRate: {
+        USD: number;
+        EUR: number;
+    };
+    status: AdvertStatusEnum;
+    _ownerId: string;
+    avatar?: string;
+}

@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 import { AdvertStatusEnum } from "../enums/advert-status.enum";
 import {
     IAdvert,
-    IAdvertCreateDTO,
+    IAdvertCreate,
     IAdvertQuery,
     IAdvertUpdateDTO,
 } from "../interfaces/advert.interface";
@@ -12,7 +12,7 @@ import { Advert } from "../models/advert.model";
 
 class AdvertRepository {
     public async getAllAdverts(
-        query: IAdvertQuery,
+        query?: IAdvertQuery,
     ): Promise<IAggregatedResponse<IAdvert>> {
         const skip =
             query.pageSize && query.page
@@ -30,7 +30,7 @@ class AdvertRepository {
 
     public async getUserAdverts(
         userId: string,
-        query: IAdvertQuery,
+        query?: IAdvertQuery,
     ): Promise<IAggregatedResponse<IAdvert>> {
         const skip =
             query.pageSize && query.page
@@ -47,11 +47,17 @@ class AdvertRepository {
         return await this.buildAggregate(filterObject, sortOrder, skip, limit);
     }
 
-    public async createAdvert(
-        dto: IAdvertCreateDTO & { _ownerId: string },
-        status: AdvertStatusEnum,
-    ): Promise<IAdvert> {
-        return await Advert.create({ ...dto, status });
+    public async countUserPublishedAdverts(userId: string): Promise<number> {
+        return await Advert.countDocuments({
+            _ownerId: userId,
+            status: {
+                $in: [AdvertStatusEnum.ACTIVE, AdvertStatusEnum.PENDING],
+            },
+        });
+    }
+
+    public async createAdvert(advert: IAdvertCreate): Promise<IAdvert> {
+        return await Advert.create(advert);
     }
 
     public async getById(advertId: string): Promise<IAdvert | null> {

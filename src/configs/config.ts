@@ -16,6 +16,7 @@ interface IConfig {
     ACTION_CREATE_PASSWORD_SECRET: string;
     ACTION_FORGOT_PASSWORD_LIFETIME: any;
     ACTION_CREATE_PASSWORD_LIFETIME: any;
+    PRIVATBANK_API_URL: string;
 }
 
 export function checkEnv(value: string | undefined, name: string): string {
@@ -62,5 +63,9 @@ export const config: IConfig = {
     ACTION_CREATE_PASSWORD_LIFETIME: checkEnv(
         process.env.ACTION_CREATE_PASSWORD_LIFETIME,
         "ACTION_CREATE_PASSWORD_LIFETIME",
+    ),
+    PRIVATBANK_API_URL: checkEnv(
+        process.env.PRIVATBANK_API_URL,
+        "PRIVBANK_API_URL",
     ),
 };

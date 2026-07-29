@@ -1,3 +1,4 @@
+import { AccountTypeEnum } from "../enums/account-type.enum";
 import { AdvertStatusEnum } from "../enums/advert-status.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ApiError } from "../errors/api.errors";
@@ -10,6 +11,8 @@ import {
 import { IAggregatedResponse } from "../interfaces/aggregated-response.interface";
 import { IPaginatedResponse } from "../interfaces/paginated-response.interface";
 import { advertRepository } from "../repositories/advert.repository";
+import { userRepository } from "../repositories/user.repository";
+import { currencyService } from "./currency.service";
 import { moderationService } from "./moderation.service";
 
 class AdvertService {
@@ -34,13 +37,25 @@ class AdvertService {
         dto: IAdvertCreateDTO,
         ownerId: string,
     ): Promise<IAdvert> {
-        const newAdvert = await advertRepository.createAdvert(
-            {
-                ...dto,
-                _ownerId: ownerId,
-            },
-            AdvertStatusEnum.PENDING,
+        await this.checkAdvertsCount(ownerId);
+
+        const prices = await currencyService.calculatePrices(
+            dto.initialPrice,
+            dto.initialCurrency,
         );
+
+        const newAdvert = await advertRepository.createAdvert({
+            ...dto,
+            priceUAH: prices.priceUAH,
+            priceUSD: prices.priceUSD,
+            priceEUR: prices.priceEUR,
+            exchangeRate: {
+                USD: prices.exchangeRateUSD,
+                EUR: prices.exchangeRateEUR,
+            },
+            _ownerId: ownerId,
+            status: AdvertStatusEnum.PENDING,
+        });
 
         return await moderationService.processModeration(newAdvert);
     }
@@ -130,6 +145,22 @@ class AdvertService {
             nextPage: page < totalPages,
             data,
         };
+    }
+
+    private async checkAdvertsCount(ownerId: string): Promise<void> {
+        const owner = await userRepository.getById(ownerId);
+
+        if (owner.accountType === AccountTypeEnum.BASIC) {
+            const ownerAdvertsCount =
+                await advertRepository.countUserPublishedAdverts(ownerId);
+
+            if (ownerAdvertsCount >= 1) {
+                throw new ApiError(
+                    "Basic account allows only one active advert. Upgrade your account to Premium to create more adverts",
+                    StatusCodesEnum.FORBIDDEN,
+                );
+            }
+        }
     }
 }
 
