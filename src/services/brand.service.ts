@@ -71,9 +71,21 @@ class BrandService {
             );
         }
 
-        return await brandRepository.updateBrandRequestStatus(brandRequestId, {
-            status,
-        });
+        const updatedRequest = await brandRepository.updateBrandRequestStatus(
+            brandRequestId,
+            {
+                status,
+            },
+        );
+
+        if (!updatedRequest) {
+            throw new ApiError(
+                "Brand request not found",
+                StatusCodesEnum.NOT_FOUND,
+            );
+        }
+
+        return updatedRequest;
     }
 }
 

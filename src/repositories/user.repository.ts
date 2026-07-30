@@ -64,11 +64,11 @@ class UserRepository {
         return await User.create(user);
     }
 
-    public async getById(userId: string): Promise<IUser> {
+    public async getById(userId: string): Promise<IUser | null> {
         return await User.findById(userId);
     }
 
-    public async getByEmail(email: string): Promise<IUser> {
+    public async getByEmail(email: string): Promise<IUser | null> {
         return await User.findOne({ email });
     }
 
@@ -79,7 +79,7 @@ class UserRepository {
     public async updateById(
         userId: string,
         user: IUserUpdateDTO,
-    ): Promise<IUser> {
+    ): Promise<IUser | null> {
         return await User.findByIdAndUpdate(userId, user, { new: true });
     }
 }

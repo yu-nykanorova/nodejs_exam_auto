@@ -57,7 +57,7 @@ class AdvertService {
             status: AdvertStatusEnum.PENDING,
         });
 
-        return await moderationService.processModeration(newAdvert);
+        return await moderationService.processModeration(newAdvert, dto);
     }
 
     public async getById(advertId: string): Promise<IAdvert> {
@@ -74,7 +74,7 @@ class AdvertService {
         advertId: string,
         userId: string,
         dto: IAdvertUpdateDTO,
-    ) {
+    ): Promise<IAdvert> {
         const advert = await advertRepository.getById(advertId);
 
         if (
@@ -100,7 +100,19 @@ class AdvertService {
             dto.description !== advert.description;
 
         if (!titleChanged && !descriptionChanged) {
-            return await advertRepository.updateById(advertId, dto);
+            const updatedAdvert = await advertRepository.updateById(
+                advertId,
+                dto,
+            );
+
+            if (!updatedAdvert) {
+                throw new ApiError(
+                    "Advert not found",
+                    StatusCodesEnum.NOT_FOUND,
+                );
+            }
+
+            return updatedAdvert;
         }
 
         return await moderationService.processModeration(advert, dto);
@@ -109,7 +121,7 @@ class AdvertService {
     public async changeStatus(
         advertId: string,
         status: AdvertStatusEnum,
-    ): Promise<IAdvert | null> {
+    ): Promise<IAdvert> {
         const advert = await advertRepository.getById(advertId);
 
         if (!advert) {
@@ -123,7 +135,13 @@ class AdvertService {
             );
         }
 
-        return await advertRepository.updateById(advertId, { status });
+        const updatedAdvert = await advertRepository.updateById(advertId, {
+            status,
+        });
+        if (!updatedAdvert) {
+            throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
+        }
+        return updatedAdvert;
     }
 
     public async getStatistics() {}
@@ -141,7 +159,7 @@ class AdvertService {
         return {
             totalItems,
             totalPages,
-            prevPage: page > 1,
+            prevPage: page > 1 && page <= totalPages,
             nextPage: page < totalPages,
             data,
         };
@@ -149,6 +167,10 @@ class AdvertService {
 
     private async checkAdvertsCount(ownerId: string): Promise<void> {
         const owner = await userRepository.getById(ownerId);
+
+        if (!owner) {
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        }
 
         if (owner.accountType === AccountTypeEnum.BASIC) {
             const ownerAdvertsCount =

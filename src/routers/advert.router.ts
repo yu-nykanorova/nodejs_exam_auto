@@ -49,7 +49,7 @@ router.get(
         PermissionsEnum.READ_ADVERT_STATISTICS,
     ),
     commonMiddleware.isIdValid("id"),
-    advertController.getStatistics,
+    //advertController.getStatistics,
 );
 
 router.delete(

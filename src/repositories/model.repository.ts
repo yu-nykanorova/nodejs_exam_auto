@@ -43,7 +43,7 @@ class ModelRepository {
     public async updateModelRequestStatus(
         id: string,
         dto: { status: ModelRequestStatusEnum },
-    ): Promise<IModelRequest> {
+    ): Promise<IModelRequest | null> {
         return await ModelRequest.findByIdAndUpdate(id, dto, { new: true });
     }
 }

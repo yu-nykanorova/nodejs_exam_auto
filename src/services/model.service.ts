@@ -71,9 +71,21 @@ class ModelService {
             );
         }
 
-        return await modelRepository.updateModelRequestStatus(modelRequestId, {
-            status,
-        });
+        const updatedRequest = await modelRepository.updateModelRequestStatus(
+            modelRequestId,
+            {
+                status,
+            },
+        );
+
+        if (!updatedRequest) {
+            throw new ApiError(
+                "Model request not found",
+                StatusCodesEnum.NOT_FOUND,
+            );
+        }
+
+        return updatedRequest;
     }
 }
 

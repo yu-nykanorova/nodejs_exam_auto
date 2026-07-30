@@ -12,7 +12,7 @@ import { Advert } from "../models/advert.model";
 
 class AdvertRepository {
     public async getAllAdverts(
-        query?: IAdvertQuery,
+        query: IAdvertQuery = {},
     ): Promise<IAggregatedResponse<IAdvert>> {
         const skip =
             query.pageSize && query.page
@@ -30,7 +30,7 @@ class AdvertRepository {
 
     public async getUserAdverts(
         userId: string,
-        query?: IAdvertQuery,
+        query: IAdvertQuery = {},
     ): Promise<IAggregatedResponse<IAdvert>> {
         const skip =
             query.pageSize && query.page

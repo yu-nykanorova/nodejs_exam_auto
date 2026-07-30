@@ -13,10 +13,10 @@ import { emailService } from "./email.service";
 class ModerationService {
     public async processModeration(
         advert: IAdvert,
-        dto?: IAdvertUpdateDTO,
-    ): Promise<IAdvert | null> {
-        const checkedTitle = includesProfanity(dto.title);
-        const checkedDescription = includesProfanity(dto.description);
+        dto: IAdvertUpdateDTO,
+    ): Promise<IAdvert> {
+        const checkedTitle = includesProfanity(dto.title ?? "");
+        const checkedDescription = includesProfanity(dto.description ?? "");
 
         if (checkedTitle || checkedDescription) {
             if (advert.status === AdvertStatusEnum.ACTIVE) {
@@ -47,6 +47,13 @@ class ModerationService {
                 const advertOwner = await userRepository.getById(
                     advert._ownerId,
                 );
+
+                if (!advertOwner) {
+                    throw new ApiError(
+                        "User not found",
+                        StatusCodesEnum.NOT_FOUND,
+                    );
+                }
 
                 await Promise.all(
                     managers.map(async (manager) => {
@@ -83,10 +90,16 @@ class ModerationService {
             );
         }
 
-        return await advertRepository.updateById(advert._id, {
+        const updatedAdvert = await advertRepository.updateById(advert._id, {
             ...dto,
             status: AdvertStatusEnum.ACTIVE,
         });
+
+        if (!updatedAdvert) {
+            throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        return updatedAdvert;
     }
 }
 

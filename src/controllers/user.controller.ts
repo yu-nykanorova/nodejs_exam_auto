@@ -5,8 +5,10 @@ import { UserStatusEnum } from "../enums/user-status.enum";
 import { IAdvertQuery } from "../interfaces/advert.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
 import {
+    IUserChangeStatusDTO,
     IUserCreateManagerDTO,
     IUserQuery,
+    IUserUpdateAccountTypeDTO,
     IUserUpdateDTO,
 } from "../interfaces/user.interface";
 import { advertService } from "../services/advert.service";
@@ -71,7 +73,7 @@ class UserController {
     ) {
         try {
             const payload = res.locals.tokenPayload as ITokenPayload;
-            const { accountType } = req.body as IUserUpdateDTO;
+            const { accountType } = req.body as IUserUpdateAccountTypeDTO;
 
             const data = await userService.updateAccountType(
                 payload.userId,
@@ -124,7 +126,7 @@ class UserController {
     public async changeStatus(req: Request, res: Response, next: NextFunction) {
         try {
             const id = req.params.id as string;
-            const { status } = req.body as IUserUpdateDTO;
+            const { status } = req.body as IUserChangeStatusDTO;
 
             const data = await userService.changeStatus(id, status);
             res.status(StatusCodesEnum.OK).json(data);

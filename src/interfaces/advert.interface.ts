@@ -84,6 +84,8 @@ export type IAdvertUpdateDTO = Partial<
     >
 >;
 
+export type IAdvertChangeStatusDTO = Pick<IAdvert, "status">;
+
 export interface IAdvertCreate {
     title: string;
     brandId: string;

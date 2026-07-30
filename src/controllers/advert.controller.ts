@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { AdvertStatusEnum } from "../enums/advert-status.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import {
+    IAdvertChangeStatusDTO,
     IAdvertCreateDTO,
     IAdvertQuery,
     IAdvertUpdateDTO,
@@ -67,7 +68,7 @@ class AdvertController {
     public async changeStatus(req: Request, res: Response, next: NextFunction) {
         try {
             const id = req.params.id as string;
-            const { status } = req.body as IAdvertUpdateDTO;
+            const { status } = req.body as IAdvertChangeStatusDTO;
 
             const data = await advertService.changeStatus(id, status);
             res.status(StatusCodesEnum.OK).json(data);
@@ -76,17 +77,17 @@ class AdvertController {
         }
     }
 
-    public async getStatistics(
-        req: Request,
-        res: Response,
-        next: NextFunction,
-    ) {
-        try {
-            res.status(StatusCodesEnum.OK).json(data);
-        } catch (e) {
-            next(e);
-        }
-    }
+    // public async getStatistics(
+    //     req: Request,
+    //     res: Response,
+    //     next: NextFunction,
+    // ) {
+    //     try {
+    //         res.status(StatusCodesEnum.OK).json(data);
+    //     } catch (e) {
+    //         next(e);
+    //     }
+    // }
 
     public async deleteOwnAdvert(
         req: Request,

@@ -5,7 +5,7 @@ import { UserStatusEnum } from "../enums/user-status.enum";
 export interface IUser {
     _id: string;
     email: string;
-    password?: string;
+    password: string;
     role: UserRoleEnum;
     status: UserStatusEnum;
     name: string;
@@ -13,7 +13,7 @@ export interface IUser {
     age: number;
     phone?: string;
     avatar?: string;
-    accountType?: AccountTypeEnum;
+    accountType: AccountTypeEnum;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -66,6 +66,10 @@ export type IUserUpdateDTO = Partial<
         | "phone"
     >
 >;
+
+export type IUserChangeStatusDTO = Pick<IUser, "status">;
+
+export type IUserUpdateAccountTypeDTO = Pick<IUser, "accountType">;
 
 export type IResetPasswordSendEmail = Pick<IUser, "email">;
 

@@ -152,6 +152,10 @@ class AuthService {
             password: newPassword,
         });
 
+        if (!updatedUser) {
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        }
+
         await actionTokenRepository.deleteActionToken({
             token: dto.token,
         });

@@ -5,8 +5,8 @@ import { PermissionsEnum } from "../enums/permissions.enum";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { commonMiddleware } from "../middlewares/common.middleware";
 import { permissionsMiddleware } from "../middlewares/permissions.middleware";
-import { UserValidator } from "../validators/user.validator";
 import { AdvertValidator } from "../validators/advert.validator";
+import { UserValidator } from "../validators/user.validator";
 
 const router = Router();
 

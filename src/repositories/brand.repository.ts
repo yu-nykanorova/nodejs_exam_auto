@@ -36,7 +36,7 @@ class BrandRepository {
     public async updateBrandRequestStatus(
         id: string,
         dto: { status: BrandRequestStatusEnum },
-    ): Promise<IBrandRequest> {
+    ): Promise<IBrandRequest | null> {
         return await BrandRequest.findByIdAndUpdate(id, dto, { new: true });
     }
 }
