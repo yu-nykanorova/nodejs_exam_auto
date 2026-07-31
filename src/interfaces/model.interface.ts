@@ -8,12 +8,20 @@ export interface IModel {
     updatedAt: Date;
 }
 
-export type IModelCreateDTO = Pick<IModel, "name" | "brandId">;
+export interface IModelCreateDTO {
+    name: string;
+    brandId: string;
+}
+
+export interface IModelCreateRequestDTO {
+    name: string;
+    brandName: string;
+}
 
 export interface IModelRequest {
     _id: string;
     name: string;
-    brandId: string;
+    brandName: string;
     status: ModelRequestStatusEnum;
     _ownerId: string;
     createdAt: Date;

@@ -10,6 +10,7 @@ import {
 } from "../interfaces/advert.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
 import { advertService } from "../services/advert.service";
+import { advertStatisticsService } from "../services/advert-statistics.service";
 
 class AdvertController {
     public async getAllAdverts(
@@ -77,17 +78,23 @@ class AdvertController {
         }
     }
 
-    // public async getStatistics(
-    //     req: Request,
-    //     res: Response,
-    //     next: NextFunction,
-    // ) {
-    //     try {
-    //         res.status(StatusCodesEnum.OK).json(data);
-    //     } catch (e) {
-    //         next(e);
-    //     }
-    // }
+    public async getStatistics(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
+        try {
+            const id = req.params.id as string;
+            const payload = res.locals.tokenPayload as ITokenPayload;
+            const data = await advertStatisticsService.getStatistics(
+                id,
+                payload.userId,
+            );
+            res.status(StatusCodesEnum.OK).json(data);
+        } catch (e) {
+            next(e);
+        }
+    }
 
     public async deleteOwnAdvert(
         req: Request,

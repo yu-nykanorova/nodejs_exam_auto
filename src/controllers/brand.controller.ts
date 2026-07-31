@@ -18,8 +18,8 @@ class BrandController {
 
     public async createBrand(req: Request, res: Response, next: NextFunction) {
         try {
-            const { name } = req.body as IBrandCreateDTO;
-            const data = await brandService.createBrand(name);
+            const brand = req.body as IBrandCreateDTO;
+            const data = await brandService.createBrand(brand.name);
             res.status(StatusCodesEnum.CREATED).json(data);
         } catch (e) {
             next(e);

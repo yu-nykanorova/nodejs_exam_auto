@@ -3,7 +3,7 @@ import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ApiError } from "../errors/api.errors";
 import {
     IBrand,
-    IBrandCreateDTO,
+    IBrandCreateRequestDTO,
     IBrandRequest,
 } from "../interfaces/brand.interface";
 import { brandRepository } from "../repositories/brand.repository";
@@ -13,8 +13,8 @@ class BrandService {
         return await brandRepository.getAllBrands();
     }
 
-    public async createBrand(name: string): Promise<IBrand> {
-        return await brandRepository.createBrand(name);
+    public async createBrand(brandName: string): Promise<IBrand> {
+        return await brandRepository.createBrand(brandName);
     }
 
     public async getBrandRequests(): Promise<IBrandRequest[]> {
@@ -38,7 +38,7 @@ class BrandService {
     }
 
     public async createBrandRequest(
-        dto: IBrandCreateDTO,
+        dto: IBrandCreateRequestDTO,
         ownerId: string,
     ): Promise<IBrandRequest> {
         return await brandRepository.createBrandRequest(
@@ -64,11 +64,19 @@ class BrandService {
             );
         }
 
-        if (brandRequest.status === BrandRequestStatusEnum.REJECTED) {
+        if (brandRequest.status !== BrandRequestStatusEnum.PENDING) {
             throw new ApiError(
-                "This brand request has already been rejected",
+                "This request has already been processed",
                 StatusCodesEnum.BAD_REQUEST,
             );
+        }
+
+        if (status === BrandRequestStatusEnum.ACCEPTED) {
+            const brand = await brandRepository.getByName(brandRequest.name);
+
+            if (!brand) {
+                await this.createBrand(brandRequest.name);
+            }
         }
 
         const updatedRequest = await brandRepository.updateBrandRequestStatus(

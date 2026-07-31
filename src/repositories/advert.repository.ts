@@ -71,6 +71,19 @@ class AdvertRepository {
         return await Advert.findByIdAndUpdate(advertId, dto, { new: true });
     }
 
+    public async incrementAdvertViews(advertId: string): Promise<void> {
+        await Advert.updateOne(
+            {
+                _id: advertId,
+            },
+            {
+                $inc: {
+                    viewsCount: 1,
+                },
+            },
+        );
+    }
+
     private buildFilter(
         query: IAdvertQuery,
         onlyActiveAdverts: boolean,

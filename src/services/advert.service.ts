@@ -144,8 +144,6 @@ class AdvertService {
         return updatedAdvert;
     }
 
-    public async getStatistics() {}
-
     private buildPaginatedResponse(
         dataToPaginate: IAggregatedResponse<IAdvert>,
         query: IAdvertQuery,

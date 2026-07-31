@@ -1,7 +1,7 @@
 import { BrandRequestStatusEnum } from "../enums/brand-request-status.enum";
 import {
     IBrand,
-    IBrandCreateDTO,
+    IBrandCreateRequestDTO,
     IBrandRequest,
 } from "../interfaces/brand.interface";
 import { Brand } from "../models/brand.model";
@@ -12,8 +12,16 @@ class BrandRepository {
         return await Brand.find();
     }
 
-    public async createBrand(name: string): Promise<IBrand> {
-        return await Brand.create({ name });
+    public async getById(brandId: string): Promise<IBrand | null> {
+        return await Brand.findById(brandId);
+    }
+
+    public async getByName(brandName: string): Promise<IBrand | null> {
+        return await Brand.findOne({ name: brandName });
+    }
+
+    public async createBrand(brandName: string): Promise<IBrand> {
+        return await Brand.create({ name: brandName });
     }
 
     public async getBrandRequests(): Promise<IBrandRequest[]> {
@@ -27,7 +35,7 @@ class BrandRepository {
     }
 
     public async createBrandRequest(
-        dto: IBrandCreateDTO & { _ownerId: string },
+        dto: IBrandCreateRequestDTO & { _ownerId: string },
         status: BrandRequestStatusEnum,
     ): Promise<IBrandRequest> {
         return await BrandRequest.create({ ...dto, status });

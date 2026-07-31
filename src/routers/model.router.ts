@@ -11,6 +11,8 @@ const router = Router();
 
 router.get("/", modelController.getAllModels);
 
+router.get("/", modelController.getModelsByBrandId);
+
 router.post(
     "/",
     authMiddleware.checkAccessToken,

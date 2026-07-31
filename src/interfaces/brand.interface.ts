@@ -7,7 +7,13 @@ export interface IBrand {
     updatedAt: Date;
 }
 
-export type IBrandCreateDTO = Pick<IBrand, "name">;
+export interface IBrandCreateDTO {
+    name: string;
+}
+
+export interface IBrandCreateRequestDTO {
+    name: string;
+}
 
 export interface IBrandRequest {
     _id: string;

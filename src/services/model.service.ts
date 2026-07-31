@@ -4,17 +4,41 @@ import { ApiError } from "../errors/api.errors";
 import {
     IModel,
     IModelCreateDTO,
+    IModelCreateRequestDTO,
     IModelRequest,
 } from "../interfaces/model.interface";
+import { brandRepository } from "../repositories/brand.repository";
 import { modelRepository } from "../repositories/model.repository";
 
 class ModelService {
-    public async getAllModels(): Promise<IModel[]> {
+    public async getAllModels(brandId?: string): Promise<IModel[]> {
+        if (brandId) {
+            return await modelRepository.getModelsByBrandId(brandId);
+        }
+
         return await modelRepository.getAllModels();
     }
 
-    public async createModel(name: string): Promise<IModel> {
-        return await modelRepository.createModel(name);
+    public async createModel(dto: IModelCreateDTO): Promise<IModel> {
+        const brand = await brandRepository.getById(dto.brandId);
+
+        if (!brand) {
+            throw new ApiError("Brand not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        const model = await modelRepository.getModelByNameAndBrand(
+            dto.name,
+            dto.brandId,
+        );
+
+        if (model) {
+            throw new ApiError(
+                "Model already exists",
+                StatusCodesEnum.BAD_REQUEST,
+            );
+        }
+
+        return await modelRepository.createModel(dto);
     }
 
     public async getModelRequests(): Promise<IModelRequest[]> {
@@ -38,7 +62,7 @@ class ModelService {
     }
 
     public async createModelRequest(
-        dto: IModelCreateDTO,
+        dto: IModelCreateRequestDTO,
         ownerId: string,
     ): Promise<IModelRequest> {
         return await modelRepository.createModelRequest(
@@ -64,11 +88,34 @@ class ModelService {
             );
         }
 
-        if (modelRequest.status === ModelRequestStatusEnum.REJECTED) {
+        if (modelRequest.status !== ModelRequestStatusEnum.PENDING) {
             throw new ApiError(
-                "This model request has already been rejected",
+                "This request has already been processed",
                 StatusCodesEnum.BAD_REQUEST,
             );
+        }
+
+        if (status === ModelRequestStatusEnum.ACCEPTED) {
+            const brand = await brandRepository.getByName(
+                modelRequest.brandName,
+            );
+
+            let brandId: string;
+
+            if (!brand) {
+                const newBrand = await brandRepository.createBrand(
+                    modelRequest.brandName,
+                );
+
+                brandId = newBrand._id;
+            } else {
+                brandId = brand._id;
+            }
+
+            await this.createModel({
+                name: modelRequest.name,
+                brandId,
+            });
         }
 
         const updatedRequest = await modelRepository.updateModelRequestStatus(

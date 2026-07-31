@@ -2,6 +2,7 @@ import { ModelRequestStatusEnum } from "../enums/model-request-status.enum";
 import {
     IModel,
     IModelCreateDTO,
+    IModelCreateRequestDTO,
     IModelRequest,
 } from "../interfaces/model.interface";
 import { Model } from "../models/model.model";
@@ -14,8 +15,22 @@ class ModelRepository {
             .sort({ createdAt: -1 });
     }
 
-    public async createModel(name: string): Promise<IModel> {
-        return await Model.create({ name });
+    public async getModelsByBrandId(brandId: string): Promise<IModel[]> {
+        return await Model.find({ brandId }).sort({ name: 1 });
+    }
+
+    public async getModelByNameAndBrand(
+        name: string,
+        brandId: string,
+    ): Promise<IModel | null> {
+        return await Model.findOne({
+            name,
+            brandId,
+        });
+    }
+
+    public async createModel(dto: IModelCreateDTO): Promise<IModel> {
+        return await Model.create(dto);
     }
 
     public async getModelRequests(): Promise<IModelRequest[]> {
@@ -34,7 +49,7 @@ class ModelRepository {
     }
 
     public async createModelRequest(
-        dto: IModelCreateDTO & { _ownerId: string },
+        dto: IModelCreateRequestDTO & { _ownerId: string },
         status: ModelRequestStatusEnum,
     ): Promise<IModelRequest> {
         return await ModelRequest.create({ ...dto, status });
