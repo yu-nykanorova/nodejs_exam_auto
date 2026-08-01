@@ -2,9 +2,10 @@ import { AccountTypeEnum } from "../enums/account-type.enum";
 import { AdvertStatusEnum } from "../enums/advert-status.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ApiError } from "../errors/api.errors";
-import { IAdvertStatistics } from "../interfaces/advert-statistics.interface";
+import { IAdvertStatistics, IAdvertViewsSet } from "../interfaces/advert-statistics.interface";
 import { advertRepository } from "../repositories/advert.repository";
 import { userRepository } from "../repositories/user.repository";
+import { advertStatisticsRepository } from "../repositories/advert-statistics.repository";
 
 class AdvertStatisticsService {
     public async getStatistics(
@@ -22,7 +23,7 @@ class AdvertStatisticsService {
 
         const user = await userRepository.getById(userId);
 
-        if (user._id !== advert._ownerId) {
+        if (user._id.toString() !== advert._ownerId.toString()) {
             throw new ApiError("Access denied", StatusCodesEnum.FORBIDDEN);
         }
 
@@ -33,23 +34,49 @@ class AdvertStatisticsService {
             );
         }
 
+        const views = await this.getAdvertViews(advertId);
+
+        const averageRegionPrice = await this.getAverageRegionPrice(advertId);
+
+        const averageCountryPrice = await this.getAverageCountryPrice(advertId);
+
         return {
-            viewsCount,
-            viewsToday,
-            viewsWeek,
-            viewsMonth,
+            viewsCount: views.viewsCount,
+            viewsToday: views.viewsToday,
+            viewsWeek: views.viewsWeek,
+            viewsMonth: views.viewsMonth,
             averageRegionPrice,
             averageCountryPrice,
         };
     }
 
-    public async incrementViews() {}
+    public async incrementAdvertViews(advertId: string): Promise<void> {
+        await advertStatisticsRepository.incrementAdvertViews(advertId);
+    }
 
-    public async getViews() {}
+    private async getAdvertViews(advertId: string): Promise<IAdvertViewsSet> {
+        return await advertStatisticsRepository.getAdvertViews(advertId);
+    }
 
-    public async getAverageRegionPrice() {}
+    private async getAverageRegionPrice(advertId: string): Promise<number> {
+        const advert = await advertRepository.getById(advertId);
 
-    public async getAverageCountryPrice() {}
+        if (!advert) {
+            throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        return await advertStatisticsRepository.getAverageRegionPrice(advert.brandId, advert.modelId, advert.region);
+    }
+
+    private async getAverageCountryPrice(advertId: string): Promise<number> {
+        const advert = await advertRepository.getById(advertId);
+
+        if (!advert) {
+            throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        return await advertStatisticsRepository.getAverageCountryPrice(advert.brandId, advert.modelId);
+    }
 }
 
 export const advertStatisticsService = new AdvertStatisticsService();

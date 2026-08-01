@@ -6,3 +6,8 @@ export interface IAdvertStatistics {
     averageRegionPrice: number;
     averageCountryPrice: number;
 }
+
+export type IAdvertViewsSet = Pick<
+    IAdvertStatistics,
+    "viewsCount" | "viewsToday" | "viewsWeek" | "viewsMonth"
+>;

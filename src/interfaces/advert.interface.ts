@@ -29,7 +29,6 @@ export interface IAdvert {
     _ownerId: string;
     ownerContacts: IOwnerContacts;
     avatar?: string;
-    viewsCount: number;
     attemptModerate: number;
 }
 
@@ -78,7 +77,6 @@ export type IAdvertUpdateDTO = Partial<
         | "year"
         | "city"
         | "region"
-        | "viewsCount"
         | "status"
         | "attemptModerate"
     >
