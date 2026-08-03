@@ -3,7 +3,9 @@ import { ObjectSchema } from "joi";
 import { isObjectIdOrHexString } from "mongoose";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
+import { TokenTypeEnum } from "../enums/token-type.enum";
 import { ApiError } from "../errors/api.errors";
+import { tokenService } from "../services/token.service";
 
 class CommonMiddleware {
     public isIdValid(key: string) {
@@ -56,6 +58,27 @@ class CommonMiddleware {
                 );
             }
         };
+    }
+
+    public async identifyUser(req: Request, res: Response, next: NextFunction) {
+        const authorizationHeader = req.headers.authorization;
+        const token = authorizationHeader.split(" ")[1];
+
+        if (!token) {
+            return next();
+        }
+
+        try {
+            const payload = tokenService.verifyToken(
+                token,
+                TokenTypeEnum.ACCESS,
+            );
+            res.locals.tokenPayload = payload;
+        } catch {
+            // ignore error, continue as guest
+        }
+
+        return next();
     }
 }
 

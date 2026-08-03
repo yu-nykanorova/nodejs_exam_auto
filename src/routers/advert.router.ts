@@ -23,7 +23,12 @@ router.post(
     advertController.createAdvert,
 );
 
-router.get("/:id", commonMiddleware.isIdValid("id"), advertController.getById);
+router.get(
+    "/:id",
+    commonMiddleware.isIdValid("id"),
+    commonMiddleware.identifyUser,
+    advertController.getById,
+);
 
 router.put(
     "/:id",

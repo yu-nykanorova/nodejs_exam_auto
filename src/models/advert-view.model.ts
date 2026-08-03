@@ -7,7 +7,7 @@ const advertViewSchema = new Schema(
     {
         _advertId: { type: Schema.Types.ObjectId, required: true, ref: Advert },
         count: { type: Number, required: true, default: 0 },
-        date: { type: String, required: true },
+        date: { type: Date, required: true },
     },
     {
         timestamps: true,

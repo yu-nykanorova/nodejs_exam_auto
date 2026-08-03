@@ -144,9 +144,9 @@ class AuthService {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        const newPassword = await passwordService.hashPassword(dto.password);
-
         await this.checkPasswordsEquality(dto.password, payload.userId);
+
+        const newPassword = await passwordService.hashPassword(dto.password);
 
         const updatedUser = await userRepository.updateById(payload.userId, {
             password: newPassword,
@@ -155,6 +155,11 @@ class AuthService {
         if (!updatedUser) {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
+
+        await oldHashesRepository.create({
+            _userId: payload.userId,
+            hash: user.password,
+        });
 
         await actionTokenRepository.deleteActionToken({
             token: dto.token,
@@ -185,9 +190,9 @@ class AuthService {
             );
         }
 
-        const newPassword = await passwordService.hashPassword(dto.password);
-
         await this.checkPasswordsEquality(dto.password, payload.userId);
+
+        const newPassword = await passwordService.hashPassword(dto.password);
 
         await userRepository.updateById(payload.userId, {
             password: newPassword,

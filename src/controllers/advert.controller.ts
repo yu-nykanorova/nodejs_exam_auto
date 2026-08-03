@@ -42,8 +42,9 @@ class AdvertController {
 
     public async getById(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = req.params.id as string;
-            const data = await advertService.getById(id);
+            const advertId = req.params.id as string;
+            const payload = res.locals.tokenPayload as ITokenPayload;
+            const data = await advertService.getById(advertId, payload.userId);
             res.status(StatusCodesEnum.OK).json(data);
         } catch (e) {
             next(e);

@@ -10,13 +10,15 @@ interface IConfig {
     JWT_REFRESH_SECRET: string;
     JWT_ACCESS_LIFETIME: any;
     JWT_REFRESH_LIFETIME: any;
-    EMAIL_USER: string;
-    EMAIL_PASSWORD: string;
+    SMTP_USER: string;
+    SMTP_PASSWORD: string;
     ACTION_FORGOT_PASSWORD_SECRET: string;
     ACTION_CREATE_PASSWORD_SECRET: string;
     ACTION_FORGOT_PASSWORD_LIFETIME: any;
     ACTION_CREATE_PASSWORD_LIFETIME: any;
     PRIVATBANK_API_URL: string;
+    ADMIN_EMAIL: string;
+    ADMIN_PASSWORD: string;
 }
 
 export function checkEnv(value: string | undefined, name: string): string {
@@ -46,8 +48,8 @@ export const config: IConfig = {
         process.env.JWT_REFRESH_LIFETIME,
         "JWT_REFRESH_LIFETIME",
     ),
-    EMAIL_USER: checkEnv(process.env.EMAIL_USER, "EMAIL_USER"),
-    EMAIL_PASSWORD: checkEnv(process.env.EMAIL_PASSWORD, "EMAIL_PASSWORD"),
+    SMTP_USER: checkEnv(process.env.EMAIL_USER, "EMAIL_USER"),
+    SMTP_PASSWORD: checkEnv(process.env.EMAIL_PASSWORD, "EMAIL_PASSWORD"),
     ACTION_FORGOT_PASSWORD_SECRET: checkEnv(
         process.env.ACTION_FORGOT_PASSWORD_SECRET,
         "ACTION_FORGOT_PASSWORD_SECRET",
@@ -68,4 +70,6 @@ export const config: IConfig = {
         process.env.PRIVATBANK_API_URL,
         "PRIVBANK_API_URL",
     ),
+    ADMIN_EMAIL: checkEnv(process.env.ADMIN_EMAIL, "ADMIN_EMAIL"),
+    ADMIN_PASSWORD: checkEnv(process.env.ADMIN_PASSWORD, "ADMIN_PASSWORD"),
 };

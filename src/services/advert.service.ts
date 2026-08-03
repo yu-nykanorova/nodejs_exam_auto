@@ -12,6 +12,7 @@ import { IAggregatedResponse } from "../interfaces/aggregated-response.interface
 import { IPaginatedResponse } from "../interfaces/paginated-response.interface";
 import { advertRepository } from "../repositories/advert.repository";
 import { userRepository } from "../repositories/user.repository";
+import { advertStatisticsService } from "./advert-statistics.service";
 import { currencyService } from "./currency.service";
 import { moderationService } from "./moderation.service";
 
@@ -60,11 +61,15 @@ class AdvertService {
         return await moderationService.processModeration(newAdvert, dto);
     }
 
-    public async getById(advertId: string): Promise<IAdvert> {
+    public async getById(advertId: string, userId?: string): Promise<IAdvert> {
         const advert = await advertRepository.getById(advertId);
 
         if (!advert || advert.status === AdvertStatusEnum.DELETED) {
             throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        if (!userId || advert._ownerId.toString() !== userId) {
+            await advertStatisticsService.incrementAdvertViews(advertId);
         }
 
         return advert;

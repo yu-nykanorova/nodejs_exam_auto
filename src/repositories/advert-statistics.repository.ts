@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 import { AdvertStatusEnum } from "../enums/advert-status.enum";
 import { IAdvertViewsSet } from "../interfaces/advert-statistics.interface";
 import { Advert } from "../models/advert.model";
@@ -5,11 +7,12 @@ import { AdvertView } from "../models/advert-view.model";
 
 class AdvertStatisticsRepository {
     public async incrementAdvertViews(advertId: string): Promise<void> {
-        const today = new Date().toISOString().split("T")[0];
+        const today = new Date();
+        today.setUTCHours(0, 0, 0, 0);
 
         await AdvertView.findOneAndUpdate(
             {
-                advertId,
+                _advertId: advertId,
                 date: today,
             },
             {
@@ -19,7 +22,6 @@ class AdvertStatisticsRepository {
             },
             {
                 upsert: true,
-                new: true,
                 setDefaultsOnInsert: true,
             },
         );
@@ -27,8 +29,7 @@ class AdvertStatisticsRepository {
 
     public async getAdvertViews(advertId: string): Promise<IAdvertViewsSet> {
         const today = new Date();
-
-        const todayString = today.toISOString().split("T")[0];
+        today.setUTCHours(0, 0, 0, 0);
 
         const weekBefore = new Date(today);
         weekBefore.setDate(today.getDate() - 7);
@@ -36,37 +37,59 @@ class AdvertStatisticsRepository {
         const monthBefore = new Date(today);
         monthBefore.setDate(today.getDate() - 30);
 
-        const views = await AdvertView.find({ advertId });
+        const [result] = await AdvertView.aggregate([
+            {
+                $match: {
+                    _advertId: new Types.ObjectId(advertId),
+                },
+            },
+            {
+                $group: {
+                    _id: null,
+                    viewsCount: { $sum: "$count" },
 
-        let viewsCount = 0;
-        let viewsToday = 0;
-        let viewsWeek = 0;
-        let viewsMonth = 0;
+                    viewsToday: {
+                        $sum: {
+                            $cond: [{ $gte: ["$date", today] }, "$count", 0],
+                        },
+                    },
 
-        for (const view of views) {
-            viewsCount += view.count;
+                    viewsWeek: {
+                        $sum: {
+                            $cond: [
+                                { $gte: ["$date", weekBefore] },
+                                "$count",
+                                0,
+                            ],
+                        },
+                    },
 
-            const date = new Date(view.date);
+                    viewsMonth: {
+                        $sum: {
+                            $cond: [
+                                { $gte: ["$date", monthBefore] },
+                                "$count",
+                                0,
+                            ],
+                        },
+                    },
+                },
+            },
+        ]);
 
-            if (view.date === todayString) {
-                viewsToday += view.count;
-            }
-
-            if (date >= weekBefore) {
-                viewsWeek += view.count;
-            }
-
-            if (date >= monthBefore) {
-                viewsMonth += view.count;
-            }
-        }
-
-        return {
-            viewsCount,
-            viewsToday,
-            viewsWeek,
-            viewsMonth,
-        };
+        return result
+            ? {
+                  viewsCount: result.viewsCount,
+                  viewsToday: result.viewsToday,
+                  viewsWeek: result.viewsWeek,
+                  viewsMonth: result.viewsMonth,
+              }
+            : {
+                  viewsCount: 0,
+                  viewsToday: 0,
+                  viewsWeek: 0,
+                  viewsMonth: 0,
+              };
     }
 
     public async getAverageRegionPrice(

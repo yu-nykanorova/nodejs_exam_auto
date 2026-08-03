@@ -1,6 +1,6 @@
 export interface IAdvertView {
     _id: string;
-    date: string;
+    date: Date;
     count: number;
     _advertId: string;
 }
