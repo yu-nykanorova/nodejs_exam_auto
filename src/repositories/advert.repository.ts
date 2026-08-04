@@ -3,6 +3,7 @@ import { Types } from "mongoose";
 import { AdvertStatusEnum } from "../enums/advert-status.enum";
 import {
     IAdvert,
+    IAdvertCalculatedPrices,
     IAdvertCreate,
     IAdvertQuery,
     IAdvertUpdateDTO,
@@ -69,6 +70,15 @@ class AdvertRepository {
         dto: IAdvertUpdateDTO,
     ): Promise<IAdvert | null> {
         return await Advert.findByIdAndUpdate(advertId, dto, { new: true });
+    }
+
+    public async refreshAdvertPrices(
+        advertId: string,
+        pricesAndRates: IAdvertCalculatedPrices,
+    ): Promise<IAdvert | null> {
+        return await Advert.findByIdAndUpdate(advertId, pricesAndRates, {
+            new: true,
+        });
     }
 
     private buildFilter(

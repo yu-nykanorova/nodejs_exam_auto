@@ -10,12 +10,6 @@ export interface ICurrencyData {
 export interface IExchangeRateData {
     EUR: number;
     USD: number;
+    date: Date;
 }
 
-export interface IPricesAndRates {
-    priceUAH: number;
-    priceUSD: number;
-    priceEUR: number;
-    exchangeRateUSD: number;
-    exchangeRateEUR: number;
-}

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "rimraf dist && tsc-watch --onSuccess \"npm run watch:server\"",
-    "watch:server": "tsx src/main.ts --watch"
+    "watch:server": "tsx src/main.ts --watch",
+    "seed:admin": "tsx src/database/admin.seed.ts"
   },
   "dependencies": {
     "bad-words": "^4.1.3",

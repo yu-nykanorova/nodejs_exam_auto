@@ -1,5 +1,6 @@
 import { AdvertStatusEnum } from "../enums/advert-status.enum";
 import { CurrencyEnum } from "../enums/currency.enum";
+import { IExchangeRateData } from "./currency.interface";
 
 interface IOwnerContacts {
     email: string;
@@ -21,10 +22,7 @@ export interface IAdvert {
     priceUAH: number;
     priceUSD: number;
     priceEUR: number;
-    exchangeRate: {
-        USD: number;
-        EUR: number;
-    };
+    exchangeRate: IExchangeRateData;
     status: AdvertStatusEnum;
     _ownerId: string;
     ownerContacts: IOwnerContacts;
@@ -84,6 +82,11 @@ export type IAdvertUpdateDTO = Partial<
 
 export type IAdvertChangeStatusDTO = Pick<IAdvert, "status">;
 
+export type IAdvertCalculatedPrices = Pick<
+    IAdvert,
+    "priceUAH" | "priceUSD" | "priceEUR" | "exchangeRate"
+>;
+
 export interface IAdvertCreate {
     title: string;
     brandId: string;
@@ -97,10 +100,7 @@ export interface IAdvertCreate {
     priceUAH: number;
     priceUSD: number;
     priceEUR: number;
-    exchangeRate: {
-        USD: number;
-        EUR: number;
-    };
+    exchangeRate: IExchangeRateData;
     status: AdvertStatusEnum;
     _ownerId: string;
     avatar?: string;

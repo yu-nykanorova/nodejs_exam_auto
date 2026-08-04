@@ -40,9 +40,12 @@ class AdvertService {
     ): Promise<IAdvert> {
         await this.checkAdvertsCount(ownerId);
 
+        const rates = await currencyService.getExchangeRates();
+
         const prices = await currencyService.calculatePrices(
             dto.initialPrice,
             dto.initialCurrency,
+            rates,
         );
 
         const newAdvert = await advertRepository.createAdvert({
@@ -50,10 +53,7 @@ class AdvertService {
             priceUAH: prices.priceUAH,
             priceUSD: prices.priceUSD,
             priceEUR: prices.priceEUR,
-            exchangeRate: {
-                USD: prices.exchangeRateUSD,
-                EUR: prices.exchangeRateEUR,
-            },
+            exchangeRate: prices.exchangeRate,
             _ownerId: ownerId,
             status: AdvertStatusEnum.PENDING,
         });
@@ -121,6 +121,27 @@ class AdvertService {
         }
 
         return await moderationService.processModeration(advert, dto);
+    }
+
+    public async refreshAllAdvertsPrices(): Promise<void> {
+        const rates = await currencyService.getExchangeRates();
+
+        const adverts = await advertRepository.getAllAdverts();
+
+        await Promise.all(
+            adverts.data.map(async (advert): Promise<void> => {
+                const pricesAndRates = await currencyService.calculatePrices(
+                    advert.initialPrice,
+                    advert.initialCurrency,
+                    rates,
+                );
+
+                await advertRepository.refreshAdvertPrices(
+                    advert._id,
+                    pricesAndRates,
+                );
+            }),
+        );
     }
 
     public async changeStatus(
