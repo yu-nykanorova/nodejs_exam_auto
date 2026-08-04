@@ -28,6 +28,9 @@ export interface IAdvert {
     ownerContacts: IOwnerContacts;
     avatar?: string;
     attemptModerate: number;
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt: Date | null;
 }
 
 export interface IAdvertQuery {
@@ -77,6 +80,7 @@ export type IAdvertUpdateDTO = Partial<
         | "region"
         | "status"
         | "attemptModerate"
+        | "deletedAt"
     >
 >;
 

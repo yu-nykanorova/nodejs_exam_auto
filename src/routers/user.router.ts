@@ -71,6 +71,7 @@ router.patch(
     authMiddleware.checkAccessToken,
     permissionsMiddleware.checkPermission(PermissionsEnum.UPDATE_USER_STATUS),
     commonMiddleware.isIdValid("id"),
+    commonMiddleware.isBodyValid(UserValidator.changeStatus),
     userController.changeStatus,
 );
 router.delete(

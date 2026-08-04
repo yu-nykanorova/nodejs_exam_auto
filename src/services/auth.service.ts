@@ -220,11 +220,6 @@ class AuthService {
 
         await userRepository.updateById(payload.userId, { password });
 
-        await oldHashesRepository.create({
-            _userId: payload.userId,
-            hash: user.password,
-        });
-
         await actionTokenRepository.deleteActionToken({
             _userId: payload.userId,
         });

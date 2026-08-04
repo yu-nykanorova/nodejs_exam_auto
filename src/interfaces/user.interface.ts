@@ -16,6 +16,7 @@ export interface IUser {
     accountType: AccountTypeEnum;
     createdAt: Date;
     updatedAt: Date;
+    deletedAt: Date | null;
 }
 
 export interface IUserQuery {
@@ -64,6 +65,7 @@ export type IUserUpdateDTO = Partial<
         | "accountType"
         | "status"
         | "phone"
+        | "deletedAt"
     >
 >;
 

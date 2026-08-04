@@ -2,6 +2,7 @@ import joi from "joi";
 
 import { RegexEnum } from "../enums/regex.enum";
 import { UserQueryOrderEnum } from "../enums/user-query-order.enum";
+import { UserStatusEnum } from "../enums/user-status.enum";
 import { queryValidator } from "./query.validator";
 
 export class UserValidator {
@@ -10,6 +11,10 @@ export class UserValidator {
     private static name = joi.string().regex(RegexEnum.NAME).trim();
     private static surname = joi.string().regex(RegexEnum.NAME).trim();
     private static age = joi.number().min(2).max(100);
+    private static status = joi
+        .string()
+        .valid(...Object.values(UserStatusEnum));
+    private static phone = joi.string().pattern(/^\+?[0-9]{10,15}$/);
 
     public static create = joi.object({
         email: this.email.required(),
@@ -17,6 +22,7 @@ export class UserValidator {
         name: this.name.required(),
         surname: this.surname.required(),
         age: this.age.required(),
+        phone: this.phone,
     });
 
     public static createManager = joi.object({
@@ -51,4 +57,8 @@ export class UserValidator {
         .unknown(true);
 
     public static query = queryValidator(UserQueryOrderEnum);
+
+    public static changeStatus = joi.object({
+        status: this.status.required(),
+    });
 }

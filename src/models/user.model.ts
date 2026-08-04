@@ -26,6 +26,7 @@ const userSchema = new Schema(
         phone: { type: String, default: "" },
         avatar: { type: String, default: "" },
         accountType: { type: String, enum: AccountTypeEnum },
+        deletedAt: { type: Date, default: null },
     },
     {
         timestamps: true,

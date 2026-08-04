@@ -15,6 +15,7 @@ import { userRepository } from "../repositories/user.repository";
 import { advertStatisticsService } from "./advert-statistics.service";
 import { currencyService } from "./currency.service";
 import { moderationService } from "./moderation.service";
+import { advertStatisticsRepository } from "../repositories/advert-statistics.repository";
 
 class AdvertService {
     public async getAllAdverts(
@@ -97,17 +98,19 @@ class AdvertService {
             );
         }
 
+        const updatedDTO = await this.checkPriceChanged(dto, advert);
+
         const titleChanged =
-            dto.title !== undefined && dto.title !== advert.title;
+            updatedDTO.title !== undefined && updatedDTO.title !== advert.title;
 
         const descriptionChanged =
-            dto.description !== undefined &&
-            dto.description !== advert.description;
+            updatedDTO.description !== undefined &&
+            updatedDTO.description !== advert.description;
 
         if (!titleChanged && !descriptionChanged) {
             const updatedAdvert = await advertRepository.updateById(
                 advertId,
-                dto,
+                updatedDTO,
             );
 
             if (!updatedAdvert) {
@@ -120,7 +123,7 @@ class AdvertService {
             return updatedAdvert;
         }
 
-        return await moderationService.processModeration(advert, dto);
+        return await moderationService.processModeration(advert, updatedDTO);
     }
 
     public async refreshAllAdvertsPrices(): Promise<void> {
@@ -154,13 +157,6 @@ class AdvertService {
             throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        if (advert.status === AdvertStatusEnum.DELETED) {
-            throw new ApiError(
-                "Advert was deleted",
-                StatusCodesEnum.BAD_REQUEST,
-            );
-        }
-
         const updatedAdvert = await advertRepository.updateById(advertId, {
             status,
         });
@@ -168,6 +164,37 @@ class AdvertService {
             throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
         }
         return updatedAdvert;
+    }
+
+    public async deleteAdvert(
+        advertId: string,
+        userId?: string,
+    ): Promise<void> {
+        const advert = await advertRepository.getById(advertId);
+
+        if (!advert) {
+            throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        if (advert.status === AdvertStatusEnum.DELETED) {
+            throw new ApiError(
+                "Advert was deleted",
+                StatusCodesEnum.BAD_REQUEST,
+            );
+        }
+
+        if (userId && advert._ownerId.toString() !== userId) {
+            throw new ApiError(
+                "You can delete only your own adverts",
+                StatusCodesEnum.FORBIDDEN,
+            );
+        }
+        await advertStatisticsRepository.deleteAdvertViews(advertId);
+
+        await advertRepository.updateById(advertId, {
+            status: AdvertStatusEnum.DELETED,
+            deletedAt: new Date(),
+        });
     }
 
     private buildPaginatedResponse(
@@ -207,6 +234,38 @@ class AdvertService {
                 );
             }
         }
+    }
+
+    private async checkPriceChanged(
+        dto: IAdvertUpdateDTO,
+        advert: IAdvert,
+    ): Promise<IAdvertUpdateDTO> {
+        const priceChanged =
+            dto.initialPrice !== undefined &&
+            dto.initialPrice !== advert.initialPrice;
+
+        const currencyChanged =
+            dto.initialCurrency !== undefined &&
+            dto.initialCurrency !== advert.initialCurrency;
+
+        if (priceChanged || currencyChanged) {
+            const initialPrice = dto.initialPrice ?? advert.initialPrice;
+            const initialCurrency =
+                dto.initialCurrency ?? advert.initialCurrency;
+
+            const rates = await currencyService.getExchangeRates();
+            const prices = await currencyService.calculatePrices(
+                initialPrice,
+                initialCurrency,
+                rates,
+            );
+            return {
+                ...dto,
+                ...prices,
+            };
+        }
+
+        return { ...dto };
     }
 }
 

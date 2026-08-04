@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 
-import { AdvertStatusEnum } from "../enums/advert-status.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import {
     IAdvertChangeStatusDTO,
@@ -97,17 +96,11 @@ class AdvertController {
         }
     }
 
-    public async deleteOwnAdvert(
-        req: Request,
-        res: Response,
-        next: NextFunction,
-    ) {
+    public async deleteAdvert(req: Request, res: Response, next: NextFunction) {
         try {
             const payload = res.locals.tokenPayload as ITokenPayload;
             const id = req.params.id as string;
-            await advertService.updateAdvert(id, payload.userId, {
-                status: AdvertStatusEnum.DELETED,
-            });
+            await advertService.deleteAdvert(id, payload.userId);
 
             res.status(StatusCodesEnum.NO_CONTENT).end();
         } catch (e) {

@@ -2,6 +2,7 @@ import { config } from "../configs/config";
 import { emailConstants } from "../constants/email.constants";
 import { AccountTypeEnum } from "../enums/account-type.enum";
 import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
+import { AdvertStatusEnum } from "../enums/advert-status.enum";
 import { EmailEnum } from "../enums/email.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { UserRoleEnum } from "../enums/user-role.enum";
@@ -15,6 +16,9 @@ import {
     IUserUpdateDTO,
 } from "../interfaces/user.interface";
 import { actionTokenRepository } from "../repositories/action-token.repository";
+import { advertRepository } from "../repositories/advert.repository";
+import { oldHashesRepository } from "../repositories/old-hashes.repository";
+import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
 import { emailService } from "./email.service";
 import { tokenService } from "./token.service";
@@ -73,6 +77,13 @@ class UserService {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
 
+        if (user.accountType === accountType) {
+            throw new ApiError(
+                "You already has this account type",
+                StatusCodesEnum.BAD_REQUEST,
+            );
+        }
+
         return await userRepository.updateById(userId, { accountType });
     }
 
@@ -122,11 +133,38 @@ class UserService {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        if (user.status === UserStatusEnum.DELETED) {
-            throw new ApiError("User was deleted", StatusCodesEnum.BAD_REQUEST);
+        return await userRepository.updateById(userId, { status });
+    }
+
+    public async deleteById(userId: string): Promise<IUser | null> {
+        const user = await userRepository.getById(userId);
+
+        if (!user) {
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        return await userRepository.updateById(userId, { status });
+        if (user.status === UserStatusEnum.DELETED) {
+            throw new ApiError(
+                "User was already deleted",
+                StatusCodesEnum.BAD_REQUEST,
+            );
+        }
+
+        await tokenRepository.deleteAllByParams({ _userId: userId });
+
+        await actionTokenRepository.deleteActionToken({ _userId: userId });
+
+        await oldHashesRepository.deleteManyByParams({ _userId: userId });
+
+        await advertRepository.updateStatusByUserId(
+            userId,
+            AdvertStatusEnum.DELETED,
+        );
+
+        return await userRepository.updateById(userId, {
+            status: UserStatusEnum.DELETED,
+            deletedAt: new Date(),
+        });
     }
 
     public async isEmailUnique(email: string): Promise<void> {

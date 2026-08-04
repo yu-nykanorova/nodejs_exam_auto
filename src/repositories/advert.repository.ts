@@ -72,6 +72,13 @@ class AdvertRepository {
         return await Advert.findByIdAndUpdate(advertId, dto, { new: true });
     }
 
+    public async updateStatusByUserId(
+        userId: string,
+        status: AdvertStatusEnum,
+    ): Promise<void> {
+        await Advert.updateMany({ _userId: userId }, { status });
+    }
+
     public async refreshAdvertPrices(
         advertId: string,
         pricesAndRates: IAdvertCalculatedPrices,

@@ -92,6 +92,12 @@ class AdvertStatisticsRepository {
               };
     }
 
+    public async deleteAdvertViews(advertId: string): Promise<void> {
+        await AdvertView.deleteMany({
+            _advertId: advertId,
+        });
+    }
+
     public async getAverageRegionPrice(
         brandId: string,
         modelId: string,
