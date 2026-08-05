@@ -87,7 +87,9 @@ class UserService {
         return await userRepository.updateById(userId, { accountType });
     }
 
-    public async createManager(manager: IUserCreateManagerDTO): Promise<IUser> {
+    public async createManager(
+        manager: IUserCreateManagerDTO,
+    ): Promise<{ newManager: IUser; actionToken: string }> {
         await userService.isEmailUnique(manager.email);
         const newManager = await userRepository.create({
             ...manager,
@@ -120,7 +122,7 @@ class UserService {
             },
         );
 
-        return newManager;
+        return { newManager, actionToken };
     }
 
     public async changeStatus(
@@ -165,6 +167,18 @@ class UserService {
             status: UserStatusEnum.DELETED,
             deletedAt: new Date(),
         });
+    }
+
+    public async cleanUsersArchiveByDate(date: Date): Promise<number> {
+        const users = await userRepository.getDeletedBeforeDate(date);
+
+        for (const user of users) {
+            await advertRepository.deleteAdvertsByUserId(user._id);
+        }
+
+        const userIds = users.map((user) => user._id);
+
+        return await userRepository.deleteUsersById(userIds);
     }
 
     public async isEmailUnique(email: string): Promise<void> {

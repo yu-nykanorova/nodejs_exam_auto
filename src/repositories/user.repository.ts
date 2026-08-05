@@ -1,4 +1,5 @@
 import { UserRoleEnum } from "../enums/user-role.enum";
+import { UserStatusEnum } from "../enums/user-status.enum";
 import { IAggregatedResponse } from "../interfaces/aggregated-response.interface";
 import {
     IUser,
@@ -81,6 +82,20 @@ class UserRepository {
         user: IUserUpdateDTO,
     ): Promise<IUser | null> {
         return await User.findByIdAndUpdate(userId, user, { new: true });
+    }
+
+    public async getDeletedBeforeDate(date: Date): Promise<IUser[]> {
+        return await User.find({
+            status: UserStatusEnum.DELETED,
+            deletedAt: { $lt: date },
+        });
+    }
+
+    public async deleteUsersById(ids: string[]): Promise<number> {
+        const { deletedCount } = await User.deleteMany({
+            _id: { $in: ids },
+        });
+        return deletedCount;
     }
 }
 

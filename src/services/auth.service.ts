@@ -109,7 +109,7 @@ class AuthService {
 
     public async forgotPasswordSendEmail(
         dto: IResetPasswordSendEmail,
-    ): Promise<void> {
+    ): Promise<string> {
         const user = await userRepository.getByEmail(dto.email);
 
         if (!user || user.status === UserStatusEnum.DELETED) {
@@ -132,6 +132,8 @@ class AuthService {
             emailConstants[EmailEnum.FORGOT_PASSWORD],
             { actionToken, frontUrl: config.FRONT_URL },
         );
+
+        return actionToken;
     }
 
     public async forgotPasswordChange(

@@ -2,10 +2,13 @@ import { AccountTypeEnum } from "../enums/account-type.enum";
 import { AdvertStatusEnum } from "../enums/advert-status.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ApiError } from "../errors/api.errors";
-import { IAdvertStatistics, IAdvertViewsSet } from "../interfaces/advert-statistics.interface";
+import {
+    IAdvertStatistics,
+    IAdvertViewsSet,
+} from "../interfaces/advert-statistics.interface";
 import { advertRepository } from "../repositories/advert.repository";
-import { userRepository } from "../repositories/user.repository";
 import { advertStatisticsRepository } from "../repositories/advert-statistics.repository";
+import { userRepository } from "../repositories/user.repository";
 
 class AdvertStatisticsService {
     public async getStatistics(
@@ -65,7 +68,11 @@ class AdvertStatisticsService {
             throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        return await advertStatisticsRepository.getAverageRegionPrice(advert.brandId, advert.modelId, advert.region);
+        return await advertStatisticsRepository.getAverageRegionPrice(
+            advert.brandId,
+            advert.modelId,
+            advert.region,
+        );
     }
 
     private async getAverageCountryPrice(advertId: string): Promise<number> {
@@ -75,7 +82,10 @@ class AdvertStatisticsService {
             throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        return await advertStatisticsRepository.getAverageCountryPrice(advert.brandId, advert.modelId);
+        return await advertStatisticsRepository.getAverageCountryPrice(
+            advert.brandId,
+            advert.modelId,
+        );
     }
 }
 

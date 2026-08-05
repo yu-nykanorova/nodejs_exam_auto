@@ -88,6 +88,12 @@ class AdvertRepository {
         });
     }
 
+    public async deleteAdvertsByUserId(userId: string): Promise<void> {
+        await Advert.deleteMany({
+            _userId: userId,
+        });
+    }
+
     private buildFilter(
         query: IAdvertQuery,
         onlyActiveAdverts: boolean,
