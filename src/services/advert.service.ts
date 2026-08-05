@@ -6,21 +6,22 @@ import {
     IAdvert,
     IAdvertCreateDTO,
     IAdvertQuery,
+    IAdvertResult,
     IAdvertUpdateDTO,
 } from "../interfaces/advert.interface";
 import { IAggregatedResponse } from "../interfaces/aggregated-response.interface";
 import { IPaginatedResponse } from "../interfaces/paginated-response.interface";
 import { advertRepository } from "../repositories/advert.repository";
+import { advertStatisticsRepository } from "../repositories/advert-statistics.repository";
 import { userRepository } from "../repositories/user.repository";
 import { advertStatisticsService } from "./advert-statistics.service";
 import { currencyService } from "./currency.service";
 import { moderationService } from "./moderation.service";
-import { advertStatisticsRepository } from "../repositories/advert-statistics.repository";
 
 class AdvertService {
     public async getAllAdverts(
         query: IAdvertQuery,
-    ): Promise<IPaginatedResponse<IAdvert>> {
+    ): Promise<IPaginatedResponse<IAdvertResult>> {
         const dataFromDB = await advertRepository.getAllAdverts(query);
 
         return this.buildPaginatedResponse(dataFromDB, query);
@@ -29,7 +30,7 @@ class AdvertService {
     public async getUserAdverts(
         userId: string,
         query: IAdvertQuery,
-    ): Promise<IPaginatedResponse<IAdvert>> {
+    ): Promise<IPaginatedResponse<IAdvertResult>> {
         const dataFromDB = await advertRepository.getUserAdverts(userId, query);
 
         return this.buildPaginatedResponse(dataFromDB, query);
@@ -198,10 +199,10 @@ class AdvertService {
     }
 
     private buildPaginatedResponse(
-        dataToPaginate: IAggregatedResponse<IAdvert>,
+        dataToPaginate: IAggregatedResponse<IAdvertResult>,
         query: IAdvertQuery,
-    ): IPaginatedResponse<IAdvert> {
-        const data: IAdvert[] = dataToPaginate.data;
+    ): IPaginatedResponse<IAdvertResult> {
+        const data: IAdvertResult[] = dataToPaginate.data;
         const totalItems = Number(dataToPaginate.totalItems);
         const pageSize = Number(query.pageSize) || 10;
         const page = Number(query.page) || 1;

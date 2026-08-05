@@ -87,6 +87,9 @@ class UserService {
         return await userRepository.updateById(userId, { accountType });
     }
 
+    // uploadAvatar
+    // deleteAvatar
+
     public async createManager(
         manager: IUserCreateManagerDTO,
     ): Promise<{ newManager: IUser; actionToken: string }> {

@@ -6,6 +6,7 @@ import {
     IAdvertCalculatedPrices,
     IAdvertCreate,
     IAdvertQuery,
+    IAdvertResult,
     IAdvertUpdateDTO,
 } from "../interfaces/advert.interface";
 import { IAggregatedResponse } from "../interfaces/aggregated-response.interface";
@@ -14,7 +15,7 @@ import { Advert } from "../models/advert.model";
 class AdvertRepository {
     public async getAllAdverts(
         query: IAdvertQuery = {},
-    ): Promise<IAggregatedResponse<IAdvert>> {
+    ): Promise<IAggregatedResponse<IAdvertResult>> {
         const skip =
             query.pageSize && query.page
                 ? query.pageSize * (query.page - 1)
@@ -32,7 +33,7 @@ class AdvertRepository {
     public async getUserAdverts(
         userId: string,
         query: IAdvertQuery = {},
-    ): Promise<IAggregatedResponse<IAdvert>> {
+    ): Promise<IAggregatedResponse<IAdvertResult>> {
         const skip =
             query.pageSize && query.page
                 ? query.pageSize * (query.page - 1)
@@ -62,7 +63,63 @@ class AdvertRepository {
     }
 
     public async getById(advertId: string): Promise<IAdvert | null> {
-        return await Advert.findById(advertId);
+        const [advert] = await Advert.aggregate([
+            {
+                $match: {
+                    _id: new Types.ObjectId(advertId),
+                },
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    let: { ownerId: "$_ownerId" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $eq: ["$_id", "$$ownerId"],
+                                },
+                            },
+                        },
+                        {
+                            $project: {
+                                _id: 0,
+                                email: 1,
+                                name: 1,
+                                phone: 1,
+                            },
+                        },
+                    ],
+                    as: "ownerContacts",
+                },
+            },
+            {
+                $lookup: {
+                    from: "brands",
+                    localField: "brandId",
+                    foreignField: "_id",
+                    as: "brand",
+                },
+            },
+            {
+                $lookup: {
+                    from: "models",
+                    localField: "modelId",
+                    foreignField: "_id",
+                    as: "model",
+                },
+            },
+            {
+                $unwind: "$ownerContacts",
+            },
+            {
+                $unwind: "$brand",
+            },
+            {
+                $unwind: "$model",
+            },
+        ]);
+        return advert ?? null;
     }
 
     public async updateById(
@@ -179,7 +236,7 @@ class AdvertRepository {
         sortOrder: Record<string, any>,
         skip: number,
         limit: number,
-    ): Promise<IAggregatedResponse<IAdvert>> {
+    ): Promise<IAggregatedResponse<IAdvertResult>> {
         const [result] = await Advert.aggregate([
             {
                 $match: filterObject,

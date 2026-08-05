@@ -33,6 +33,30 @@ export interface IAdvert {
     deletedAt: Date | null;
 }
 
+export interface IAdvertResult {
+    _id: string;
+    title: string;
+    brand: string;
+    model: string;
+    year: number;
+    region: string;
+    city: string;
+    description: string;
+    initialPrice: number;
+    initialCurrency: CurrencyEnum;
+    priceUAH: number;
+    priceUSD: number;
+    priceEUR: number;
+    _ownerId: string;
+    ownerContacts: IOwnerContacts[];
+    exchangeRate: IExchangeRateData;
+    avatar?: string;
+    status: AdvertStatusEnum;
+    attemptModerate: number;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 export interface IAdvertQuery {
     pageSize?: number;
     page?: number;

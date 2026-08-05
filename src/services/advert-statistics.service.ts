@@ -26,6 +26,10 @@ class AdvertStatisticsService {
 
         const user = await userRepository.getById(userId);
 
+        if (!user) {
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        }
+
         if (user._id.toString() !== advert._ownerId.toString()) {
             throw new ApiError("Access denied", StatusCodesEnum.FORBIDDEN);
         }

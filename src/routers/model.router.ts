@@ -11,8 +11,6 @@ const router = Router();
 
 router.get("/", modelController.getAllModels);
 
-router.get("/", modelController.getModelsByBrandId);
-
 router.post(
     "/",
     authMiddleware.checkAccessToken,
@@ -51,6 +49,7 @@ router.patch(
         PermissionsEnum.UPDATE_MODEL_REQUEST_STATUS,
     ),
     commonMiddleware.isIdValid("id"),
+    modelController.updateModelRequestStatus,
 );
 
 export const modelRouter = router;

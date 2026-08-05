@@ -21,8 +21,8 @@ class AdvertController {
             const { validatedQuery } = req as any as {
                 validatedQuery: IAdvertQuery;
             };
-            const data = await advertService.getAllAdverts(validatedQuery);
-            res.status(StatusCodesEnum.OK).json(data);
+            const adverts = await advertService.getAllAdverts(validatedQuery);
+            res.status(StatusCodesEnum.OK).json(adverts);
         } catch (e) {
             next(e);
         }
@@ -43,8 +43,11 @@ class AdvertController {
         try {
             const advertId = req.params.id as string;
             const payload = res.locals.tokenPayload as ITokenPayload;
-            const data = await advertService.getById(advertId, payload.userId);
-            res.status(StatusCodesEnum.OK).json(data);
+            const advert = await advertService.getById(
+                advertId,
+                payload.userId,
+            );
+            res.status(StatusCodesEnum.OK).json(advert);
         } catch (e) {
             next(e);
         }

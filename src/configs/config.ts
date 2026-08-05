@@ -19,6 +19,11 @@ interface IConfig {
     PRIVATBANK_API_URL: string;
     ADMIN_EMAIL: string;
     ADMIN_PASSWORD: string;
+    AWS_ACCESS_KEY: string;
+    AWS_SECRET_KEY: string;
+    AWS_S3_BUCKET_NAME: string;
+    AWS_S3_REGION: string;
+    AWS_S3_ENDPOINT: string;
 }
 
 export function checkEnv(value: string | undefined, name: string): string {
@@ -48,8 +53,8 @@ export const config: IConfig = {
         process.env.JWT_REFRESH_LIFETIME,
         "JWT_REFRESH_LIFETIME",
     ),
-    SMTP_USER: checkEnv(process.env.EMAIL_USER, "EMAIL_USER"),
-    SMTP_PASSWORD: checkEnv(process.env.EMAIL_PASSWORD, "EMAIL_PASSWORD"),
+    SMTP_USER: checkEnv(process.env.SMTP_USER, "SMTP_USER"),
+    SMTP_PASSWORD: checkEnv(process.env.SMTP_PASSWORD, "SMTP_PASSWORD"),
     ACTION_FORGOT_PASSWORD_SECRET: checkEnv(
         process.env.ACTION_FORGOT_PASSWORD_SECRET,
         "ACTION_FORGOT_PASSWORD_SECRET",
@@ -72,4 +77,13 @@ export const config: IConfig = {
     ),
     ADMIN_EMAIL: checkEnv(process.env.ADMIN_EMAIL, "ADMIN_EMAIL"),
     ADMIN_PASSWORD: checkEnv(process.env.ADMIN_PASSWORD, "ADMIN_PASSWORD"),
+
+    AWS_ACCESS_KEY: checkEnv(process.env.AWS_ACCESS_KEY, "AWS_ACCESS_KEY"),
+    AWS_SECRET_KEY: checkEnv(process.env.AWS_SECRET_KEY, "AWS_SECRET_KEY"),
+    AWS_S3_BUCKET_NAME: checkEnv(
+        process.env.AWS_S3_BUCKET_NAME,
+        "AWS_S3_BUCKET_NAME",
+    ),
+    AWS_S3_REGION: checkEnv(process.env.AWS_S3_REGION, "AWS_S3_REGION"),
+    AWS_S3_ENDPOINT: checkEnv(process.env.AWS_S3_ENDPOINT, "AWS_S3_ENDPOINT"),
 };

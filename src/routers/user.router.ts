@@ -50,6 +50,18 @@ router.delete(
     permissionsMiddleware.checkPermission(PermissionsEnum.DELETE_PROFILE),
     userController.deleteMe,
 );
+// router.post(
+//     "/me/avatar",
+//     authMiddleware.checkAccessToken,
+//     fileMiddleware.isFileValid(fileConstants[FileTypeEnum.AVATAR]),
+//     userController.uploadAvatar,
+// );
+//
+// router.delete(
+//     "/me/avatar",
+//     authMiddleware.checkAccessToken,
+//     userController.deleteAvatar,
+// );
 
 router.post(
     "/managers",

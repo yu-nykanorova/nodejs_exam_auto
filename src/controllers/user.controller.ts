@@ -10,6 +10,7 @@ import {
     IUserUpdateAccountTypeDTO,
     IUserUpdateDTO,
 } from "../interfaces/user.interface";
+import { userPresenter } from "../presenters/user.presenter";
 import { advertService } from "../services/advert.service";
 import { userService } from "../services/user.service";
 
@@ -19,8 +20,12 @@ class UserController {
             const { validatedQuery } = req as any as {
                 validatedQuery: IUserQuery;
             };
-            const data = await userService.getAllUsers(validatedQuery);
-            res.status(StatusCodesEnum.OK).json(data);
+            const users = await userService.getAllUsers(validatedQuery);
+            const result = userPresenter.toListResDto(
+                users.data,
+                users.totalItems,
+            );
+            res.status(StatusCodesEnum.OK).json(result);
         } catch (e) {
             next(e);
         }
@@ -30,8 +35,9 @@ class UserController {
         try {
             const payload = res.locals.tokenPayload as ITokenPayload;
 
-            const data = await userService.getById(payload.userId);
-            res.status(StatusCodesEnum.OK).json(data);
+            const user = await userService.getById(payload.userId);
+            const result = userPresenter.toPublicResDto(user);
+            res.status(StatusCodesEnum.OK).json(result);
         } catch (e) {
             next(e);
         }
@@ -43,11 +49,11 @@ class UserController {
                 validatedQuery: IAdvertQuery;
             };
             const payload = res.locals.tokenPayload as ITokenPayload;
-            const data = await advertService.getUserAdverts(
+            const adverts = await advertService.getUserAdverts(
                 payload.userId,
                 validatedQuery,
             );
-            res.status(StatusCodesEnum.OK).json(data);
+            res.status(StatusCodesEnum.OK).json(adverts);
         } catch (e) {
             next(e);
         }
@@ -95,6 +101,9 @@ class UserController {
         }
     }
 
+    // uploadAvatar
+    // deleteAvatar
+
     public async createManager(
         req: Request,
         res: Response,
@@ -112,8 +121,9 @@ class UserController {
     public async getById(req: Request, res: Response, next: NextFunction) {
         try {
             const id = req.params.id as string;
-            const data = await userService.getById(id);
-            res.status(StatusCodesEnum.OK).json(data);
+            const user = await userService.getById(id);
+            const result = userPresenter.toPublicResDto(user);
+            res.status(StatusCodesEnum.OK).json(result);
         } catch (e) {
             next(e);
         }
