@@ -1,9 +1,12 @@
+import { UploadedFile } from "express-fileupload";
+
 import { config } from "../configs/config";
 import { emailConstants } from "../constants/email.constants";
 import { AccountTypeEnum } from "../enums/account-type.enum";
 import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
 import { AdvertStatusEnum } from "../enums/advert-status.enum";
 import { EmailEnum } from "../enums/email.enum";
+import { FileItemsTypeEnum } from "../enums/file-items-type.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { UserRoleEnum } from "../enums/user-role.enum";
 import { UserStatusEnum } from "../enums/user-status.enum";
@@ -20,6 +23,7 @@ import { advertRepository } from "../repositories/advert.repository";
 import { oldHashesRepository } from "../repositories/old-hashes.repository";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
+import { awsImagesStorageService } from "./awsImagesStorage.service";
 import { emailService } from "./email.service";
 import { tokenService } from "./token.service";
 
@@ -87,8 +91,51 @@ class UserService {
         return await userRepository.updateById(userId, { accountType });
     }
 
-    // uploadAvatar
-    // deleteAvatar
+    public async uploadAvatar(
+        userId: string,
+        file: UploadedFile,
+    ): Promise<IUser> {
+        const user = await userRepository.getById(userId);
+
+        if (!user) {
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        const avatar = await awsImagesStorageService.uploadFile(
+            file,
+            FileItemsTypeEnum.USERS,
+            user._id,
+        );
+
+        const updatedUser = await userRepository.updateById(user._id, {
+            avatar,
+        });
+        if (user.avatar) {
+            await awsImagesStorageService.deleteFile(user.avatar);
+        }
+
+        if (!updatedUser) {
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        return updatedUser;
+    }
+
+    public async deleteAvatar(userId: string): Promise<void> {
+        const user = await userRepository.getById(userId);
+
+        if (!user) {
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        if (!user.avatar) {
+            throw new ApiError("Avatar not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        await awsImagesStorageService.deleteFile(user.avatar);
+
+        await userRepository.updateById(user._id, { avatar: null });
+    }
 
     public async createManager(
         manager: IUserCreateManagerDTO,

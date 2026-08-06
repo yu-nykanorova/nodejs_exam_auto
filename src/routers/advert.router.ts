@@ -1,6 +1,8 @@
 import { Router } from "express";
 
+import { fileConstants } from "../constants/file.constants";
 import { advertController } from "../controllers/advert.controller";
+import { FileTypeEnum } from "../enums/file-type.enum";
 import { PermissionsEnum } from "../enums/permissions.enum";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { commonMiddleware } from "../middlewares/common.middleware";
@@ -11,6 +13,7 @@ const router = Router();
 
 router.get(
     "/",
+    commonMiddleware.identifyUser,
     commonMiddleware.isQueryValid(AdvertValidator.query),
     advertController.getAllAdverts,
 );
@@ -37,6 +40,21 @@ router.put(
     commonMiddleware.isIdValid("id"),
     commonMiddleware.isBodyValid(AdvertValidator.update),
     advertController.updateAdvert,
+);
+
+router.post(
+    "/:id/photo",
+    authMiddleware.checkAccessToken,
+    permissionsMiddleware.checkPermission(PermissionsEnum.UPDATE_ADVERT),
+    commonMiddleware.isFileValid(fileConstants[FileTypeEnum.PHOTO]),
+    advertController.uploadPhoto,
+);
+
+router.delete(
+    "/:id/photo",
+    authMiddleware.checkAccessToken,
+    permissionsMiddleware.checkPermission(PermissionsEnum.UPDATE_ADVERT),
+    advertController.deletePhoto,
 );
 
 router.patch(

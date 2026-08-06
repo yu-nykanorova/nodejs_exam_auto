@@ -1,10 +1,12 @@
 import { NextFunction, Request, Response } from "express";
+import { UploadedFile } from "express-fileupload";
 import { ObjectSchema } from "joi";
 import { isObjectIdOrHexString } from "mongoose";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { TokenTypeEnum } from "../enums/token-type.enum";
 import { ApiError } from "../errors/api.errors";
+import { IFile } from "../interfaces/file.interface";
 import { tokenService } from "../services/token.service";
 
 class CommonMiddleware {
@@ -56,6 +58,39 @@ class CommonMiddleware {
                         StatusCodesEnum.BAD_REQUEST,
                     ),
                 );
+            }
+        };
+    }
+
+    public isFileValid(fileData: IFile) {
+        return (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const file = req.files?.avatar as UploadedFile;
+
+                if (!file) {
+                    throw new ApiError(
+                        "File is required",
+                        StatusCodesEnum.BAD_REQUEST,
+                    );
+                }
+
+                if (file.size > fileData.size) {
+                    throw new ApiError(
+                        `File size must be less than ${fileData.size}`,
+                        StatusCodesEnum.BAD_REQUEST,
+                    );
+                }
+
+                if (!fileData.mimetypes.includes(file.mimetype)) {
+                    throw new ApiError(
+                        "Invalid file type",
+                        StatusCodesEnum.BAD_REQUEST,
+                    );
+                }
+
+                next();
+            } catch (e) {
+                next(e);
             }
         };
     }

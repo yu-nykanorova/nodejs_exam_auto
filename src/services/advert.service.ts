@@ -1,6 +1,10 @@
+import { UploadedFile } from "express-fileupload";
+
 import { AccountTypeEnum } from "../enums/account-type.enum";
 import { AdvertStatusEnum } from "../enums/advert-status.enum";
+import { FileItemsTypeEnum } from "../enums/file-items-type.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
+import { UserRoleEnum } from "../enums/user-role.enum";
 import { ApiError } from "../errors/api.errors";
 import {
     IAdvert,
@@ -11,18 +15,28 @@ import {
 } from "../interfaces/advert.interface";
 import { IAggregatedResponse } from "../interfaces/aggregated-response.interface";
 import { IPaginatedResponse } from "../interfaces/paginated-response.interface";
+import { ITokenPayload } from "../interfaces/token.interface";
 import { advertRepository } from "../repositories/advert.repository";
 import { advertStatisticsRepository } from "../repositories/advert-statistics.repository";
 import { userRepository } from "../repositories/user.repository";
 import { advertStatisticsService } from "./advert-statistics.service";
+import { awsImagesStorageService } from "./awsImagesStorage.service";
 import { currencyService } from "./currency.service";
 import { moderationService } from "./moderation.service";
 
 class AdvertService {
     public async getAllAdverts(
         query: IAdvertQuery,
+        payload: ITokenPayload,
     ): Promise<IPaginatedResponse<IAdvertResult>> {
-        const dataFromDB = await advertRepository.getAllAdverts(query);
+        const onlyActive =
+            payload.role !== UserRoleEnum.ADMIN &&
+            payload.role !== UserRoleEnum.MANAGER;
+
+        const dataFromDB = await advertRepository.getAllAdverts(
+            query,
+            onlyActive,
+        );
 
         return this.buildPaginatedResponse(dataFromDB, query);
     }
@@ -63,14 +77,31 @@ class AdvertService {
         return await moderationService.processModeration(newAdvert, dto);
     }
 
-    public async getById(advertId: string, userId?: string): Promise<IAdvert> {
+    public async getById(
+        advertId: string,
+        payload: ITokenPayload,
+    ): Promise<IAdvert> {
         const advert = await advertRepository.getById(advertId);
 
-        if (!advert || advert.status === AdvertStatusEnum.DELETED) {
+        if (!advert) {
             throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        if (!userId || advert._ownerId.toString() !== userId) {
+        const isModerator =
+            payload.role === UserRoleEnum.ADMIN ||
+            payload.role === UserRoleEnum.MANAGER;
+
+        const isOwner = advert._ownerId.toString() === payload.userId;
+
+        if (
+            advert.status !== AdvertStatusEnum.ACTIVE &&
+            !isModerator &&
+            !isOwner
+        ) {
+            throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        if (!payload.userId || !isOwner) {
             await advertStatisticsService.incrementAdvertViews(advertId);
         }
 
@@ -92,12 +123,7 @@ class AdvertService {
             throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        if (advert._ownerId.toString() !== userId) {
-            throw new ApiError(
-                "You can update only your own adverts",
-                StatusCodesEnum.FORBIDDEN,
-            );
-        }
+        this.checkIsOwner(advert, userId);
 
         const updatedDTO = await this.checkPriceChanged(dto, advert);
 
@@ -130,7 +156,7 @@ class AdvertService {
     public async refreshAllAdvertsPrices(): Promise<void> {
         const rates = await currencyService.getExchangeRates();
 
-        const adverts = await advertRepository.getAllAdverts();
+        const adverts = await advertRepository.getAllAdverts({}, false);
 
         await Promise.all(
             adverts.data.map(async (advert): Promise<void> => {
@@ -146,6 +172,65 @@ class AdvertService {
                 );
             }),
         );
+    }
+
+    public async uploadPhoto(
+        advertId: string,
+        userId: string,
+        file: UploadedFile,
+    ): Promise<IAdvert> {
+        const advert = await advertRepository.getById(advertId);
+
+        if (
+            !advert ||
+            advert.status === AdvertStatusEnum.DELETED ||
+            advert.status === AdvertStatusEnum.BLOCKED
+        ) {
+            throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        this.checkIsOwner(advert, userId);
+
+        const photo = await awsImagesStorageService.uploadFile(
+            file,
+            FileItemsTypeEnum.ADVERTS,
+            advert._id,
+        );
+
+        const updatedAdvert = await advertRepository.updateById(advert._id, {
+            photo,
+        });
+        if (advert.photo) {
+            await awsImagesStorageService.deleteFile(advert.photo);
+        }
+
+        if (!updatedAdvert) {
+            throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        return updatedAdvert;
+    }
+
+    public async deletePhoto(advertId: string, userId: string): Promise<void> {
+        const advert = await advertRepository.getById(advertId);
+
+        if (
+            !advert ||
+            advert.status === AdvertStatusEnum.DELETED ||
+            advert.status === AdvertStatusEnum.BLOCKED
+        ) {
+            throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        this.checkIsOwner(advert, userId);
+
+        if (!advert.photo) {
+            throw new ApiError("Photo not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        await awsImagesStorageService.deleteFile(advert.photo);
+
+        await advertRepository.updateById(advert._id, { photo: null });
     }
 
     public async changeStatus(
@@ -184,18 +269,25 @@ class AdvertService {
             );
         }
 
-        if (userId && advert._ownerId.toString() !== userId) {
-            throw new ApiError(
-                "You can delete only your own adverts",
-                StatusCodesEnum.FORBIDDEN,
-            );
+        if (userId) {
+            this.checkIsOwner(advert, userId);
         }
+
         await advertStatisticsRepository.deleteAdvertViews(advertId);
 
         await advertRepository.updateById(advertId, {
             status: AdvertStatusEnum.DELETED,
             deletedAt: new Date(),
         });
+    }
+
+    private checkIsOwner(advert: IAdvert, userId: string): void {
+        if (advert._ownerId.toString() !== userId) {
+            throw new ApiError(
+                "You can update only your own adverts",
+                StatusCodesEnum.FORBIDDEN,
+            );
+        }
     }
 
     private buildPaginatedResponse(

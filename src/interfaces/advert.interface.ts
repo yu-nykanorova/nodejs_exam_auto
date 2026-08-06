@@ -26,7 +26,7 @@ export interface IAdvert {
     status: AdvertStatusEnum;
     _ownerId: string;
     ownerContacts: IOwnerContacts;
-    avatar?: string;
+    photo?: string;
     attemptModerate: number;
     createdAt: Date;
     updatedAt: Date;
@@ -50,7 +50,7 @@ export interface IAdvertResult {
     _ownerId: string;
     ownerContacts: IOwnerContacts[];
     exchangeRate: IExchangeRateData;
-    avatar?: string;
+    photo?: string;
     status: AdvertStatusEnum;
     attemptModerate: number;
     createdAt: Date;
@@ -96,7 +96,7 @@ export type IAdvertUpdateDTO = Partial<
         | "priceUSD"
         | "priceEUR"
         | "exchangeRate"
-        | "avatar"
+        | "photo"
         | "brandId"
         | "modelId"
         | "year"
@@ -131,5 +131,5 @@ export interface IAdvertCreate {
     exchangeRate: IExchangeRateData;
     status: AdvertStatusEnum;
     _ownerId: string;
-    avatar?: string;
+    photo?: string;
 }

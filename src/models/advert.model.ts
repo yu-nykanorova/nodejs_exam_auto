@@ -16,7 +16,7 @@ const advertSchema = new Schema(
         city: { type: String, required: true },
         region: { type: String, required: true },
         description: { type: String, required: true },
-        avatar: { type: String, default: "" },
+        photo: { type: String, default: "" },
         initialPrice: { type: Number, required: true },
         initialCurrency: { type: String, enum: CurrencyEnum, required: true },
         priceUAH: { type: Number, required: true },

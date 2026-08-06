@@ -1,6 +1,8 @@
 import { Router } from "express";
 
+import { fileConstants } from "../constants/file.constants";
 import { userController } from "../controllers/user.controller";
+import { FileTypeEnum } from "../enums/file-type.enum";
 import { PermissionsEnum } from "../enums/permissions.enum";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { commonMiddleware } from "../middlewares/common.middleware";
@@ -50,18 +52,20 @@ router.delete(
     permissionsMiddleware.checkPermission(PermissionsEnum.DELETE_PROFILE),
     userController.deleteMe,
 );
-// router.post(
-//     "/me/avatar",
-//     authMiddleware.checkAccessToken,
-//     fileMiddleware.isFileValid(fileConstants[FileTypeEnum.AVATAR]),
-//     userController.uploadAvatar,
-// );
-//
-// router.delete(
-//     "/me/avatar",
-//     authMiddleware.checkAccessToken,
-//     userController.deleteAvatar,
-// );
+router.post(
+    "/me/avatar",
+    authMiddleware.checkAccessToken,
+    permissionsMiddleware.checkPermission(PermissionsEnum.UPDATE_PROFILE),
+    commonMiddleware.isFileValid(fileConstants[FileTypeEnum.AVATAR]),
+    userController.uploadAvatar,
+);
+
+router.delete(
+    "/me/avatar",
+    authMiddleware.checkAccessToken,
+    permissionsMiddleware.checkPermission(PermissionsEnum.UPDATE_PROFILE),
+    userController.deleteAvatar,
+);
 
 router.post(
     "/managers",

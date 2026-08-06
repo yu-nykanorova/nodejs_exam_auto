@@ -15,6 +15,7 @@ import { Advert } from "../models/advert.model";
 class AdvertRepository {
     public async getAllAdverts(
         query: IAdvertQuery = {},
+        onlyActive: boolean,
     ): Promise<IAggregatedResponse<IAdvertResult>> {
         const skip =
             query.pageSize && query.page
@@ -23,7 +24,7 @@ class AdvertRepository {
 
         const limit = Number(query.pageSize) || 10;
 
-        const filterObject = this.buildFilter(query, true);
+        const filterObject = this.buildFilter(query, onlyActive);
 
         const sortOrder = this.buildSortOrder(query);
 

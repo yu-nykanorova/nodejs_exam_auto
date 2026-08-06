@@ -9,9 +9,9 @@ import {
 import { UploadedFile } from "express-fileupload";
 
 import { config } from "../configs/config";
-import { FileItemTypeEnum } from "../enums/file-item-type-enum";
+import { FileItemsTypeEnum } from "../enums/file-items-type.enum";
 
-class S3Service {
+class AwsImagesStorageService {
     constructor(
         private readonly client = new S3Client({
             region: config.AWS_S3_REGION,
@@ -24,7 +24,7 @@ class S3Service {
 
     public async uploadFile(
         file: UploadedFile,
-        itemType: FileItemTypeEnum,
+        itemType: FileItemsTypeEnum,
         itemId: string,
     ): Promise<string> {
         try {
@@ -59,7 +59,7 @@ class S3Service {
     }
 
     private buildPath(
-        itemType: FileItemTypeEnum,
+        itemType: FileItemsTypeEnum,
         itemId: string,
         fileName: string,
     ): string {
@@ -67,4 +67,4 @@ class S3Service {
     }
 }
 
-export const s3Service = new S3Service();
+export const awsImagesStorageService = new AwsImagesStorageService();

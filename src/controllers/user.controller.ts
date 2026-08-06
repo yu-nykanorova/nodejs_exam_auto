@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
+import { UploadedFile } from "express-fileupload";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
+import { ApiError } from "../errors/api.errors";
 import { IAdvertQuery } from "../interfaces/advert.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
 import {
@@ -101,8 +103,35 @@ class UserController {
         }
     }
 
-    // uploadAvatar
-    // deleteAvatar
+    public async uploadAvatar(req: Request, res: Response, next: NextFunction) {
+        try {
+            const payload = res.locals.jwtPayload as ITokenPayload;
+            const avatar = req.files?.avatar as UploadedFile;
+
+            if (!avatar) {
+                throw new ApiError(
+                    "Avatar file is required",
+                    StatusCodesEnum.BAD_REQUEST,
+                );
+            }
+
+            const user = await userService.uploadAvatar(payload.userId, avatar);
+            const result = userPresenter.toPublicResDto(user);
+            res.status(StatusCodesEnum.CREATED).json(result);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    public async deleteAvatar(req: Request, res: Response, next: NextFunction) {
+        try {
+            const payload = res.locals.jwtPayload as ITokenPayload;
+            await userService.deleteAvatar(payload.userId);
+            res.sendStatus(StatusCodesEnum.NO_CONTENT);
+        } catch (e) {
+            next(e);
+        }
+    }
 
     public async createManager(
         req: Request,
@@ -112,7 +141,7 @@ class UserController {
         try {
             const body = req.body as IUserCreateManagerDTO;
             const data = await userService.createManager(body);
-            res.status(StatusCodesEnum.OK).json(data);
+            res.status(StatusCodesEnum.CREATED).json(data);
         } catch (e) {
             next(e);
         }
