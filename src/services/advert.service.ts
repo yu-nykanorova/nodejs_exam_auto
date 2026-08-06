@@ -230,7 +230,7 @@ class AdvertService {
 
         await awsImagesStorageService.deleteFile(advert.photo);
 
-        await advertRepository.updateById(advert._id, { photo: null });
+        await advertRepository.deleteField(advert._id, "photo");
     }
 
     public async changeStatus(

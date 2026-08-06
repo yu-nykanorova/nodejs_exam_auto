@@ -152,6 +152,15 @@ class AdvertRepository {
         });
     }
 
+    public async deleteField(
+        advertId: string,
+        fieldName: string,
+    ): Promise<void> {
+        await Advert.findByIdAndUpdate(advertId, {
+            $unset: { [fieldName]: "" },
+        });
+    }
+
     private buildFilter(
         query: IAdvertQuery,
         onlyActiveAdverts: boolean,

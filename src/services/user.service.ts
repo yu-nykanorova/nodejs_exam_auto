@@ -134,7 +134,7 @@ class UserService {
 
         await awsImagesStorageService.deleteFile(user.avatar);
 
-        await userRepository.updateById(user._id, { avatar: null });
+        await userRepository.deleteField(user._id, "avatar");
     }
 
     public async createManager(

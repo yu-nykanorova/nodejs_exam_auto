@@ -97,6 +97,12 @@ class UserRepository {
         });
         return deletedCount;
     }
+
+    public async deleteField(userId: string, fieldName: string): Promise<void> {
+        await User.findByIdAndUpdate(userId, {
+            $unset: { [fieldName]: "" },
+        });
+    }
 }
 
 export const userRepository = new UserRepository();
