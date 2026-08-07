@@ -17,7 +17,7 @@ class BrandRepository {
     }
 
     public async getByName(brandName: string): Promise<IBrand | null> {
-        return await Brand.findOne({ name: brandName });
+        return await Brand.findOne({ name: new RegExp(`^${brandName}$`, "i") });
     }
 
     public async createBrand(brandName: string): Promise<IBrand> {
@@ -25,13 +25,18 @@ class BrandRepository {
     }
 
     public async getBrandRequests(): Promise<IBrandRequest[]> {
-        return await BrandRequest.find();
+        return await BrandRequest.find()
+            .populate("_ownerId", "name email")
+            .sort({ createdAt: -1 });
     }
 
     public async getBrandRequestById(
         id: string,
     ): Promise<IBrandRequest | null> {
-        return await BrandRequest.findById(id);
+        return await BrandRequest.findById(id).populate(
+            "_ownerId",
+            "name email",
+        );
     }
 
     public async createBrandRequest(

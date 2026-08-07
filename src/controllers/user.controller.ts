@@ -105,7 +105,7 @@ class UserController {
 
     public async uploadAvatar(req: Request, res: Response, next: NextFunction) {
         try {
-            const payload = res.locals.jwtPayload as ITokenPayload;
+            const payload = res.locals.tokenPayload as ITokenPayload;
             const avatar = req.files?.avatar as UploadedFile;
 
             if (!avatar) {
@@ -125,7 +125,7 @@ class UserController {
 
     public async deleteAvatar(req: Request, res: Response, next: NextFunction) {
         try {
-            const payload = res.locals.jwtPayload as ITokenPayload;
+            const payload = res.locals.tokenPayload as ITokenPayload;
             await userService.deleteAvatar(payload.userId);
             res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {

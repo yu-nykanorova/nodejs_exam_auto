@@ -10,7 +10,7 @@ const router = Router();
 
 router.post(
     "/sign-up/seller",
-    commonMiddleware.isBodyValid(UserValidator.create),
+    commonMiddleware.isBodyValid(UserValidator.createSeller),
     authController.signUpSeller,
 );
 router.post(

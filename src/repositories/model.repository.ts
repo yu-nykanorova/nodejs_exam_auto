@@ -24,7 +24,7 @@ class ModelRepository {
         brandId: string,
     ): Promise<IModel | null> {
         return await Model.findOne({
-            name,
+            name: new RegExp(`^${name}$`, "i"),
             brandId,
         });
     }
@@ -35,7 +35,6 @@ class ModelRepository {
 
     public async getModelRequests(): Promise<IModelRequest[]> {
         return await ModelRequest.find()
-            .populate("brandId", "name")
             .populate("_ownerId", "name email")
             .sort({ createdAt: -1 });
     }
@@ -43,9 +42,10 @@ class ModelRepository {
     public async getModelRequestById(
         id: string,
     ): Promise<IModelRequest | null> {
-        return await ModelRequest.findById(id)
-            .populate("brandId", "name")
-            .populate("_ownerId", "name email");
+        return await ModelRequest.findById(id).populate(
+            "_ownerId",
+            "name email",
+        );
     }
 
     public async createModelRequest(

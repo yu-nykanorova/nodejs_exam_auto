@@ -49,6 +49,7 @@ router.patch(
         PermissionsEnum.UPDATE_BRAND_REQUEST_STATUS,
     ),
     commonMiddleware.isIdValid("id"),
+    commonMiddleware.isBodyValid(BrandValidator.updateBrandRequestStatus),
     brandController.updateBrandRequestStatus,
 );
 

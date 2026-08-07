@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { UserRoleEnum } from "../enums/user-role.enum";
 import { IAuth } from "../interfaces/auth.interface";
-import { IToken, ITokenPayload } from "../interfaces/token.interface";
+import { ITokenPayload } from "../interfaces/token.interface";
 import {
     IChangePassword,
     IResetPassword,
@@ -48,9 +48,9 @@ class AuthController {
     public async refresh(req: Request, res: Response, next: NextFunction) {
         try {
             const refreshToken = res.locals.refreshToken as string;
-            const jwtPayload = res.locals.jwtPayload as ITokenPayload;
+            const payload = res.locals.tokenPayload as ITokenPayload;
 
-            const tokens = await authService.refresh(refreshToken, jwtPayload);
+            const tokens = await authService.refresh(refreshToken, payload);
             res.status(StatusCodesEnum.OK).json(tokens);
         } catch (e) {
             next(e);
@@ -64,8 +64,8 @@ class AuthController {
     ) {
         try {
             const dto = req.body as IResetPasswordSendEmail;
-            await authService.forgotPasswordSendEmail(dto);
-            res.sendStatus(StatusCodesEnum.OK);
+            const actionToken = await authService.forgotPasswordSendEmail(dto);
+            res.status(StatusCodesEnum.OK).json(actionToken);
         } catch (e) {
             next(e);
         }
@@ -120,7 +120,7 @@ class AuthController {
 
     public async logout(req: Request, res: Response, next: NextFunction) {
         try {
-            const { refreshToken } = res.locals.tokenPair as IToken;
+            const refreshToken = res.locals.refreshToken as string;
             await authService.logout(refreshToken);
             res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {

@@ -51,7 +51,7 @@ class UserService {
     public async getById(userId: string): Promise<IUser> {
         const user = await userRepository.getById(userId);
 
-        if (!user || user.status === UserStatusEnum.DELETED) {
+        if (!user) {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
 
@@ -206,6 +206,8 @@ class UserService {
 
         await actionTokenRepository.deleteActionToken({ _userId: userId });
 
+        await tokenRepository.deleteAllByParams({ _userId: userId });
+
         await oldHashesRepository.deleteManyByParams({ _userId: userId });
 
         await advertRepository.updateStatusByUserId(
@@ -236,7 +238,7 @@ class UserService {
 
         if (user) {
             throw new ApiError(
-                "User is already exists",
+                "User with this email is already exists",
                 StatusCodesEnum.BAD_REQUEST,
             );
         }

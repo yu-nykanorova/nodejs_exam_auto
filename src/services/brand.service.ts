@@ -14,6 +14,15 @@ class BrandService {
     }
 
     public async createBrand(brandName: string): Promise<IBrand> {
+        const brand = await brandRepository.getByName(brandName);
+
+        if (brand) {
+            throw new ApiError(
+                "Brand already exists",
+                StatusCodesEnum.BAD_REQUEST,
+            );
+        }
+
         return await brandRepository.createBrand(brandName);
     }
 
@@ -75,7 +84,7 @@ class BrandService {
             const brand = await brandRepository.getByName(brandRequest.name);
 
             if (!brand) {
-                await this.createBrand(brandRequest.name);
+                await brandRepository.createBrand(brandRequest.name);
             }
         }
 

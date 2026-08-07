@@ -44,6 +44,7 @@ router.patch(
     "/me/account-type",
     authMiddleware.checkAccessToken,
     permissionsMiddleware.checkPermission(PermissionsEnum.MANAGE_ACCOUNT_TYPE),
+    commonMiddleware.isBodyValid(UserValidator.updateAccountType),
     userController.updateMeAccountType,
 );
 router.delete(

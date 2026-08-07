@@ -112,7 +112,7 @@ class ModelService {
                 brandId = brand._id;
             }
 
-            await this.createModel({
+            await modelRepository.createModel({
                 name: modelRequest.name,
                 brandId,
             });

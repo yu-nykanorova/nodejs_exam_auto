@@ -4,6 +4,7 @@ import { RegexEnum } from "../enums/regex.enum";
 import { UserQueryOrderEnum } from "../enums/user-query-order.enum";
 import { UserStatusEnum } from "../enums/user-status.enum";
 import { queryValidator } from "./query.validator";
+import { AccountTypeEnum } from "../enums/account-type.enum";
 
 export class UserValidator {
     private static email = joi.string().email().trim();
@@ -15,6 +16,9 @@ export class UserValidator {
         .string()
         .valid(...Object.values(UserStatusEnum));
     private static phone = joi.string().pattern(/^\+?[0-9]{10,15}$/);
+    private static accountType = joi
+        .string()
+        .valid(...Object.values(AccountTypeEnum));
 
     public static create = joi.object({
         email: this.email.required(),
@@ -23,6 +27,15 @@ export class UserValidator {
         surname: this.surname.required(),
         age: this.age.required(),
         phone: this.phone,
+    });
+
+    public static createSeller = joi.object({
+        email: this.email.required(),
+        password: this.password.required(),
+        name: this.name.required(),
+        surname: this.surname.required(),
+        age: this.age.required(),
+        phone: this.phone.required(),
     });
 
     public static createManager = joi.object({
@@ -39,6 +52,7 @@ export class UserValidator {
         name: this.name,
         surname: this.surname,
         age: this.age,
+        phone: this.phone,
     });
 
     public static login = joi.object({
@@ -60,5 +74,9 @@ export class UserValidator {
 
     public static changeStatus = joi.object({
         status: this.status.required(),
+    });
+
+    public static updateAccountType = joi.object({
+        accountType: this.accountType.required(),
     });
 }

@@ -15,7 +15,7 @@ router.post(
     "/",
     authMiddleware.checkAccessToken,
     permissionsMiddleware.checkPermission(PermissionsEnum.CREATE_MODEL),
-    commonMiddleware.isBodyValid(ModelValidator.create),
+    commonMiddleware.isBodyValid(ModelValidator.createModel),
     modelController.createModel,
 );
 
@@ -30,7 +30,7 @@ router.post(
     "/requests",
     authMiddleware.checkAccessToken,
     permissionsMiddleware.checkPermission(PermissionsEnum.SEND_MODEL_REQUEST),
-    commonMiddleware.isBodyValid(ModelValidator.create),
+    commonMiddleware.isBodyValid(ModelValidator.createModelRequest),
     modelController.createModelRequest,
 );
 
@@ -49,6 +49,7 @@ router.patch(
         PermissionsEnum.UPDATE_MODEL_REQUEST_STATUS,
     ),
     commonMiddleware.isIdValid("id"),
+    commonMiddleware.isBodyValid(ModelValidator.updateModelRequestStatus),
     modelController.updateModelRequestStatus,
 );
 
