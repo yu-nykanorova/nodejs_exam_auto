@@ -1,4 +1,5 @@
 import { config } from "../configs/config";
+import { IPaginatedResponse } from "../interfaces/paginated-response.interface";
 import { IUser } from "../interfaces/user.interface";
 
 class UserPresenter {
@@ -20,10 +21,15 @@ class UserPresenter {
             updatedAt: user.updatedAt,
         };
     }
-    public toListResDto(users: IUser[], totalItems: number) {
+    public toListResDto(usersResponse: IPaginatedResponse<IUser>) {
+        const users = usersResponse.data;
+
         return {
+            totalItems: usersResponse.totalItems,
+            totalPages: usersResponse.totalPages,
+            prevPage: usersResponse.prevPage,
+            nextPage: usersResponse.nextPage,
             data: users.map((user) => this.toPublicResDto(user)),
-            totalItems,
         };
     }
 }

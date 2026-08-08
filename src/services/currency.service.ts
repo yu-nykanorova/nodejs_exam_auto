@@ -64,9 +64,9 @@ class CurrencyService {
         }
 
         return {
-            priceUAH: baseUAHPrice,
-            priceUSD: baseUAHPrice / exchangeRateUSD,
-            priceEUR: baseUAHPrice / exchangeRateEUR,
+            priceUAH: Number(baseUAHPrice.toFixed(2)),
+            priceUSD: Number((baseUAHPrice / exchangeRateUSD).toFixed(2)),
+            priceEUR: Number((baseUAHPrice / exchangeRateEUR).toFixed(2)),
             exchangeRate: {
                 EUR: exchangeRateEUR,
                 USD: exchangeRateUSD,

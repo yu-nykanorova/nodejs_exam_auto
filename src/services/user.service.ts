@@ -206,8 +206,6 @@ class UserService {
 
         await actionTokenRepository.deleteActionToken({ _userId: userId });
 
-        await tokenRepository.deleteAllByParams({ _userId: userId });
-
         await oldHashesRepository.deleteManyByParams({ _userId: userId });
 
         await advertRepository.updateStatusByUserId(

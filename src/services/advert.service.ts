@@ -133,28 +133,28 @@ class AdvertService {
 
         const updatedDTO = await this.checkPriceChanged(dto, advert);
 
-        const titleChanged =
-            updatedDTO.title !== undefined && updatedDTO.title !== advert.title;
-
-        const descriptionChanged =
-            updatedDTO.description !== undefined &&
-            updatedDTO.description !== advert.description;
-
-        if (!titleChanged && !descriptionChanged) {
-            const updatedAdvert = await advertRepository.updateById(
-                advertId,
-                updatedDTO,
-            );
-
-            if (!updatedAdvert) {
-                throw new ApiError(
-                    "Advert not found",
-                    StatusCodesEnum.NOT_FOUND,
-                );
-            }
-
-            return updatedAdvert;
-        }
+        // const titleChanged =
+        //     updatedDTO.title !== undefined && updatedDTO.title !== advert.title;
+        //
+        // const descriptionChanged =
+        //     updatedDTO.description !== undefined &&
+        //     updatedDTO.description !== advert.description;
+        //
+        // if (!titleChanged && !descriptionChanged) {
+        //     const updatedAdvert = await advertRepository.updateById(
+        //         advertId,
+        //         updatedDTO,
+        //     );
+        //
+        //     if (!updatedAdvert) {
+        //         throw new ApiError(
+        //             "Advert not found",
+        //             StatusCodesEnum.NOT_FOUND,
+        //         );
+        //     }
+        //
+        //     return updatedAdvert;
+        // }
 
         return await moderationService.processModeration(advert, updatedDTO);
     }

@@ -134,7 +134,7 @@ class AdvertRepository {
         userId: string,
         status: AdvertStatusEnum,
     ): Promise<void> {
-        await Advert.updateMany({ _userId: userId }, { status });
+        await Advert.updateMany({ _ownerId: userId }, { status });
     }
 
     public async refreshAdvertPrices(

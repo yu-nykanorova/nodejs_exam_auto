@@ -16,7 +16,7 @@ export const emailConstants: IEmailConstants<typeof EmailEnum> = {
     },
     [EmailEnum.WELCOME_MANAGER]: {
         subject: "Welcome, new manager",
-        template: "welcome",
+        template: "welcome-manager",
     },
     [EmailEnum.FORGOT_PASSWORD]: {
         subject: "Forgot-password",

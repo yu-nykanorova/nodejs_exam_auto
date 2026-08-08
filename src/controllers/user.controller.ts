@@ -23,10 +23,7 @@ class UserController {
                 validatedQuery: IUserQuery;
             };
             const users = await userService.getAllUsers(validatedQuery);
-            const result = userPresenter.toListResDto(
-                users.data,
-                users.totalItems,
-            );
+            const result = userPresenter.toListResDto(users);
             res.status(StatusCodesEnum.OK).json(result);
         } catch (e) {
             next(e);

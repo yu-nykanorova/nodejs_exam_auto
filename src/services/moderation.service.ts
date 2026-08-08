@@ -15,8 +15,11 @@ class ModerationService {
         advert: IAdvert,
         dto: IAdvertUpdateDTO,
     ): Promise<IAdvert> {
-        const checkedTitle = includesProfanity(dto.title ?? "");
-        const checkedDescription = includesProfanity(dto.description ?? "");
+        const title = dto.title ?? advert.title;
+        const description = dto.description ?? advert.description;
+
+        const checkedTitle = includesProfanity(title);
+        const checkedDescription = includesProfanity(description);
 
         if (checkedTitle || checkedDescription) {
             if (advert.status === AdvertStatusEnum.ACTIVE) {
@@ -93,6 +96,7 @@ class ModerationService {
         const updatedAdvert = await advertRepository.updateById(advert._id, {
             ...dto,
             status: AdvertStatusEnum.ACTIVE,
+            attemptModerate: 0,
         });
 
         if (!updatedAdvert) {
