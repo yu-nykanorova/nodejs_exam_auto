@@ -25,6 +25,7 @@ const advertSchema = new Schema(
         exchangeRate: {
             USD: { type: Number, required: true },
             EUR: { type: Number, required: true },
+            date: { type: Date, required: true },
         },
         status: {
             type: String,
@@ -32,7 +33,6 @@ const advertSchema = new Schema(
             required: true,
         },
         _ownerId: { type: Schema.Types.ObjectId, required: true, ref: User },
-        viewsCount: { type: Number, default: 0 },
         attemptModerate: { type: Number, default: 0 },
         deletedAt: { type: Date, default: null },
     },

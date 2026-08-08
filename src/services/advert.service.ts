@@ -18,6 +18,7 @@ import { IPaginatedResponse } from "../interfaces/paginated-response.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
 import { advertRepository } from "../repositories/advert.repository";
 import { advertStatisticsRepository } from "../repositories/advert-statistics.repository";
+import { modelRepository } from "../repositories/model.repository";
 import { userRepository } from "../repositories/user.repository";
 import { advertStatisticsService } from "./advert-statistics.service";
 import { awsImagesStorageService } from "./awsImagesStorage.service";
@@ -27,11 +28,12 @@ import { moderationService } from "./moderation.service";
 class AdvertService {
     public async getAllAdverts(
         query: IAdvertQuery,
-        payload: ITokenPayload,
+        payload?: ITokenPayload,
     ): Promise<IPaginatedResponse<IAdvertResult>> {
         const onlyActive =
-            payload.role !== UserRoleEnum.ADMIN &&
-            payload.role !== UserRoleEnum.MANAGER;
+            !payload ||
+            (payload.role !== UserRoleEnum.ADMIN &&
+                payload.role !== UserRoleEnum.MANAGER);
 
         const dataFromDB = await advertRepository.getAllAdverts(
             query,
@@ -56,6 +58,8 @@ class AdvertService {
     ): Promise<IAdvert> {
         await this.checkAdvertsCount(ownerId);
 
+        await this.checkIsModelExists(dto);
+
         const rates = await currencyService.getExchangeRates();
 
         const prices = await currencyService.calculatePrices(
@@ -79,7 +83,7 @@ class AdvertService {
 
     public async getById(
         advertId: string,
-        payload: ITokenPayload,
+        payload?: ITokenPayload,
     ): Promise<IAdvert> {
         const advert = await advertRepository.getById(advertId);
 
@@ -88,10 +92,12 @@ class AdvertService {
         }
 
         const isModerator =
-            payload.role === UserRoleEnum.ADMIN ||
-            payload.role === UserRoleEnum.MANAGER;
+            payload &&
+            (payload.role === UserRoleEnum.ADMIN ||
+                payload.role === UserRoleEnum.MANAGER);
 
-        const isOwner = advert._ownerId.toString() === payload.userId;
+        const isOwner =
+            payload && advert._ownerId.toString() === payload.userId;
 
         if (
             advert.status !== AdvertStatusEnum.ACTIVE &&
@@ -101,7 +107,7 @@ class AdvertService {
             throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        if (!payload.userId || !isOwner) {
+        if (!payload?.userId || !isOwner) {
             await advertStatisticsService.incrementAdvertViews(advertId);
         }
 
@@ -286,6 +292,21 @@ class AdvertService {
             throw new ApiError(
                 "You can update only your own adverts",
                 StatusCodesEnum.FORBIDDEN,
+            );
+        }
+    }
+
+    private async checkIsModelExists(dto: IAdvertCreateDTO): Promise<void> {
+        const model = await modelRepository.getModelById(dto.modelId);
+
+        if (!model) {
+            throw new ApiError("Model not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        if (model.brandId.toString() !== dto.brandId) {
+            throw new ApiError(
+                "Model does not belong to the selected brand",
+                StatusCodesEnum.BAD_REQUEST,
             );
         }
     }

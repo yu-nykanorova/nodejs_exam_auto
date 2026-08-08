@@ -19,6 +19,10 @@ class ModelRepository {
         return await Model.find({ brandId }).sort({ name: 1 });
     }
 
+    public async getModelById(modelId: string): Promise<IModel | null> {
+        return await Model.findById(modelId);
+    }
+
     public async getModelByNameAndBrand(
         name: string,
         brandId: string,

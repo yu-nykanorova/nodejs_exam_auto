@@ -23,7 +23,8 @@ class AdvertController {
             const { validatedQuery } = req as any as {
                 validatedQuery: IAdvertQuery;
             };
-            const payload = res.locals.tokenPayload as ITokenPayload;
+            const payload = res.locals.tokenPayload as
+                ITokenPayload | undefined;
             const adverts = await advertService.getAllAdverts(
                 validatedQuery,
                 payload,
@@ -48,7 +49,8 @@ class AdvertController {
     public async getById(req: Request, res: Response, next: NextFunction) {
         try {
             const advertId = req.params.id as string;
-            const payload = res.locals.tokenPayload as ITokenPayload;
+            const payload = res.locals.tokenPayload as
+                ITokenPayload | undefined;
             const advert = await advertService.getById(advertId, payload);
             res.status(StatusCodesEnum.OK).json(advert);
         } catch (e) {
@@ -74,7 +76,7 @@ class AdvertController {
 
     public async uploadPhoto(req: Request, res: Response, next: NextFunction) {
         try {
-            const payload = res.locals.jwtPayload as ITokenPayload;
+            const payload = res.locals.tokenPayload as ITokenPayload;
             const photo = req.files?.photo as UploadedFile;
             const id = req.params.id as string;
 
@@ -98,7 +100,7 @@ class AdvertController {
 
     public async deletePhoto(req: Request, res: Response, next: NextFunction) {
         try {
-            const payload = res.locals.jwtPayload as ITokenPayload;
+            const payload = res.locals.tokenPyload as ITokenPayload;
             const id = req.params.id as string;
             await advertService.deletePhoto(id, payload.userId);
             res.sendStatus(StatusCodesEnum.NO_CONTENT);

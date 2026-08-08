@@ -1,10 +1,10 @@
 import joi from "joi";
 
+import { AccountTypeEnum } from "../enums/account-type.enum";
 import { RegexEnum } from "../enums/regex.enum";
 import { UserQueryOrderEnum } from "../enums/user-query-order.enum";
 import { UserStatusEnum } from "../enums/user-status.enum";
 import { queryValidator } from "./query.validator";
-import { AccountTypeEnum } from "../enums/account-type.enum";
 
 export class UserValidator {
     private static email = joi.string().email().trim();
