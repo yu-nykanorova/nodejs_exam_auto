@@ -50,7 +50,9 @@ class BrandRepository {
         id: string,
         dto: { status: BrandRequestStatusEnum },
     ): Promise<IBrandRequest | null> {
-        return await BrandRequest.findByIdAndUpdate(id, dto, { new: true });
+        return await BrandRequest.findByIdAndUpdate(id, dto, {
+            returnDocument: "after",
+        });
     }
 }
 

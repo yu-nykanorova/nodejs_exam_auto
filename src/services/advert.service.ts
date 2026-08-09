@@ -116,7 +116,7 @@ class AdvertService {
 
     public async updateAdvert(
         advertId: string,
-        userId: string,
+        payload: ITokenPayload,
         dto: IAdvertUpdateDTO,
     ): Promise<IAdvert> {
         const advert = await advertRepository.getById(advertId);
@@ -129,32 +129,9 @@ class AdvertService {
             throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        this.checkIsOwner(advert, userId);
+        this.checkIsOwner(advert, payload);
 
         const updatedDTO = await this.checkPriceChanged(dto, advert);
-
-        // const titleChanged =
-        //     updatedDTO.title !== undefined && updatedDTO.title !== advert.title;
-        //
-        // const descriptionChanged =
-        //     updatedDTO.description !== undefined &&
-        //     updatedDTO.description !== advert.description;
-        //
-        // if (!titleChanged && !descriptionChanged) {
-        //     const updatedAdvert = await advertRepository.updateById(
-        //         advertId,
-        //         updatedDTO,
-        //     );
-        //
-        //     if (!updatedAdvert) {
-        //         throw new ApiError(
-        //             "Advert not found",
-        //             StatusCodesEnum.NOT_FOUND,
-        //         );
-        //     }
-        //
-        //     return updatedAdvert;
-        // }
 
         return await moderationService.processModeration(advert, updatedDTO);
     }
@@ -182,7 +159,7 @@ class AdvertService {
 
     public async uploadPhoto(
         advertId: string,
-        userId: string,
+        payload: ITokenPayload,
         file: UploadedFile,
     ): Promise<IAdvert> {
         const advert = await advertRepository.getById(advertId);
@@ -195,7 +172,7 @@ class AdvertService {
             throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        this.checkIsOwner(advert, userId);
+        this.checkIsOwner(advert, payload);
 
         const photo = await awsImagesStorageService.uploadFile(
             file,
@@ -217,7 +194,10 @@ class AdvertService {
         return updatedAdvert;
     }
 
-    public async deletePhoto(advertId: string, userId: string): Promise<void> {
+    public async deletePhoto(
+        advertId: string,
+        payload: ITokenPayload,
+    ): Promise<void> {
         const advert = await advertRepository.getById(advertId);
 
         if (
@@ -228,7 +208,7 @@ class AdvertService {
             throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        this.checkIsOwner(advert, userId);
+        this.checkIsOwner(advert, payload);
 
         if (!advert.photo) {
             throw new ApiError("Photo not found", StatusCodesEnum.NOT_FOUND);
@@ -260,7 +240,7 @@ class AdvertService {
 
     public async deleteAdvert(
         advertId: string,
-        userId?: string,
+        payload: ITokenPayload,
     ): Promise<void> {
         const advert = await advertRepository.getById(advertId);
 
@@ -275,8 +255,17 @@ class AdvertService {
             );
         }
 
-        if (userId) {
-            this.checkIsOwner(advert, userId);
+        const isModerator =
+            payload.role === UserRoleEnum.ADMIN ||
+            payload.role === UserRoleEnum.MANAGER;
+
+        const isOwner = advert._ownerId.toString() === payload.userId;
+
+        if (!isOwner && !isModerator) {
+            throw new ApiError(
+                "You can delete only your own adverts",
+                StatusCodesEnum.FORBIDDEN,
+            );
         }
 
         await advertStatisticsRepository.deleteAdvertViews(advertId);
@@ -287,8 +276,8 @@ class AdvertService {
         });
     }
 
-    private checkIsOwner(advert: IAdvert, userId: string): void {
-        if (advert._ownerId.toString() !== userId) {
+    private checkIsOwner(advert: IAdvert, payload: ITokenPayload): void {
+        if (advert._ownerId.toString() !== payload.userId) {
             throw new ApiError(
                 "You can update only your own adverts",
                 StatusCodesEnum.FORBIDDEN,

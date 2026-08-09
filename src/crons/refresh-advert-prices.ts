@@ -5,6 +5,7 @@ import { advertService } from "../services/advert.service";
 const handler = async () => {
     try {
         await advertService.refreshAllAdvertsPrices();
+        console.log("advert prices refreshed");
     } catch (e) {
         console.error(e);
     }

@@ -68,8 +68,8 @@ class CurrencyService {
             priceUSD: Number((baseUAHPrice / exchangeRateUSD).toFixed(2)),
             priceEUR: Number((baseUAHPrice / exchangeRateEUR).toFixed(2)),
             exchangeRate: {
-                EUR: exchangeRateEUR,
-                USD: exchangeRateUSD,
+                EUR: Number(exchangeRateEUR.toFixed(2)),
+                USD: Number(exchangeRateUSD.toFixed(2)),
                 date: rates.date,
             },
         };

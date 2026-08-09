@@ -63,11 +63,7 @@ class AdvertController {
             const payload = res.locals.tokenPayload as ITokenPayload;
             const dto = req.body as IAdvertUpdateDTO;
             const id = req.params.id as string;
-            const data = await advertService.updateAdvert(
-                id,
-                payload.userId,
-                dto,
-            );
+            const data = await advertService.updateAdvert(id, payload, dto);
             res.status(StatusCodesEnum.OK).json(data);
         } catch (e) {
             next(e);
@@ -87,11 +83,7 @@ class AdvertController {
                 );
             }
 
-            const advert = await advertService.uploadPhoto(
-                id,
-                payload.userId,
-                photo,
-            );
+            const advert = await advertService.uploadPhoto(id, payload, photo);
             res.status(StatusCodesEnum.CREATED).json(advert);
         } catch (e) {
             next(e);
@@ -102,7 +94,7 @@ class AdvertController {
         try {
             const payload = res.locals.tokenPyload as ITokenPayload;
             const id = req.params.id as string;
-            await advertService.deletePhoto(id, payload.userId);
+            await advertService.deletePhoto(id, payload);
             res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);
@@ -143,7 +135,7 @@ class AdvertController {
         try {
             const payload = res.locals.tokenPayload as ITokenPayload;
             const id = req.params.id as string;
-            await advertService.deleteAdvert(id, payload.userId);
+            await advertService.deleteAdvert(id, payload);
 
             res.status(StatusCodesEnum.NO_CONTENT).end();
         } catch (e) {

@@ -127,7 +127,9 @@ class AdvertRepository {
         advertId: string,
         dto: IAdvertUpdateDTO,
     ): Promise<IAdvert | null> {
-        return await Advert.findByIdAndUpdate(advertId, dto, { new: true });
+        return await Advert.findByIdAndUpdate(advertId, dto, {
+            returnDocument: "after",
+        });
     }
 
     public async updateStatusByUserId(
@@ -142,7 +144,7 @@ class AdvertRepository {
         pricesAndRates: IAdvertCalculatedPrices,
     ): Promise<IAdvert | null> {
         return await Advert.findByIdAndUpdate(advertId, pricesAndRates, {
-            new: true,
+            returnDocument: "after",
         });
     }
 

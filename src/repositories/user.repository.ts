@@ -81,7 +81,9 @@ class UserRepository {
         userId: string,
         user: IUserUpdateDTO,
     ): Promise<IUser | null> {
-        return await User.findByIdAndUpdate(userId, user, { new: true });
+        return await User.findByIdAndUpdate(userId, user, {
+            returnDocument: "after",
+        });
     }
 
     public async getDeletedBeforeDate(date: Date): Promise<IUser[]> {

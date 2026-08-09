@@ -3,8 +3,8 @@ import { NextFunction, Request, Response } from "express";
 import { PermissionsEnum } from "../enums/permissions.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ApiError } from "../errors/api.errors";
-import { rolePermissions } from "../permissions/role-permissions";
 import { ITokenPayload } from "../interfaces/token.interface";
+import { rolePermissions } from "../permissions/role-permissions";
 
 class PermissionsMiddleware {
     public checkPermission(permission: PermissionsEnum) {

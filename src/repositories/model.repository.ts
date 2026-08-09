@@ -63,7 +63,9 @@ class ModelRepository {
         id: string,
         dto: { status: ModelRequestStatusEnum },
     ): Promise<IModelRequest | null> {
-        return await ModelRequest.findByIdAndUpdate(id, dto, { new: true });
+        return await ModelRequest.findByIdAndUpdate(id, dto, {
+            returnDocument: "after",
+        });
     }
 }
 

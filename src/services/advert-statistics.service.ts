@@ -1,6 +1,7 @@
 import { AccountTypeEnum } from "../enums/account-type.enum";
 import { AdvertStatusEnum } from "../enums/advert-status.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
+import { UserRoleEnum } from "../enums/user-role.enum";
 import { ApiError } from "../errors/api.errors";
 import {
     IAdvertStatistics,
@@ -18,10 +19,7 @@ class AdvertStatisticsService {
         const advert = await advertRepository.getById(advertId);
 
         if (!advert || advert.status !== AdvertStatusEnum.ACTIVE) {
-            throw new ApiError(
-                "There are no statistics for this adverts",
-                StatusCodesEnum.NOT_FOUND,
-            );
+            throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
         }
 
         const user = await userRepository.getById(userId);
@@ -30,11 +28,19 @@ class AdvertStatisticsService {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        if (user._id.toString() !== advert._ownerId.toString()) {
+        if (
+            user._id.toString() !== advert._ownerId.toString() &&
+            user.role !== UserRoleEnum.ADMIN &&
+            user.role !== UserRoleEnum.MANAGER
+        ) {
             throw new ApiError("Access denied", StatusCodesEnum.FORBIDDEN);
         }
 
-        if (user.accountType !== AccountTypeEnum.PREMIUM) {
+        if (
+            user.accountType !== AccountTypeEnum.PREMIUM &&
+            user.role !== UserRoleEnum.ADMIN &&
+            user.role !== UserRoleEnum.MANAGER
+        ) {
             throw new ApiError(
                 "The account type does not allow viewing statistics",
                 StatusCodesEnum.FORBIDDEN,
