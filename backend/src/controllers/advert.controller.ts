@@ -92,7 +92,7 @@ class AdvertController {
 
     public async deletePhoto(req: Request, res: Response, next: NextFunction) {
         try {
-            const payload = res.locals.tokenPyload as ITokenPayload;
+            const payload = res.locals.tokenPayload as ITokenPayload;
             const id = req.params.id as string;
             await advertService.deletePhoto(id, payload);
             res.sendStatus(StatusCodesEnum.NO_CONTENT);
