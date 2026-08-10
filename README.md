@@ -122,8 +122,64 @@ The repository contains the Postman collection and environment required to test 
 Import both files into your Postman.  
 Select the imported environment before sending requests.
 
+## Recommended testing flow
+The test database already contains buyers, sellers with BASIC and PREMIUM accounts, managers and admin, a few car brands and models, advertisements of different status.
 
-## Additional information
-The test database already contains buyers, sellers with BASIC and PREMIUM accounts, managers and admin, a few car brands and models, advertisements of different status.  
+ADMIN  
+email: admin@test.com  
+password: Superadmin@1
 
-To test the advertisement moderation flow create an advertisement containing prohibited language and verify that the automatic moderation detects it. Then update this advertisement and verify the allowed number of editing attempts. After the maximum number of failed moderation attempts, the advertisement becomes BLOCKED and all managers receives emails.
+MANAGER  
+email: manager1@test.com  
+password: AAAaaa111@
+
+SELLER PREMIUM  
+email: kodenko@test.com  
+password: BBBbbb222@
+
+SELLER BASIC  
+email: tank@test.com  
+password: CCCccc333@
+
+1. Authentication
+
+- Sign-up seller
+- Login
+- Change password
+- Refresh token
+- Logout
+- Forgot password
+
+2. Brands and models
+- Get all brands
+- Get models
+- Create brand request
+- Create model request
+- Get brand/model request (for ADMIN/MANAGER)
+- Update brand/model request (for ADMIN/MANAGER)
+- Create brand/model (for ADMIN/MANAGER)
+
+4. Users
+- Get profile
+- Update profile
+- Upload avatar
+- Delete avatar
+- Get users
+- Change user status (for ADMIN/MANAGER)
+- Get own adverts (for SELLERS)
+- Create manager (for ADMIN)
+
+4. Advertisements
+- Create advert
+- Get adverts
+- Get advert by ID
+- Get advert statistics (for SELLER PREMIUM)
+- Update advert
+- Upload photo
+- Delete photo
+- Delete advert
+- Change advert status (for ADMIN/MANAGER)
+
+
+To test the advertisement moderation flow create an advertisement containing profanity and verify that the automatic moderation detects it. Then update this advertisement and verify the allowed number of editing attempts. After the maximum number of failed moderation attempts, the advertisement becomes BLOCKED and all managers receives emails.
+
