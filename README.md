@@ -63,7 +63,7 @@ cd nodejs_exam_auto
 The repository contains .env.example.  
 Create your local .env file in the root directory of the project.  
 Copy the variables from .env.example and fill them with the values provided at the link given below.  
-https://drive.google.com/file/d/19OqGheTaZp8DlNRocFqAHOf-OLYKA-el/view?usp=sharing
+https://drive.google.com/file/d/1Kng1txzarE7I0FMD-Xh0yckGz55a8eNz/view?usp=sharing
 
 3) Run with Docker
 
