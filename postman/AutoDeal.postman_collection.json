@@ -302,7 +302,7 @@
                   "key": "avatar",
                   "type": "file",
                   "uuid": "8c92cfa0-497a-458b-b8b5-3db4141381e1",
-                  "src": "postman-cloud:///1f1926f8-5883-4f40-930d-32f75faa988e"
+                  "src": "postman-cloud:///1f176168-8bc5-4cc0-89b4-583ff5c6d48c"
                 }
               ]
             },
@@ -1073,7 +1073,7 @@
               "mode": "formdata",
               "formdata": [
                 {
-                  "key": "photo",
+                  "key": "avatar",
                   "type": "file",
                   "uuid": "7e62d140-73a0-4fdf-ba99-3133a3c9d50b",
                   "src": "postman-cloud:///1f193140-bde8-4f00-9911-efa99f695498"

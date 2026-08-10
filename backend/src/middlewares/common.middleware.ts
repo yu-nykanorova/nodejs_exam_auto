@@ -65,7 +65,7 @@ class CommonMiddleware {
     public isFileValid(fileData: IFile) {
         return (req: Request, res: Response, next: NextFunction) => {
             try {
-                const file = req.files?.photo as UploadedFile;
+                const file = req.files?.avatar as UploadedFile;
 
                 if (!file) {
                     throw new ApiError(

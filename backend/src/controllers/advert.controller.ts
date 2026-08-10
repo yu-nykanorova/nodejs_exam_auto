@@ -73,7 +73,7 @@ class AdvertController {
     public async uploadPhoto(req: Request, res: Response, next: NextFunction) {
         try {
             const payload = res.locals.tokenPayload as ITokenPayload;
-            const photo = req.files?.photo as UploadedFile;
+            const photo = req.files?.avatar as UploadedFile;
             const id = req.params.id as string;
 
             if (!photo) {
