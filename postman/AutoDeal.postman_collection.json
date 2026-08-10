@@ -1,0 +1,1654 @@
+{
+  "info": {
+    "_postman_id": "99714625-b3c4-409a-b42f-a513550a2deb",
+    "name": "AutoDeal",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52585750",
+    "_collection_link": "https://go.postman.co/collection/52585750-99714625-b3c4-409a-b42f-a513550a2deb?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "users",
+      "item": [
+        {
+          "name": "get users",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users?pageSize=5&search=va&order=age",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "pageSize",
+                  "value": "5",
+                  "type": "text"
+                },
+                {
+                  "key": "search",
+                  "value": "va",
+                  "type": "text"
+                },
+                {
+                  "key": "order",
+                  "value": "age",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get me",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get user by id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{buyerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{buyerId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update user status by id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"status\": \"BLOCKED\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/{{sellerId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{sellerId}}",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete user by id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{buyerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{buyerId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get me adverts",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/me/adverts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me",
+                "adverts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update me account-type",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"accountType\": \"PREMIUM\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me/account-type",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me",
+                "account-type"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update me",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"age\": 49\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "upload avatar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "uuid": "8c92cfa0-497a-458b-b8b5-3db4141381e1",
+                  "src": "postman-cloud:///1f1926f8-5883-4f40-930d-32f75faa988e"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me/avatar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me",
+                "avatar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete avatar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me/avatar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me",
+                "avatar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete me",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create manager",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "pm.environment.set(\"managerId\", response.newManager._id);\r",
+                  "pm.environment.set(\"actionToken\", response.actionToken);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"manager4@test.com\",\r\n    \"name\": \"Mykola\",\r\n    \"surname\": \"Stanov\",\r\n    \"age\": 31\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/managers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "managers"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "sign-up seller",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "pm.environment.set(\r",
+                  "    \"accessToken\",\r",
+                  "    res.tokens.accessToken\r",
+                  ");\r",
+                  "\r",
+                  "pm.environment.set(\r",
+                  "    \"refreshToken\",\r",
+                  "    res.tokens.refreshToken\r",
+                  ");\r",
+                  "\r",
+                  "pm.environment.set(\"sellerId\", res.user._id);\r",
+                  "pm.environment.set(\"currentUserId\", res.user._id);\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Jan\",\r\n    \"surname\": \"Olimp\",\r\n    \"age\": \"42\",\r\n    \"email\": \"olimp@test.com\",\r\n    \"password\": \"AAAaaa111@\",\r\n    \"phone\": \"+380123456789\"  \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/sign-up/seller",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "sign-up",
+                "seller"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "sign-up buyer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "pm.environment.set(\r",
+                  "    \"accessToken\",\r",
+                  "    res.tokens.accessToken\r",
+                  ");\r",
+                  "\r",
+                  "pm.environment.set(\r",
+                  "    \"refreshToken\",\r",
+                  "    res.tokens.refreshToken\r",
+                  ");\r",
+                  "\r",
+                  "pm.environment.set(\"buyerId\", res.user._id);\r",
+                  "pm.environment.set(\"currentUserId\", res.user._id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Mikho\",\r\n    \"surname\": \"Lama\",\r\n    \"age\": 38,\r\n    \"email\": \"lama@test.com\",\r\n    \"password\": \"AAAaaa111@\"    \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/sign-up/buyer",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "sign-up",
+                "buyer"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "pm.environment.set(\r",
+                  "    \"accessToken\",\r",
+                  "    res.tokens.accessToken\r",
+                  ");\r",
+                  "\r",
+                  "pm.environment.set(\r",
+                  "    \"refreshToken\",\r",
+                  "    res.tokens.refreshToken\r",
+                  ");\r",
+                  "\r",
+                  "pm.environment.set(\"currentUserId\", res.user._id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"admin@test.com\",\r\n    \"password\": \"Superadmin@1\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "refresh",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "pm.environment.set(\r",
+                  "    \"accessToken\",\r",
+                  "    res.accessToken\r",
+                  ");\r",
+                  "\r",
+                  "pm.environment.set(\r",
+                  "    \"refreshToken\",\r",
+                  "    res.refreshToken\r",
+                  ");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"refreshToken\": \"{{refreshToken}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "forgot pass send email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const actionToken = pm.response.json();\r",
+                  "\r",
+                  "pm.environment.set(\"actionToken\", actionToken);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"kent@test.com\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/forgot-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "forgot pass change",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {\r",
+                  "    pm.environment.set(\"actionToken\", \"\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"password\": \"BBBbbb222@\", \"token\": \"{{actionToken}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/forgot-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "set password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {\r",
+                  "    pm.environment.set(\"actionToken\", \"\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"password\": \"AAAaaa111@\", \"token\": \"{{actionToken}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/set-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "set-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "change password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {\r",
+                  "    pm.environment.set(\"accessToken\", \"\");\r",
+                  "    pm.environment.set(\"refreshToken\", \"\");\r",
+                  "    pm.environment.set(\"currentUserId\", \"\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"oldPassword\": \"BBBbbb222@\", \"password\": \"CCCccc333@\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.environment.set(\"accessToken\", \"\");\r",
+                  "pm.environment.set(\"refreshToken\", \"\");\r",
+                  "pm.environment.set(\"currentUserId\", \"\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"refreshToken\": \"{{refreshToken}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "adverts",
+      "item": [
+        {
+          "name": "get adverts",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adverts?pageSize=2&search=to&order=-year",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "adverts"
+              ],
+              "query": [
+                {
+                  "key": "pageSize",
+                  "value": "2",
+                  "type": "text"
+                },
+                {
+                  "key": "search",
+                  "value": "to",
+                  "type": "text"
+                },
+                {
+                  "key": "order",
+                  "value": "-year",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get advert by id",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adverts/{{advertId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "adverts",
+                "{{advertId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create advert",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const advert = pm.response.json();\r",
+                  "\r",
+                  "pm.environment.set(\"advertId\", advert._id);\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"Audi A6 Cherkasy\",\r\n    \"brandId\": \"{{brandIdAudi}}\",\r\n    \"modelId\": \"{{modelIdAudiA6}}\",\r\n    \"year\": 2007,\r\n    \"region\": \"Cherkasy region\",\r\n    \"city\": \"Cherkasy\",\r\n    \"description\": \"Some description of this car, that I'm going to sell.\",\r\n    \"initialPrice\": 18000,\r\n    \"initialCurrency\": \"USD\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/adverts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "adverts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update advert",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const advert = pm.response.json();\r",
+                  "\r",
+                  "pm.environment.set(\"advertId\", advert._id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"initialPrice\": 1600000,\r\n    \"initialCurrency\": \"UAH\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/adverts/{{advertId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "adverts",
+                "{{advertId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "upload photo",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "uuid": "7e62d140-73a0-4fdf-ba99-3133a3c9d50b",
+                  "src": "postman-cloud:///1f193140-bde8-4f00-9911-efa99f695498"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/adverts/{{advertId}}/photo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "adverts",
+                "{{advertId}}",
+                "photo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete photo",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{baseUrl}}/adverts/{{advertId}}/photo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "adverts",
+                "{{advertId}}",
+                "photo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete advert",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adverts/{{advertId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "adverts",
+                "{{advertId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update advert status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adverts/{{advertId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "adverts",
+                "{{advertId}}",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get advert statistics",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adverts/{{advertId}}/statistics",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "adverts",
+                "{{advertId}}",
+                "statistics"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "brands-models",
+      "item": [
+        {
+          "name": "get brands",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/brands",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "brands"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get brands requests",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/brands/requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "brands",
+                "requests"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get brand request by id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/brands/requests/{{brandRequestId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "brands",
+                "requests",
+                "{{brandRequestId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update brand request status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"status\": \"ACCEPTED\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/brands/requests/{{brandRequestId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "brands",
+                "requests",
+                "{{brandRequestId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update model request status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"status\": \"ACCEPTED\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/models/requests/{{modelRequestId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "models",
+                "requests",
+                "{{modelRequestId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get model request by id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/models/requests/{{modelRequestId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "models",
+                "requests",
+                "{{modelRequestId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create brand request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const request = pm.response.json();\r",
+                  "\r",
+                  "pm.environment.set(\"brandRequestId\", request._id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Volkswagen\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/brands/requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "brands",
+                "requests"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create model request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const request = pm.response.json();\r",
+                  "\r",
+                  "pm.environment.set(\"modelRequestId\", request._id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Focus\", \"brandName\": \"Ford\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/models/requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "models",
+                "requests"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get models requests",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/models/requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "models",
+                "requests"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get models",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/models",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "models"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create brand",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "pm.environment.set(\"brandId\", res._id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Honda\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/brands",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "brands"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create model",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "pm.environment.set(\"modelId\", res._id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Accent\", \"brandId\": \"{{brandId}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/models",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "models"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
