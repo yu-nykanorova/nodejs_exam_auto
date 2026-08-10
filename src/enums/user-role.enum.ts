@@ -1,6 +1,0 @@
-export enum UserRoleEnum {
-    ADMIN = "admin",
-    MANAGER = "manager",
-    SELLER = "seller",
-    BUYER = "buyer",
-}

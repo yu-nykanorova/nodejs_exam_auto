@@ -1,0 +1,13 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY ./backend/package*.json ./
+
+RUN npm ci
+
+COPY ./backend .
+
+EXPOSE 3000
+
+CMD ["npx", "tsx", "src/main.ts"]
