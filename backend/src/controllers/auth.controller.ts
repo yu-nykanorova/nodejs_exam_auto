@@ -12,24 +12,40 @@ import {
     IUserCreateBuyerDTO,
     IUserCreateSellerDTO,
 } from "../interfaces/user.interface";
+import { userPresenter } from "../presenters/user.presenter";
 import { authService } from "../services/auth.service";
 
 class AuthController {
-    public async signUpSeller(req: Request, res: Response, next: NextFunction) {
-        try {
-            const body = req.body as IUserCreateSellerDTO;
-            const data = await authService.signUp(body, UserRoleEnum.SELLER);
-            res.status(StatusCodesEnum.CREATED).json(data);
-        } catch (e) {
-            next(e);
-        }
-    }
+    public signUpSeller = async (
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) => {
+        await this.signUp(req, res, next, UserRoleEnum.SELLER);
+    };
 
-    public async signUpBuyer(req: Request, res: Response, next: NextFunction) {
+    public signUpBuyer = async (
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) => {
+        await this.signUp(req, res, next, UserRoleEnum.BUYER);
+    };
+
+    public async signUp(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+        role: UserRoleEnum,
+    ) {
         try {
-            const body = req.body as IUserCreateBuyerDTO;
-            const data = await authService.signUp(body, UserRoleEnum.BUYER);
-            res.status(StatusCodesEnum.CREATED).json(data);
+            const body = req.body as IUserCreateBuyerDTO | IUserCreateSellerDTO;
+            const data = await authService.signUp(body, role);
+            const result = userPresenter.toPublicResDto(data.user);
+            res.status(StatusCodesEnum.CREATED).json({
+                user: result,
+                tokens: data.tokens,
+            });
         } catch (e) {
             next(e);
         }
@@ -39,7 +55,11 @@ class AuthController {
         try {
             const dto = req.body as IAuth;
             const data = await authService.login(dto);
-            res.status(StatusCodesEnum.OK).json(data);
+            const result = userPresenter.toPublicResDto(data.user);
+            res.status(StatusCodesEnum.OK).json({
+                user: result,
+                tokens: data.tokens,
+            });
         } catch (e) {
             next(e);
         }
@@ -83,7 +103,8 @@ class AuthController {
                 dto,
                 payload,
             );
-            res.status(StatusCodesEnum.OK).json(updatedUser);
+            const result = userPresenter.toPublicResDto(updatedUser);
+            res.status(StatusCodesEnum.OK).json(result);
         } catch (e) {
             next(e);
         }

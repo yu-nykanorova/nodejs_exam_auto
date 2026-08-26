@@ -139,7 +139,7 @@ class UserService {
 
     public async createManager(
         manager: IUserCreateManagerDTO,
-    ): Promise<{ newManager: IUser; actionToken: string }> {
+    ): Promise<{ newManager: IUser }> {
         await userService.isEmailUnique(manager.email);
         const newManager = await userRepository.create({
             ...manager,
@@ -172,7 +172,7 @@ class UserService {
             },
         );
 
-        return { newManager, actionToken };
+        return { newManager };
     }
 
     public async changeStatus(
@@ -236,8 +236,8 @@ class UserService {
 
         if (user) {
             throw new ApiError(
-                "User with this email is already exists",
-                StatusCodesEnum.BAD_REQUEST,
+                "A user with this email already exists",
+                StatusCodesEnum.CONFLICT,
             );
         }
     }

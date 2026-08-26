@@ -26,4 +26,12 @@ export const emailConstants: IEmailConstants<typeof EmailEnum> = {
         subject: "Check advert",
         template: "check-advert",
     },
+    [EmailEnum.BRAND_REQUEST]: {
+        subject: "Add new brand request",
+        template: "brand-request",
+    },
+    [EmailEnum.MODEL_REQUEST]: {
+        subject: "Add new model request",
+        template: "model-request",
+    },
 };

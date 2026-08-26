@@ -4,7 +4,6 @@ import { ModelRequestStatusEnum } from "../enums/model-request-status.enum";
 
 export class ModelValidator {
     private static name = joi.string().min(2).max(20).trim();
-    private static brandName = joi.string().min(2).max(20).trim();
     private static brandId = joi.string().trim();
     private static status = joi
         .string()
@@ -17,7 +16,7 @@ export class ModelValidator {
 
     public static createModelRequest = joi.object({
         name: this.name.required(),
-        brandName: this.brandName.required(),
+        brandId: this.brandId.required(),
     });
 
     public static updateModelRequestStatus = joi.object({

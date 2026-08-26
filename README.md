@@ -159,7 +159,7 @@ password: CCCccc333@
 - Update brand/model request (for ADMIN/MANAGER)
 - Create brand/model (for ADMIN/MANAGER)
 
-4. Users
+3. Users
 - Get profile
 - Update profile
 - Upload avatar
@@ -179,7 +179,6 @@ password: CCCccc333@
 - Delete photo
 - Delete advert
 - Change advert status (for ADMIN/MANAGER)
-
 
 To test the advertisement moderation flow create an advertisement containing profanity and verify that the automatic moderation detects it. Then update this advertisement and verify the allowed number of editing attempts. After the maximum number of failed moderation attempts, the advertisement becomes BLOCKED and all managers receives emails.
 

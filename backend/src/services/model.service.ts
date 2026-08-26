@@ -1,5 +1,7 @@
+import { emailConstants } from "../constants/email.constants";
 import { ModelRequestStatusEnum } from "../enums/model-request-status.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
+import { UserRoleEnum } from "../enums/user-role.enum";
 import { ApiError } from "../errors/api.errors";
 import {
     IModel,
@@ -9,6 +11,8 @@ import {
 } from "../interfaces/model.interface";
 import { brandRepository } from "../repositories/brand.repository";
 import { modelRepository } from "../repositories/model.repository";
+import { userRepository } from "../repositories/user.repository";
+import { emailService } from "./email.service";
 
 class ModelService {
     public async getAllModels(brandId?: string): Promise<IModel[]> {
@@ -34,7 +38,7 @@ class ModelService {
         if (model) {
             throw new ApiError(
                 "Model already exists",
-                StatusCodesEnum.BAD_REQUEST,
+                StatusCodesEnum.CONFLICT,
             );
         }
 
@@ -65,13 +69,56 @@ class ModelService {
         dto: IModelCreateRequestDTO,
         ownerId: string,
     ): Promise<IModelRequest> {
-        return await modelRepository.createModelRequest(
+        const seller = await userRepository.getById(ownerId);
+
+        if (!seller) {
+            throw new ApiError("Seller not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        const brand = await brandRepository.getById(dto.brandId);
+
+        if (!brand) {
+            throw new ApiError("Brand not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        const model = await modelRepository.getModelByNameAndBrand(
+            dto.name,
+            dto.brandId,
+        );
+
+        if (model) {
+            throw new ApiError(
+                "Model already exists",
+                StatusCodesEnum.CONFLICT,
+            );
+        }
+
+        const newModelRequest = await modelRepository.createModelRequest(
             {
                 ...dto,
                 _ownerId: ownerId,
             },
             ModelRequestStatusEnum.PENDING,
         );
+
+        const managers = await userRepository.getByRole(UserRoleEnum.MANAGER);
+
+        await Promise.all(
+            managers.map(async (manager) => {
+                await emailService.sendEmail(
+                    manager.email,
+                    emailConstants.MODEL_REQUEST,
+                    {
+                        sellerName: seller.name,
+                        sellerId: seller._id,
+                        brandName: brand.name,
+                        modelName: dto.name,
+                    },
+                );
+            }),
+        );
+
+        return newModelRequest;
     }
 
     public async updateModelRequestStatus(
@@ -91,20 +138,18 @@ class ModelService {
         if (modelRequest.status !== ModelRequestStatusEnum.PENDING) {
             throw new ApiError(
                 "This request has already been processed",
-                StatusCodesEnum.BAD_REQUEST,
+                StatusCodesEnum.CONFLICT,
             );
         }
 
         if (status === ModelRequestStatusEnum.ACCEPTED) {
-            const brand = await brandRepository.getByName(
-                modelRequest.brandName,
-            );
+            const brand = await brandRepository.getById(modelRequest.brandId);
 
             let brandId: string;
 
             if (!brand) {
                 const newBrand = await brandRepository.createBrand(
-                    modelRequest.brandName,
+                    modelRequest.brandId,
                 );
 
                 brandId = newBrand._id;

@@ -14,6 +14,7 @@ class ModerationService {
     public async processModeration(
         advert: IAdvert,
         dto: IAdvertUpdateDTO,
+        isAdvertCreation: boolean = false,
     ): Promise<IAdvert> {
         const title = dto.title ?? advert.title;
         const description = dto.description ?? advert.description;
@@ -22,7 +23,7 @@ class ModerationService {
         const checkedDescription = includesProfanity(description);
 
         if (checkedTitle || checkedDescription) {
-            if (advert.status === AdvertStatusEnum.ACTIVE) {
+            if (isAdvertCreation) {
                 await advertRepository.updateById(advert._id, {
                     ...dto,
                     status: AdvertStatusEnum.PENDING,

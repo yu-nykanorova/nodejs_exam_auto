@@ -1,5 +1,7 @@
+import { emailConstants } from "../constants/email.constants";
 import { BrandRequestStatusEnum } from "../enums/brand-request-status.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
+import { UserRoleEnum } from "../enums/user-role.enum";
 import { ApiError } from "../errors/api.errors";
 import {
     IBrand,
@@ -7,6 +9,8 @@ import {
     IBrandRequest,
 } from "../interfaces/brand.interface";
 import { brandRepository } from "../repositories/brand.repository";
+import { userRepository } from "../repositories/user.repository";
+import { emailService } from "./email.service";
 
 class BrandService {
     public async getAllBrands(): Promise<IBrand[]> {
@@ -19,7 +23,7 @@ class BrandService {
         if (brand) {
             throw new ApiError(
                 "Brand already exists",
-                StatusCodesEnum.BAD_REQUEST,
+                StatusCodesEnum.CONFLICT,
             );
         }
 
@@ -50,13 +54,46 @@ class BrandService {
         dto: IBrandCreateRequestDTO,
         ownerId: string,
     ): Promise<IBrandRequest> {
-        return await brandRepository.createBrandRequest(
+        const seller = await userRepository.getById(ownerId);
+
+        if (!seller) {
+            throw new ApiError("Seller not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        const brand = await brandRepository.getByName(dto.name);
+
+        if (brand) {
+            throw new ApiError(
+                "Brand already exists",
+                StatusCodesEnum.CONFLICT,
+            );
+        }
+
+        const newBrandRequest = await brandRepository.createBrandRequest(
             {
                 ...dto,
                 _ownerId: ownerId,
             },
             BrandRequestStatusEnum.PENDING,
         );
+
+        const managers = await userRepository.getByRole(UserRoleEnum.MANAGER);
+
+        await Promise.all(
+            managers.map(async (manager) => {
+                await emailService.sendEmail(
+                    manager.email,
+                    emailConstants.BRAND_REQUEST,
+                    {
+                        sellerName: seller.name,
+                        sellerId: seller._id,
+                        brandName: dto.name,
+                    },
+                );
+            }),
+        );
+
+        return newBrandRequest;
     }
 
     public async updateBrandRequestStatus(
@@ -76,7 +113,7 @@ class BrandService {
         if (brandRequest.status !== BrandRequestStatusEnum.PENDING) {
             throw new ApiError(
                 "This request has already been processed",
-                StatusCodesEnum.BAD_REQUEST,
+                StatusCodesEnum.CONFLICT,
             );
         }
 

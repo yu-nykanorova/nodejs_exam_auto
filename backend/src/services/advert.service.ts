@@ -78,7 +78,7 @@ class AdvertService {
             status: AdvertStatusEnum.PENDING,
         });
 
-        return await moderationService.processModeration(newAdvert, dto);
+        return await moderationService.processModeration(newAdvert, dto, true);
     }
 
     public async getById(

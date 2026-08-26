@@ -28,7 +28,7 @@ class AuthMiddleware {
 
             if (!accessToken) {
                 throw new ApiError(
-                    "No token provided",
+                    "No access token provided",
                     StatusCodesEnum.UNAUTHORIZED,
                 );
             }
@@ -67,7 +67,7 @@ class AuthMiddleware {
             if (!refreshToken) {
                 throw new ApiError(
                     "No refresh token provided",
-                    StatusCodesEnum.FORBIDDEN,
+                    StatusCodesEnum.UNAUTHORIZED,
                 );
             }
             const tokenPayload = tokenService.verifyToken(

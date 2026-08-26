@@ -15,13 +15,13 @@ export interface IModelCreateDTO {
 
 export interface IModelCreateRequestDTO {
     name: string;
-    brandName: string;
+    brandId: string;
 }
 
 export interface IModelRequest {
     _id: string;
     name: string;
-    brandName: string;
+    brandId: string;
     status: ModelRequestStatusEnum;
     _ownerId: string;
     createdAt: Date;
