@@ -23,7 +23,7 @@ import { advertRepository } from "../repositories/advert.repository";
 import { oldHashesRepository } from "../repositories/old-hashes.repository";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
-import { awsImagesStorageService } from "./awsImagesStorage.service";
+import { awsImagesStorageService } from "./aws-images-storage.service";
 import { emailService } from "./email.service";
 import { tokenService } from "./token.service";
 

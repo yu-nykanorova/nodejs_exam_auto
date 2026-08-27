@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 
+import { AdvertQueryOrderEnum } from "../enums/advert-query-order.enum";
 import { AdvertStatusEnum } from "../enums/advert-status.enum";
 import {
     IAdvert,
@@ -150,7 +151,7 @@ class AdvertRepository {
 
     public async deleteAdvertsByUserId(userId: string): Promise<void> {
         await Advert.deleteMany({
-            _userId: userId,
+            _ownerId: userId,
         });
     }
 
@@ -196,16 +197,16 @@ class AdvertRepository {
             filterObject.region = query.region;
         }
 
-        if (query.priceFrom) {
-            filterObject.price = {
-                ...filterObject.price,
+        if (query.priceFrom !== undefined && query.currency) {
+            filterObject[`price${query.currency}`] = {
+                ...filterObject[`price${query.currency}`],
                 $gte: query.priceFrom,
             };
         }
 
-        if (query.priceTo) {
-            filterObject.price = {
-                ...filterObject.price,
+        if (query.priceTo !== undefined && query.currency) {
+            filterObject[`price${query.currency}`] = {
+                ...filterObject[`price${query.currency}`],
                 $lte: query.priceTo,
             };
         }
@@ -230,14 +231,21 @@ class AdvertRepository {
     private buildSortOrder(query: IAdvertQuery): Record<string, any> {
         const orderObject: Record<string, 1 | -1> = {};
 
-        if (query.order) {
-            if (query.order.startsWith("-")) {
-                orderObject[query.order.slice(1)] = -1;
-            } else {
-                orderObject[query.order] = 1;
-            }
-        } else {
+        if (!query.order) {
             orderObject.createdAt = -1;
+            return orderObject;
+        }
+
+        const orderKey = query.order.startsWith("-")
+            ? query.order.slice(1)
+            : query.order;
+
+        const orderDirection = query.order.startsWith("-") ? -1 : 1;
+
+        if (orderKey === AdvertQueryOrderEnum.PRICE) {
+            orderObject[`price${query.currency}`] = orderDirection;
+        } else {
+            orderObject[orderKey] = orderDirection;
         }
 
         return orderObject;

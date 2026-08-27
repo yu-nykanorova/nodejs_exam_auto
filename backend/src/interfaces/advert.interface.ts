@@ -48,7 +48,7 @@ export interface IAdvertResult {
     priceUSD: number;
     priceEUR: number;
     _ownerId: string;
-    ownerContacts: IOwnerContacts[];
+    ownerContacts: IOwnerContacts;
     exchangeRate: IExchangeRateData;
     photo?: string;
     status: AdvertStatusEnum;
@@ -68,6 +68,7 @@ export interface IAdvertQuery {
     yearTo?: number;
     city?: string;
     region?: string;
+    currency?: CurrencyEnum;
     priceFrom?: number;
     priceTo?: number;
 }

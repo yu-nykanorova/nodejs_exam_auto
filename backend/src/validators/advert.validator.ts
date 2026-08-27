@@ -7,6 +7,8 @@ import { queryValidator } from "./query.validator";
 export class AdvertValidator {
     private static title = joi.string().min(10).max(100).trim();
     private static description = joi.string().min(50).trim();
+    private static priceFrom = joi.number().min(0);
+    private static priceTo = joi.number().min(0);
     private static initialPrice = joi.number().min(0);
     private static initialCurrency = joi
         .string()
@@ -14,6 +16,14 @@ export class AdvertValidator {
     private static brandId = joi.string().trim();
     private static modelId = joi.string().trim();
     private static year = joi.number().min(1920).max(new Date().getFullYear());
+    private static yearFrom = joi
+        .number()
+        .min(1920)
+        .max(new Date().getFullYear());
+    private static yearTo = joi
+        .number()
+        .min(1920)
+        .max(new Date().getFullYear());
     private static city = joi.string().min(3).max(30).trim();
     private static region = joi.string().min(3).max(30).trim();
 
@@ -44,7 +54,11 @@ export class AdvertValidator {
     public static query = queryValidator(AdvertQueryOrderEnum, {
         brandId: this.brandId,
         modelId: this.modelId,
-        year: this.year,
+        yearFrom: this.yearFrom,
+        yearTo: this.yearTo,
+        currency: this.initialCurrency.default(CurrencyEnum.USD),
+        priceFrom: this.priceFrom,
+        priceTo: this.priceTo,
         city: this.city,
         region: this.region,
     });

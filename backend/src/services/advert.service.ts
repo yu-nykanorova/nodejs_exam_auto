@@ -21,7 +21,7 @@ import { advertStatisticsRepository } from "../repositories/advert-statistics.re
 import { modelRepository } from "../repositories/model.repository";
 import { userRepository } from "../repositories/user.repository";
 import { advertStatisticsService } from "./advert-statistics.service";
-import { awsImagesStorageService } from "./awsImagesStorage.service";
+import { awsImagesStorageService } from "./aws-images-storage.service";
 import { currencyService } from "./currency.service";
 import { moderationService } from "./moderation.service";
 
