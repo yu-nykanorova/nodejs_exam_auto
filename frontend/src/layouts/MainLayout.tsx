@@ -1,7 +1,7 @@
 export const MainLayout = () => {
     return (
         <div>
-            HI THERE!
+            MainLayout
         </div>
     );
 };
