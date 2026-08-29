@@ -1,3 +1,5 @@
+import type { IUser } from "./IUser.ts";
+
 export interface ILoginRequest {
     email: string;
     password: string;
@@ -25,4 +27,9 @@ export interface ISetPasswordRequest {
 export interface IAuthResponse {
     accessToken: string;
     refreshToken: string;
+}
+
+export interface IAuthUserResponse {
+    user: IUser;
+    tokens: IAuthResponse;
 }

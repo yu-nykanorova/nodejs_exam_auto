@@ -21,6 +21,65 @@ export interface IAdvert {
     updatedAt: string;
 }
 
+export interface IAdvertCreate {
+    title: string;
+    brandId: string;
+    modelId: string;
+    year: number;
+    region: string;
+    city: string;
+    description: string;
+    initialPrice: number;
+    initialCurrency: Currency;
+}
+
+export type IAdvertUpdate = Partial<Pick<IAdvert,
+    | "title"
+    | "description"
+    | "initialPrice"
+    | "initialCurrency"
+    | "year"
+    | "region"
+    | "city"
+    | "photo"
+> & { brandId: string; modelId: string; }>;
+
+export type IAdvertChangeStatus = Pick<IAdvert, "status">;
+
+export interface IAdvertQuery {
+    pageSize?: number;
+    page?: number;
+    search?: string;
+    order?: string;
+    brandId?: string;
+    modelId?: string;
+    yearFrom?: number;
+    yearTo?: number;
+    city?: string;
+    region?: string;
+    currency?: Currency;
+    priceFrom?: number;
+    priceTo?: number;
+}
+
+export interface IAdvertResponse
+{
+    totalItems: number;
+    totalPages: number;
+    prevPage: number;
+    nextPage: number;
+    data: IAdvert[];
+}
+
+export interface IAdvertStatistics {
+    viewsCount: number;
+    viewsToday: number;
+    viewsWeek: number;
+    viewsMonth: number;
+    averageRegionPrice: number;
+    averageCountryPrice: number;
+}
+
 type Currency = 'UAH' | 'USD' | 'EUR';
 
 type AdvertStatus = "pending" | "active" | "blocked" | "deleted" | "sold";
@@ -37,11 +96,3 @@ interface IOwnerContacts {
     phone: string;
 }
 
-export interface IAdvertResponse
-{
-    totalItems: number;
-    totalPages: number;
-    prevPage: number;
-    nextPage: number;
-    data: IAdvert[];
-}

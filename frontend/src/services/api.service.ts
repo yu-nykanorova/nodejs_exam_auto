@@ -1,12 +1,19 @@
-import axios from "axios";
+import axios, { type InternalAxiosRequestConfig } from "axios";
+import { retrieveLocalStorage } from "../utils/retrieveLocalStorage.ts";
+import type { IAuthResponse } from "../interfaces/IAuth.ts";
 
 export const axiosInstance = axios.create({
     baseURL: "http://localhost:3000",
     headers: {"Content-Type": "application/json"},
 });
 
+const refreshAxiosInstance = axios.create({
+    baseURL: "http://localhost:3000",
+    headers: {"Content-Type": "application/json"},
+});
+
 axiosInstance.interceptors.request.use((requestObject) => {
-    const accessToken = localStorage.getItem('accessToken');
+    const accessToken = retrieveLocalStorage<IAuthResponse>("tokens")?.accessToken;
 
     if(accessToken) {
         requestObject.headers.Authorization = `Bearer ${accessToken}`;
@@ -15,11 +22,15 @@ axiosInstance.interceptors.request.use((requestObject) => {
     return requestObject;
 });
 
+type RetryRequestConfig = InternalAxiosRequestConfig & {
+    _retry?: boolean;
+};
+
 axiosInstance.interceptors.response.use(
     (response) => response,
 
     async (error) => {
-        const originalRequest = error.config;
+        const originalRequest = error.config as RetryRequestConfig;
 
         if (
             error.response?.status === 401 &&
@@ -28,26 +39,27 @@ axiosInstance.interceptors.response.use(
             originalRequest._retry = true;
 
             try {
-                const refreshToken =
-                    localStorage.getItem('refreshToken');
+                const tokens =
+                    retrieveLocalStorage<IAuthResponse>(
+                        "tokens",
+                    );
 
-                if (!refreshToken) {
-                    throw error;
+                if (!tokens) {
+                    throw new Error("Tokens not found");
                 }
 
-                const { data } = await axiosInstance.post(
-                    '/auth/refresh',
-                    { refreshToken },
-                );
+                const { data } =
+                    await refreshAxiosInstance.post<IAuthResponse>(
+                        "/auth/refresh",
+                        {
+                            refreshToken:
+                            tokens.refreshToken,
+                        },
+                    );
 
                 localStorage.setItem(
-                    'accessToken',
-                    data.accessToken,
-                );
-
-                localStorage.setItem(
-                    'refreshToken',
-                    data.refreshToken,
+                    "tokens",
+                    JSON.stringify(data),
                 );
 
                 originalRequest.headers.Authorization =
@@ -55,8 +67,7 @@ axiosInstance.interceptors.response.use(
 
                 return axiosInstance(originalRequest);
             } catch (refreshError) {
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('refreshToken');
+                localStorage.removeItem("tokens");
 
                 return Promise.reject(refreshError);
             }
@@ -101,10 +112,8 @@ export const patchItem = async <T, D>(
     return data;
 };
 
-export const deleteItem = async <T>(
+export const deleteItem = async (
     url: string,
-): Promise<T> => {
-    const { data } = await axiosInstance.delete<T>(url);
-
-    return data;
+): Promise<void> => {
+    await axiosInstance.delete(url);
 };
