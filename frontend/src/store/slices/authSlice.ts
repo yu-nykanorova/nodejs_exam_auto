@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice, isPending, isRejected, type PayloadAction } from "@reduxjs/toolkit";
-import type { IAuthUserResponse, ILoginRequest } from "../../interfaces/IAuth.ts";
+import type { IAuthResponse, IAuthUserResponse, ILoginRequest } from "../../interfaces/IAuth.ts";
 import { getError } from "../../utils/getError.ts";
 import type { IUser, IUserCreate } from "../../interfaces/IUser.ts";
 import { authService } from "../../services/authService.ts";
+import { getFromLocalStorage, removeFromLocalStorage, saveToLocalStorage } from "../../utils/localStorage.ts";
 
 type AuthSliceType = {
     user: IUser | null;
@@ -26,7 +27,10 @@ const login = createAsyncThunk(
     ) => {
         try {
             const response = await authService.login(body);
-
+            saveToLocalStorage(
+                "tokens",
+                JSON.stringify(response.tokens),
+            );
             return thunkAPI.fulfillWithValue(response);
         } catch (error) {
             return thunkAPI.rejectWithValue(getError(error));
@@ -43,7 +47,10 @@ const signUpBuyer = createAsyncThunk(
         try {
             const response =
                 await authService.signUpBuyer(body);
-
+            saveToLocalStorage(
+                "tokens",
+                JSON.stringify(response.tokens),
+            );
             return thunkAPI.fulfillWithValue(response);
         } catch (error) {
             return thunkAPI.rejectWithValue(
@@ -62,7 +69,10 @@ const signUpSeller = createAsyncThunk(
         try {
             const response =
                 await authService.signUpSeller(body);
-
+            saveToLocalStorage(
+                "tokens",
+                JSON.stringify(response.tokens),
+            );
             return thunkAPI.fulfillWithValue(response);
         } catch (error) {
             return thunkAPI.rejectWithValue(
@@ -74,10 +84,13 @@ const signUpSeller = createAsyncThunk(
 
 const logout = createAsyncThunk(
     'authSlice/logout',
-    async (body: { refreshToken: string }, thunkAPI) => {
+    async (_, thunkAPI) => {
         try {
-            await authService.logout(body);
-
+            const tokens = getFromLocalStorage<IAuthResponse>("tokens");
+            if (tokens?.refreshToken) {
+                await authService.logout({ refreshToken: tokens.refreshToken });
+            }
+            removeFromLocalStorage("tokens");
             return thunkAPI.fulfillWithValue(null);
         } catch (error) {
             return thunkAPI.rejectWithValue(getError(error));

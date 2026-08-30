@@ -23,7 +23,7 @@ BASIC and PREMIUM seller account types
 - For PREMIUM sellers - getting their own advertisement's statistics (views count, average prices).
 - Profanity moderation - automatically check advertisement for profanity during creating/updating.
 ### Brands and models
-Brands and models are stored separately. There are endpoints for retrieving available brands and models. If the required brand or model does not exist, a seller can submit a request to the administration. Brand and model requests can then be reviewed and processed by an authorized Manager/Admin.
+Brands and models are stored separately. There are endpoints for retrieving available brands and models. If the required brand or model does not exist, a seller can submit a request to the administration. Brand and model requests can then be reviewed and processed by an authorized Manager/AdminLayout.
 ### Email notifications
 The application uses Nodemailer for email notifications, including moderation-related notifications and password recovery functionality.
 ### Scheduled tasks (cron library)

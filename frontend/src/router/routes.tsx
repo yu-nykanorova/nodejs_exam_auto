@@ -13,7 +13,7 @@ import { MyAdvertsPage } from "../pages/MyAdvertsPage.tsx";
 import { CreateAdvertPage } from "../pages/CreateAdvertPage.tsx";
 import { EditAdvertPage } from "../pages/EditAdvertPage.tsx";
 import { RequestsPage } from "../pages/RequestsPage.tsx";
-import { ManagerLayout } from "../layouts/ManagerLayout.tsx";
+import { AdminLayout } from "../layouts/AdminLayout.tsx";
 import { UsersPage } from "../pages/UsersPage.tsx";
 import { UserDetailsPage } from "../pages/UserDetailsPage.tsx";
 import { BrandRequestsPage } from "../pages/BrandRequestsPage.tsx";
@@ -51,8 +51,12 @@ export const routes = createBrowserRouter([
             // Manager / Admin
             {
                 path: 'manager',
-                element: <ManagerLayout />,
+                element: <AdminLayout />,
                 children: [
+                    {
+                        index: true,
+                        element: <UsersPage />,
+                    },
                     {
                         path: 'create-manager',
                         element: <CreateManagerPage />,

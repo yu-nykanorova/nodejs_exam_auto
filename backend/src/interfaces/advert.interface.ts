@@ -36,8 +36,8 @@ export interface IAdvert {
 export interface IAdvertResult {
     _id: string;
     title: string;
-    brand: string;
-    model: string;
+    brand: IBrand;
+    model: IModel;
     year: number;
     region: string;
     city: string;
@@ -133,4 +133,19 @@ export interface IAdvertCreate {
     status: AdvertStatusEnum;
     _ownerId: string;
     photo?: string;
+}
+
+interface IBrand {
+    _id: string;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+interface IModel {
+    _id: string;
+    name: string;
+    brandId: string;
+    createdAt: string;
+    updatedAt: string;
 }

@@ -38,7 +38,7 @@ const loadMe = createAsyncThunk(
 
 const loadUsers = createAsyncThunk(
     'userSlice/loadUsers',
-    async (params: IUserQuery, thunkAPI) => {
+    async (params: IUserQuery | undefined, thunkAPI) => {
         try {
             const users = await usersService.getUsers(params);
 
@@ -149,7 +149,7 @@ const deleteUser = createAsyncThunk(
     async (id: string, thunkAPI) => {
         try {
             await usersService.deleteUser(id);
-
+            await thunkAPI.dispatch(loadUsers());
             return thunkAPI.fulfillWithValue(id);
         } catch (error) {
             return thunkAPI.rejectWithValue(
@@ -273,6 +273,16 @@ export const userSlice = createSlice({
                     state.user = null;
                 },
             )
+            // Load me
+            .addCase(loadMe.pending, (state) => {
+                state.userLoading = true;
+                state.user = null;
+            })
+            // Load user
+            .addCase(loadUser.pending, (state) => {
+                state.userLoading = true;
+                state.selectedUser = null;
+            })
             // Loading list
             .addMatcher(
                 isPending(loadUsers),
@@ -284,14 +294,6 @@ export const userSlice = createSlice({
                 isRejected(loadUsers),
                 (state) => {
                     state.usersListLoading = false;
-                },
-            )
-            // Loading user
-            .addMatcher(
-                isPending(loadMe, loadUser),
-                (state) => {
-                    state.userLoading = true;
-                    state.user = null;
                 },
             )
             .addMatcher(

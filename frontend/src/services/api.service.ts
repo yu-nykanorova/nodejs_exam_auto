@@ -1,5 +1,5 @@
 import axios, { type InternalAxiosRequestConfig } from "axios";
-import { retrieveLocalStorage } from "../utils/retrieveLocalStorage.ts";
+import { getFromLocalStorage, removeFromLocalStorage, saveToLocalStorage } from "../utils/localStorage.ts";
 import type { IAuthResponse } from "../interfaces/IAuth.ts";
 
 export const axiosInstance = axios.create({
@@ -13,7 +13,7 @@ const refreshAxiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((requestObject) => {
-    const accessToken = retrieveLocalStorage<IAuthResponse>("tokens")?.accessToken;
+    const accessToken = getFromLocalStorage<IAuthResponse>("tokens")?.accessToken;
 
     if(accessToken) {
         requestObject.headers.Authorization = `Bearer ${accessToken}`;
@@ -40,7 +40,7 @@ axiosInstance.interceptors.response.use(
 
             try {
                 const tokens =
-                    retrieveLocalStorage<IAuthResponse>(
+                    getFromLocalStorage<IAuthResponse>(
                         "tokens",
                     );
 
@@ -57,7 +57,7 @@ axiosInstance.interceptors.response.use(
                         },
                     );
 
-                localStorage.setItem(
+                saveToLocalStorage(
                     "tokens",
                     JSON.stringify(data),
                 );
@@ -67,7 +67,7 @@ axiosInstance.interceptors.response.use(
 
                 return axiosInstance(originalRequest);
             } catch (refreshError) {
-                localStorage.removeItem("tokens");
+                removeFromLocalStorage("tokens");
 
                 return Promise.reject(refreshError);
             }

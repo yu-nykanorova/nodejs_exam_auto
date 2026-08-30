@@ -8,6 +8,9 @@ type AdvertSliceType = {
     advert: IAdvert | null;
     statistics: IAdvertStatistics | null;
     totalPages: number;
+    totalItems: number;
+    prevPage: number;
+    nextPage: number;
     advertsListLoading: boolean;
     advertDetailsLoading: boolean;
     error: string | null;
@@ -18,6 +21,9 @@ const initialState: AdvertSliceType = {
     advert: null,
     statistics: null,
     totalPages: 1,
+    totalItems: 0,
+    prevPage: 0,
+    nextPage: 0,
     advertsListLoading: false,
     advertDetailsLoading: false,
     error: null,
@@ -144,7 +150,7 @@ const deleteAdvert = createAsyncThunk(
     ) => {
         try {
             await advertsService.deleteAdvert(id);
-
+            await thunkAPI.dispatch(loadAdverts());
             return thunkAPI.fulfillWithValue(id);
         } catch (error) {
             return thunkAPI.rejectWithValue(
@@ -213,6 +219,9 @@ export const advertSlice = createSlice({
                 ) => {
                     state.adverts = action.payload.data;
                     state.totalPages = action.payload.totalPages;
+                    state.totalItems = action.payload.totalItems;
+                    state.prevPage = action.payload.prevPage;
+                    state.nextPage = action.payload.nextPage;
                     state.advertsListLoading = false;
                 },
             )

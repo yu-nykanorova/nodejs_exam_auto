@@ -1,8 +1,8 @@
 export interface IAdvert {
     _id: string;
     title: string;
-    brand: string;
-    model: string;
+    brand: IBrand;
+    model: IModel;
     year: number;
     region: string;
     city: string;
@@ -94,5 +94,20 @@ interface IOwnerContacts {
     email: string;
     name: string;
     phone: string;
+}
+
+interface IBrand {
+    _id: string;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+interface IModel {
+    _id: string;
+    name: string;
+    brandId: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
