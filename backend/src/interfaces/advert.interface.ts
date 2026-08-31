@@ -36,6 +36,8 @@ export interface IAdvert {
 export interface IAdvertResult {
     _id: string;
     title: string;
+    brandId: string;
+    modelId: string;
     brand: IBrand;
     model: IModel;
     year: number;
@@ -55,6 +57,31 @@ export interface IAdvertResult {
     attemptModerate: number;
     createdAt: Date;
     updatedAt: Date;
+    deletedAt: Date | null;
+}
+
+export interface IAdvertPublic {
+    _id: string;
+    title: string;
+    brand: IBrand;
+    model: IModel;
+    year: number;
+    region: string;
+    city: string;
+    description: string;
+    initialPrice: number;
+    initialCurrency: CurrencyEnum;
+    priceUAH: number;
+    priceUSD: number;
+    priceEUR: number;
+    _ownerId: string;
+    ownerContacts: IOwnerContacts;
+    exchangeRate: IExchangeRateData;
+    photo?: string;
+    status: AdvertStatusEnum;
+    attemptModerate: number;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface IAdvertQuery {

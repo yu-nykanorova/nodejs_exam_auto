@@ -4,7 +4,11 @@ import { AdvertStatusEnum } from "../enums/advert-status.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { UserRoleEnum } from "../enums/user-role.enum";
 import { ApiError } from "../errors/api.errors";
-import { IAdvert, IAdvertUpdateDTO } from "../interfaces/advert.interface";
+import {
+    IAdvert,
+    IAdvertResult,
+    IAdvertUpdateDTO,
+} from "../interfaces/advert.interface";
 import { advertRepository } from "../repositories/advert.repository";
 import { userRepository } from "../repositories/user.repository";
 import { includesProfanity } from "../utils/profanity-filter";
@@ -15,7 +19,7 @@ class ModerationService {
         advert: IAdvert,
         dto: IAdvertUpdateDTO,
         isAdvertCreation: boolean = false,
-    ): Promise<IAdvert> {
+    ): Promise<IAdvertResult> {
         const title = dto.title ?? advert.title;
         const description = dto.description ?? advert.description;
 

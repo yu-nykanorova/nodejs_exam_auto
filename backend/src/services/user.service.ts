@@ -61,20 +61,26 @@ class UserService {
     public async updateById(
         userId: string,
         dto: IUserUpdateDTO,
-    ): Promise<IUser | null> {
+    ): Promise<IUser> {
         const user = await userRepository.getById(userId);
 
         if (!user || user.status === UserStatusEnum.DELETED) {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        return await userRepository.updateById(userId, dto);
+        const updatedUser = await userRepository.updateById(userId, dto);
+
+        if (!updatedUser) {
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        return updatedUser;
     }
 
     public async updateAccountType(
         userId: string,
         accountType: AccountTypeEnum,
-    ) {
+    ): Promise<IUser> {
         const user = await userRepository.getById(userId);
 
         if (!user || user.status === UserStatusEnum.DELETED) {
@@ -88,7 +94,15 @@ class UserService {
             );
         }
 
-        return await userRepository.updateById(userId, { accountType });
+        const updatedUser = await userRepository.updateById(userId, {
+            accountType,
+        });
+
+        if (!updatedUser) {
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        return updatedUser;
     }
 
     public async uploadAvatar(
@@ -178,14 +192,20 @@ class UserService {
     public async changeStatus(
         userId: string,
         status: UserStatusEnum,
-    ): Promise<IUser | null> {
+    ): Promise<IUser> {
         const user = await userRepository.getById(userId);
 
         if (!user) {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        return await userRepository.updateById(userId, { status });
+        const updatedUser = await userRepository.updateById(userId, { status });
+
+        if (!updatedUser) {
+            throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        return updatedUser;
     }
 
     public async deleteById(userId: string): Promise<IUser | null> {

@@ -55,7 +55,7 @@ class AdvertService {
     public async createAdvert(
         dto: IAdvertCreateDTO,
         ownerId: string,
-    ): Promise<IAdvert> {
+    ): Promise<IAdvertResult> {
         await this.checkAdvertsCount(ownerId);
 
         await this.checkIsModelExists(dto);
@@ -84,7 +84,7 @@ class AdvertService {
     public async getById(
         advertId: string,
         payload?: ITokenPayload,
-    ): Promise<IAdvert> {
+    ): Promise<IAdvertResult> {
         const advert = await advertRepository.getById(advertId);
 
         if (!advert) {
@@ -118,7 +118,7 @@ class AdvertService {
         advertId: string,
         payload: ITokenPayload,
         dto: IAdvertUpdateDTO,
-    ): Promise<IAdvert> {
+    ): Promise<IAdvertResult> {
         const advert = await advertRepository.getById(advertId);
 
         if (
@@ -161,7 +161,7 @@ class AdvertService {
         advertId: string,
         payload: ITokenPayload,
         file: UploadedFile,
-    ): Promise<IAdvert> {
+    ): Promise<IAdvertResult> {
         const advert = await advertRepository.getById(advertId);
 
         if (
@@ -222,7 +222,7 @@ class AdvertService {
     public async changeStatus(
         advertId: string,
         status: AdvertStatusEnum,
-    ): Promise<IAdvert> {
+    ): Promise<IAdvertResult> {
         const advert = await advertRepository.getById(advertId);
 
         if (!advert) {

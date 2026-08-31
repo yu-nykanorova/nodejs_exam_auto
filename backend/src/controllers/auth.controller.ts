@@ -118,8 +118,8 @@ class AuthController {
         try {
             const payload = res.locals.tokenPayload as ITokenPayload;
             const dto = req.body as IChangePassword;
-            const updatedUser = await authService.changePassword(dto, payload);
-            res.status(StatusCodesEnum.OK).json(updatedUser);
+            await authService.changePassword(dto, payload);
+            res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);
         }
@@ -129,11 +129,8 @@ class AuthController {
         try {
             const payload = res.locals.tokenPayload as ITokenPayload;
             const password = req.body as ISetPassword;
-            const updatedUser = await authService.setPassword(
-                password,
-                payload,
-            );
-            res.status(StatusCodesEnum.OK).json(updatedUser);
+            await authService.setPassword(password, payload);
+            res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);
         }

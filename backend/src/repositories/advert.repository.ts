@@ -64,7 +64,7 @@ class AdvertRepository {
         return await Advert.create(advert);
     }
 
-    public async getById(advertId: string): Promise<IAdvert | null> {
+    public async getById(advertId: string): Promise<IAdvertResult | null> {
         const [advert] = await Advert.aggregate([
             {
                 $match: {
@@ -127,7 +127,7 @@ class AdvertRepository {
     public async updateById(
         advertId: string,
         dto: IAdvertUpdateDTO,
-    ): Promise<IAdvert | null> {
+    ): Promise<IAdvertResult | null> {
         return await Advert.findByIdAndUpdate(advertId, dto, {
             returnDocument: "after",
         });

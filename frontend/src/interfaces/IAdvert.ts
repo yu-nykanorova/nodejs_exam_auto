@@ -17,6 +17,7 @@ export interface IAdvert {
     _ownerId: string;
     ownerContacts: IOwnerContacts;
     photo?: string;
+    attemptModerate: number;
     createdAt: string;
     updatedAt: string;
 }

@@ -6,7 +6,7 @@ export interface IUser {
     name: string;
     surname: string;
     age: number;
-    phone: string;
+    phone: string | undefined;
     avatar: string | undefined;
     role: Role;
     accountType: string;

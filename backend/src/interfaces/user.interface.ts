@@ -19,6 +19,21 @@ export interface IUser {
     deletedAt: Date | null;
 }
 
+export interface IUserPublic {
+    _id: string;
+    email: string;
+    name: string;
+    surname: string;
+    age: number;
+    phone?: string;
+    avatar?: string;
+    role: UserRoleEnum;
+    accountType: AccountTypeEnum;
+    status: UserStatusEnum;
+    createdAt: string;
+    updatedAt: string;
+}
+
 export interface IUserQuery {
     pageSize?: number;
     page?: number;

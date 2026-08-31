@@ -3,6 +3,7 @@ import { UploadedFile } from "express-fileupload";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ApiError } from "../errors/api.errors";
+import { toListResponse } from "../helpers/toListResponse";
 import {
     IAdvertChangeStatusDTO,
     IAdvertCreateDTO,
@@ -10,6 +11,7 @@ import {
     IAdvertUpdateDTO,
 } from "../interfaces/advert.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
+import { advertPresenter } from "../presenters/advert.presenter";
 import { advertService } from "../services/advert.service";
 import { advertStatisticsService } from "../services/advert-statistics.service";
 
@@ -29,7 +31,13 @@ class AdvertController {
                 validatedQuery,
                 payload,
             );
-            res.status(StatusCodesEnum.OK).json(adverts);
+            const result = toListResponse.toListResDto(
+                adverts,
+                advertPresenter.toPublicResDto.bind(
+                    advertPresenter.toPublicResDto,
+                ),
+            );
+            res.status(StatusCodesEnum.OK).json(result);
         } catch (e) {
             next(e);
         }
@@ -39,8 +47,12 @@ class AdvertController {
         try {
             const payload = res.locals.tokenPayload as ITokenPayload;
             const body = req.body as IAdvertCreateDTO;
-            const data = await advertService.createAdvert(body, payload.userId);
-            res.status(StatusCodesEnum.CREATED).json(data);
+            const advert = await advertService.createAdvert(
+                body,
+                payload.userId,
+            );
+            const result = advertPresenter.toPublicResDto(advert);
+            res.status(StatusCodesEnum.CREATED).json(result);
         } catch (e) {
             next(e);
         }
@@ -52,7 +64,8 @@ class AdvertController {
             const payload = res.locals.tokenPayload as
                 ITokenPayload | undefined;
             const advert = await advertService.getById(advertId, payload);
-            res.status(StatusCodesEnum.OK).json(advert);
+            const result = advertPresenter.toPublicResDto(advert);
+            res.status(StatusCodesEnum.OK).json(result);
         } catch (e) {
             next(e);
         }
@@ -63,8 +76,9 @@ class AdvertController {
             const payload = res.locals.tokenPayload as ITokenPayload;
             const dto = req.body as IAdvertUpdateDTO;
             const id = req.params.id as string;
-            const data = await advertService.updateAdvert(id, payload, dto);
-            res.status(StatusCodesEnum.OK).json(data);
+            const advert = await advertService.updateAdvert(id, payload, dto);
+            const result = advertPresenter.toPublicResDto(advert);
+            res.status(StatusCodesEnum.OK).json(result);
         } catch (e) {
             next(e);
         }
@@ -84,7 +98,8 @@ class AdvertController {
             }
 
             const advert = await advertService.uploadPhoto(id, payload, photo);
-            res.status(StatusCodesEnum.CREATED).json(advert);
+            const result = advertPresenter.toPublicResDto(advert);
+            res.status(StatusCodesEnum.CREATED).json(result);
         } catch (e) {
             next(e);
         }
@@ -106,8 +121,9 @@ class AdvertController {
             const id = req.params.id as string;
             const { status } = req.body as IAdvertChangeStatusDTO;
 
-            const data = await advertService.changeStatus(id, status);
-            res.status(StatusCodesEnum.OK).json(data);
+            const advert = await advertService.changeStatus(id, status);
+            const result = advertPresenter.toPublicResDto(advert);
+            res.status(StatusCodesEnum.OK).json(result);
         } catch (e) {
             next(e);
         }
@@ -136,7 +152,6 @@ class AdvertController {
             const payload = res.locals.tokenPayload as ITokenPayload;
             const id = req.params.id as string;
             await advertService.deleteAdvert(id, payload);
-
             res.status(StatusCodesEnum.NO_CONTENT).end();
         } catch (e) {
             next(e);
