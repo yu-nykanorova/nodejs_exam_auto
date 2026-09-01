@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { advertSliceActions } from "../store/slices/advertSlice.ts";
 import { Loader } from "../components/ui/Loader.tsx";
 import { ErrorComponent } from "../components/ui/ErrorComponent.tsx";
+import { ADVERT_STATUS_CLASS } from "../constants/advertStatusClass.ts";
 
 export const AdvertDetailsPage = () => {
     const { id } = useParams();
@@ -33,6 +34,8 @@ export const AdvertDetailsPage = () => {
     if (!advert) {
         return <ErrorComponent message="Advert not found" />;
     }
+
+    const advertStatusClass = ADVERT_STATUS_CLASS[advert.status] ?? "";
 
     return (
         <div className="mx-auto max-w-6xl p-4">
@@ -66,7 +69,7 @@ export const AdvertDetailsPage = () => {
                             </p>
                         </div>
 
-                        <span className="rounded-md bg-gray-100 px-3 py-1 text-sm text-gray-600">
+                        <span className={`rounded-md px-3 py-1 text-sm text-gray-600 ${advertStatusClass}`}>
                             {advert.status}
                         </span>
                     </div>

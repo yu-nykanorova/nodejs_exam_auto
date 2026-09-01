@@ -44,7 +44,7 @@ export const HomePage = () => {
                     AutoDeal
                 </h1>
 
-                <p className="mt-2 text-gray-600">
+                <p className="mt-2 text-yellow-600 font-semibold text-lg">
                     Find your next car
                 </p>
             </div>

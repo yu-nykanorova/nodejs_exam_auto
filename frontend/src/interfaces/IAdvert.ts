@@ -1,3 +1,6 @@
+import type { IModel } from "./IModel.ts";
+import type { IBrand } from "./IBrand.ts";
+
 export interface IAdvert {
     _id: string;
     title: string;
@@ -81,9 +84,9 @@ export interface IAdvertStatistics {
     averageCountryPrice: number;
 }
 
-type Currency = 'UAH' | 'USD' | 'EUR';
+export type Currency = 'UAH' | 'USD' | 'EUR';
 
-type AdvertStatus = "pending" | "active" | "blocked" | "deleted" | "sold";
+export type AdvertStatus = "PENDING" | "ACTIVE" | "BLOCKED" | "DELETED" | "SOLD";
 
 interface IExchangeRateData {
     EUR: number;
@@ -97,18 +100,4 @@ interface IOwnerContacts {
     phone: string;
 }
 
-interface IBrand {
-    _id: string;
-    name: string;
-    createdAt: string;
-    updatedAt: string;
-}
-
-interface IModel {
-    _id: string;
-    name: string;
-    brandId: string;
-    createdAt: string;
-    updatedAt: string;
-}
 

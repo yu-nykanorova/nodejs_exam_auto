@@ -67,7 +67,7 @@ export const AuthInfo = () => {
 
             <button
                 onClick={handleLogout}
-                className="text-sm text-gray-500 hover:text-red-600"
+                className="p-1 text-sm text-gray-500 border border-red-600 rounded-sm hover:text-red-600"
             >
                 Logout
             </button>

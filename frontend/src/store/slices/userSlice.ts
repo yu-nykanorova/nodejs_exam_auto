@@ -28,7 +28,6 @@ const loadMe = createAsyncThunk(
     async (_, thunkAPI) => {
         try {
             const user = await usersService.getMe();
-
             return thunkAPI.fulfillWithValue(user);
         } catch (error) {
             return thunkAPI.rejectWithValue(getError(error));
@@ -162,7 +161,11 @@ const deleteUser = createAsyncThunk(
 export const userSlice = createSlice({
     name: 'userSlice',
     initialState,
-    reducers: {},
+    reducers: {
+        clearUser: (state) => {
+            state.user = null;
+        }
+    },
     extraReducers: (builder) => {
         builder
             // GET /users
@@ -302,7 +305,7 @@ export const userSlice = createSlice({
                     state.userLoading = false;
                 },
             )
-            // Generel errors
+            // General errors
             .addMatcher(
                 isRejected(
                     loadUsers,

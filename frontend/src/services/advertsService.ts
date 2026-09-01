@@ -11,6 +11,15 @@ export const advertsService = {
         );
     },
 
+    getMyAdverts: async (
+        params?: IAdvertQuery,
+    ): Promise<IAdvertResponse> => {
+        return await getItems<IAdvertResponse>(
+            "/users/me/adverts",
+            params,
+        );
+    },
+
     getAdvertById: async (
         id: string,
     ): Promise<IAdvert> => {

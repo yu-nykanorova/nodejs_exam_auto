@@ -1,4 +1,4 @@
-import { PASSWORD_REGEX } from "../constants/regEx.ts";
+import { NAME_REGEX, PASSWORD_REGEX } from "../constants/regEx.ts";
 import * as Joi from "joi";
 
 export const signUpValidator = (isSeller: boolean) =>
@@ -30,9 +30,7 @@ export const signUpValidator = (isSeller: boolean) =>
             }),
 
         name: Joi.string()
-            .pattern(
-                /^[A-Za-zА-Яа-яІіЇїЄєҐґ]+(?:[-'][A-Za-zА-Яа-яІіЇїЄєҐґ]+)?$/,
-            )
+            .regex(NAME_REGEX)
             .trim()
             .required()
             .messages({
@@ -41,9 +39,7 @@ export const signUpValidator = (isSeller: boolean) =>
             }),
 
         surname: Joi.string()
-            .pattern(
-                /^[A-Za-zА-Яа-яІіЇїЄєҐґ]+(?:[-'][A-Za-zА-Яа-яІіЇїЄєҐґ]+)?$/,
-            )
+            .pattern(NAME_REGEX)
             .trim()
             .required()
             .messages({

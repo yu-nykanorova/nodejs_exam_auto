@@ -42,6 +42,25 @@ const loadAdverts = createAsyncThunk(
     },
 );
 
+const loadMyAdverts = createAsyncThunk(
+    'advertSlice/loadMyAdverts',
+    async (
+        params: IAdvertQuery | undefined,
+        thunkAPI,
+    ) => {
+        try {
+            const adverts =
+                await advertsService.getMyAdverts(params);
+
+            return thunkAPI.fulfillWithValue(adverts);
+        } catch (error) {
+            return thunkAPI.rejectWithValue(
+                getError(error),
+            );
+        }
+    },
+);
+
 const loadAdvert = createAsyncThunk(
     'advertSlice/loadAdvert',
     async (id: string, thunkAPI) => {
@@ -225,6 +244,20 @@ export const advertSlice = createSlice({
                     state.advertsListLoading = false;
                 },
             )
+            .addCase(
+                loadMyAdverts.fulfilled,
+                (
+                    state,
+                    action: PayloadAction<IAdvertResponse>,
+                ) => {
+                    state.adverts = action.payload.data;
+                    state.totalPages = action.payload.totalPages;
+                    state.totalItems = action.payload.totalItems;
+                    state.prevPage = action.payload.prevPage;
+                    state.nextPage = action.payload.nextPage;
+                    state.advertsListLoading = false;
+                },
+            )
             // GET /adverts/:id
             .addCase(
                 loadAdvert.fulfilled,
@@ -323,13 +356,13 @@ export const advertSlice = createSlice({
             )
             // Loading list
             .addMatcher(
-                isPending(loadAdverts),
+                isPending(loadAdverts, loadMyAdverts),
                 (state) => {
                     state.advertsListLoading = true;
                 },
             )
             .addMatcher(
-                isRejected(loadAdverts),
+                isRejected(loadAdverts, loadMyAdverts),
                 (state) => {
                     state.advertsListLoading = false;
                 },
@@ -352,6 +385,7 @@ export const advertSlice = createSlice({
             .addMatcher(
                 isRejected(
                     loadAdverts,
+                    loadMyAdverts,
                     loadAdvert,
                     createAdvert,
                     updateAdvert,
@@ -370,6 +404,7 @@ export const advertSlice = createSlice({
             .addMatcher(
                 isPending(
                     loadAdverts,
+                    loadMyAdverts,
                     loadAdvert,
                     createAdvert,
                     updateAdvert,
@@ -389,6 +424,7 @@ export const advertSlice = createSlice({
 export const advertSliceActions = {
     ...advertSlice.actions,
     loadAdverts,
+    loadMyAdverts,
     loadAdvert,
     loadAdvertStatistics,
     createAdvert,

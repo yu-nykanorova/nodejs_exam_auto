@@ -59,7 +59,7 @@ axiosInstance.interceptors.response.use(
 
                 saveToLocalStorage(
                     "tokens",
-                    JSON.stringify(data),
+                    data,
                 );
 
                 originalRequest.headers.Authorization =

@@ -4,6 +4,7 @@ import { getError } from "../../utils/getError.ts";
 import type { IUser, IUserCreate } from "../../interfaces/IUser.ts";
 import { authService } from "../../services/authService.ts";
 import { getFromLocalStorage, removeFromLocalStorage, saveToLocalStorage } from "../../utils/localStorage.ts";
+import { userSliceActions } from "./userSlice.ts";
 
 type AuthSliceType = {
     user: IUser | null;
@@ -29,7 +30,7 @@ const login = createAsyncThunk(
             const response = await authService.login(body);
             saveToLocalStorage(
                 "tokens",
-                JSON.stringify(response.tokens),
+                response.tokens,
             );
             return thunkAPI.fulfillWithValue(response);
         } catch (error) {
@@ -49,7 +50,7 @@ const signUpBuyer = createAsyncThunk(
                 await authService.signUpBuyer(body);
             saveToLocalStorage(
                 "tokens",
-                JSON.stringify(response.tokens),
+                response.tokens,
             );
             return thunkAPI.fulfillWithValue(response);
         } catch (error) {
@@ -71,7 +72,7 @@ const signUpSeller = createAsyncThunk(
                 await authService.signUpSeller(body);
             saveToLocalStorage(
                 "tokens",
-                JSON.stringify(response.tokens),
+                response.tokens,
             );
             return thunkAPI.fulfillWithValue(response);
         } catch (error) {
@@ -91,6 +92,7 @@ const logout = createAsyncThunk(
                 await authService.logout({ refreshToken: tokens.refreshToken });
             }
             removeFromLocalStorage("tokens");
+            thunkAPI.dispatch(userSliceActions.clearUser());
             return thunkAPI.fulfillWithValue(null);
         } catch (error) {
             return thunkAPI.rejectWithValue(getError(error));
@@ -101,7 +103,12 @@ const logout = createAsyncThunk(
 export const authSlice = createSlice({
     name: 'authSlice',
     initialState,
-    reducers: {},
+    reducers: {
+        setUser: (state, action: PayloadAction<IUser>) => {
+            state.user = action.payload;
+            state.isAuthenticated = true;
+        },
+    },
     extraReducers: (builder) => {
         builder
             // POST /auth/login
@@ -111,6 +118,7 @@ export const authSlice = createSlice({
                     state,
                     action: PayloadAction<IAuthUserResponse>,
                 ) => {
+                    console.log("LOGIN FULFILLED", action.payload.user);
                     state.user = action.payload.user;
                     state.isAuthenticated = true;
                     state.loading = false;

@@ -20,6 +20,8 @@ import { BrandRequestsPage } from "../pages/BrandRequestsPage.tsx";
 import { ModelRequestsPage } from "../pages/ModelRequestsPage.tsx";
 import { CatalogPage } from "../pages/CatalogPage.tsx";
 import { CreateManagerPage } from "../pages/CreateManagerPage.tsx";
+import { ProtectedRoute } from "./ProtectedRoute.tsx";
+import { ManagerRoute } from "./ManagerRoute.tsx";
 
 export const routes = createBrowserRouter([
     {
@@ -39,47 +41,72 @@ export const routes = createBrowserRouter([
             { path: 'reset-password', element: <ResetPasswordPage /> },
             { path: 'set-password', element: <SetPasswordPage /> },
 
-            // After login all users
-            { path: 'profile', element: <ProfilePage /> },
+            // Protected
+            {
+                element: <ProtectedRoute />,
+                children: [
+                    {
+                        path: 'profile',
+                        element: <ProfilePage />,
+                    },
 
-            // After login seller
-            { path: 'my-adverts', element: <MyAdvertsPage /> },
-            { path: 'adverts/create', element: <CreateAdvertPage /> },
-            { path: 'adverts/:id/edit', element: <EditAdvertPage /> },
-            { path: 'requests', element: <RequestsPage /> },
+                    // Seller
+                    {
+                        path: 'my-adverts',
+                        element: <MyAdvertsPage />,
+                    },
+                    {
+                        path: 'adverts/create',
+                        element: <CreateAdvertPage />,
+                    },
+                    {
+                        path: 'adverts/:id/edit',
+                        element: <EditAdvertPage />,
+                    },
+                    {
+                        path: 'requests',
+                        element: <RequestsPage />,
+                    },
+                ],
+            },
 
             // Manager / Admin
             {
-                path: 'manager',
-                element: <AdminLayout />,
+                element: <ManagerRoute />,
                 children: [
                     {
-                        index: true,
-                        element: <UsersPage />,
-                    },
-                    {
-                        path: 'create-manager',
-                        element: <CreateManagerPage />,
-                    },
-                    {
-                        path: 'users',
-                        element: <UsersPage />,
-                    },
-                    {
-                        path: 'users/:id',
-                        element: <UserDetailsPage />,
-                    },
-                    {
-                        path: 'brand-requests',
-                        element: <BrandRequestsPage />,
-                    },
-                    {
-                        path: 'model-requests',
-                        element: <ModelRequestsPage />,
-                    },
-                    {
-                        path: 'catalog',
-                        element: <CatalogPage />,
+                        path: 'manager',
+                        element: <AdminLayout />,
+                        children: [
+                            {
+                                index: true,
+                                element: <UsersPage />,
+                            },
+                            {
+                                path: 'create-manager',
+                                element: <CreateManagerPage />,
+                            },
+                            {
+                                path: 'users',
+                                element: <UsersPage />,
+                            },
+                            {
+                                path: 'users/:id',
+                                element: <UserDetailsPage />,
+                            },
+                            {
+                                path: 'brand-requests',
+                                element: <BrandRequestsPage />,
+                            },
+                            {
+                                path: 'model-requests',
+                                element: <ModelRequestsPage />,
+                            },
+                            {
+                                path: 'catalog',
+                                element: <CatalogPage />,
+                            },
+                        ],
                     },
                 ],
             },
