@@ -4,26 +4,38 @@ import { useAppDispatch } from "../store/hooks/useAppDispatch.tsx";
 import { useAppSelector } from "../store/hooks/useAppSelector.tsx";
 import { useEffect } from "react";
 import { Loader } from "../components/ui/Loader.tsx";
+import { Pagination } from "../components/pagination/Pagination.tsx";
+import { useSearchParams } from "react-router-dom";
 
 export const HomePage = () => {
     const dispatch = useAppDispatch();
+    const [searchParams] = useSearchParams();
 
     const {
         adverts,
         advertsListLoading: loadingAdverts,
         error: errorAdverts,
+        totalPages,
+        prevPage,
+        nextPage
     } = useAppSelector(
         ({ advertSlice }) => advertSlice,
     );
 
+    const page =
+        Number(searchParams.get("page")) || 1;
+
+    const pageSize =
+        Number(searchParams.get("pageSize")) || 10;
+
     useEffect(() => {
         dispatch(
             advertSliceActions.loadAdverts({
-                page: 1,
-                pageSize: 10,
+                page,
+                pageSize,
             }),
         );
-    }, [dispatch]);
+    }, [dispatch, page, pageSize]);
 
     if (loadingAdverts) {
         return <Loader />;
@@ -56,6 +68,8 @@ export const HomePage = () => {
                     No adverts found.
                 </p>
             )}
+
+            <Pagination totalPages={totalPages} prevPage={prevPage} nextPage={nextPage}/>
         </section>
     );
 };

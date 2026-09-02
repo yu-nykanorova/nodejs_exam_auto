@@ -8,6 +8,9 @@ type UserSliceType = {
     user: IUser | null;
     selectedUser: IUser | null;
     totalPages: number;
+    totalItems: number;
+    prevPage: boolean;
+    nextPage: boolean;
     usersListLoading: boolean;
     userLoading: boolean;
     error: string | null;
@@ -18,12 +21,15 @@ const initialState: UserSliceType = {
     user: null,
     selectedUser: null,
     totalPages: 1,
+    totalItems: 0,
+    prevPage: false,
+    nextPage: false,
     usersListLoading: false,
     userLoading: false,
     error: null,
 };
 
-const loadMe = createAsyncThunk(
+export const loadMe = createAsyncThunk(
     'userSlice/loadMe',
     async (_, thunkAPI) => {
         try {
@@ -179,6 +185,9 @@ export const userSlice = createSlice({
                     state.totalPages =
                         action.payload.totalPages;
                     state.usersListLoading = false;
+                    state.totalItems = action.payload.totalItems;
+                    state.prevPage = action.payload.prevPage;
+                    state.nextPage = action.payload.nextPage;
                 },
             )
             // GET /users/me

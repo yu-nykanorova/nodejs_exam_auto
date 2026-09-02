@@ -1,9 +1,6 @@
-import type { IBrand } from "../interfaces/IBrand.ts";
-import type { IModel } from "../interfaces/IModel.ts";
-import { type FC, useEffect } from "react";
+import { useEffect } from "react";
 import { useAppDispatch } from "../store/hooks/useAppDispatch.tsx";
 import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../store/hooks/useAppSelector.tsx";
 import { useForm, useWatch } from "react-hook-form";
 import type { IAdvertCreate } from "../interfaces/IAdvert.ts";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -11,18 +8,36 @@ import { advertCreateValidator } from "../validators/advert.validator.ts";
 import { modelSliceActions } from "../store/slices/modelSlice.ts";
 import { advertSliceActions } from "../store/slices/advertSlice.ts";
 import { Currencies } from "../constants/currencies.ts";
+import { useAppSelector } from "../store/hooks/useAppSelector.tsx";
+import { brandSliceActions } from "../store/slices/brandSlice.ts";
 
-type CreateAdvertFormProps = {
-    brands: IBrand[];
-    models: IModel[];
-};
-
-export const CreateAdvertPage: FC<CreateAdvertFormProps> = ({ brands, models }) => {
+export const CreateAdvertPage = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
-    const { error, advertsListLoading: loading } =
-        useAppSelector(({ advertSlice }) => advertSlice);
+    const { createAdvertLoading, error: createAdvertError } = useAppSelector(({ advertSlice }) => advertSlice);
+
+    const {
+        brands
+    } = useAppSelector(
+        ({ brandSlice }) => brandSlice,
+    );
+
+    const {
+        models
+    } = useAppSelector(
+        ({ modelSlice }) => modelSlice,
+    );
+
+    useEffect(() => {
+        dispatch(
+            brandSliceActions.loadBrands(),
+        );
+        dispatch(
+            modelSliceActions.loadModels(),
+        );
+    }, [dispatch]);
+
 
     const {
         register,
@@ -338,18 +353,18 @@ export const CreateAdvertPage: FC<CreateAdvertFormProps> = ({ brands, models }) 
                     )}
                 </div>
 
-                {error && (
+                {createAdvertError && (
                     <p className="text-sm text-center text-red-600">
-                        {error}
+                        {createAdvertError}
                     </p>
                 )}
 
                 <button
                     type="submit"
-                    disabled={loading}
+                    disabled={createAdvertLoading}
                     className="h-10 mt-2 bg-blue-600 text-white rounded-md cursor-pointer hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    {loading
+                    {createAdvertLoading
                         ? "Creating advert..."
                         : "Create advert"}
                 </button>

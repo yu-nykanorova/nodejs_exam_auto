@@ -5,10 +5,12 @@ import type { IUser, IUserCreate } from "../../interfaces/IUser.ts";
 import { authService } from "../../services/authService.ts";
 import { getFromLocalStorage, removeFromLocalStorage, saveToLocalStorage } from "../../utils/localStorage.ts";
 import { userSliceActions } from "./userSlice.ts";
+import { loadMe } from "./userSlice.ts"
 
 type AuthSliceType = {
     user: IUser | null;
     isAuthenticated: boolean;
+    isAuthChecked: boolean;
     loading: boolean;
     error: string | null;
 };
@@ -16,6 +18,7 @@ type AuthSliceType = {
 const initialState: AuthSliceType = {
     user: null,
     isAuthenticated: false,
+    isAuthChecked: false,
     loading: false,
     error: null,
 };
@@ -108,6 +111,9 @@ export const authSlice = createSlice({
             state.user = action.payload;
             state.isAuthenticated = true;
         },
+        setAuthChecked: (state) => {
+            state.isAuthChecked = true;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -155,6 +161,23 @@ export const authSlice = createSlice({
                     state.user = null;
                     state.isAuthenticated = false;
                     state.loading = false;
+                },
+            )
+            // Synchronization with userSlice.loadMe
+            .addCase(
+                loadMe.fulfilled,
+                (state, action: PayloadAction<IUser>) => {
+                    state.user = action.payload;
+                    state.isAuthenticated = true;
+                    state.isAuthChecked = true;
+                },
+            )
+            .addCase(
+                loadMe.rejected,
+                (state) => {
+                    state.user = null;
+                    state.isAuthenticated=false;
+                    state.isAuthChecked = true;
                 },
             )
             // General loading

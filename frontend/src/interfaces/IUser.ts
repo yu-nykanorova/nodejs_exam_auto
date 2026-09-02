@@ -47,8 +47,8 @@ export interface IUserResponse
 {
     totalItems: number;
     totalPages: number;
-    prevPage: number;
-    nextPage: number;
+    prevPage: boolean;
+    nextPage: boolean;
     data: IUser[];
 }
 

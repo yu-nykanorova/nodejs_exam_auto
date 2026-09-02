@@ -5,19 +5,31 @@ import { useEffect } from "react";
 import { userSliceActions } from "../store/slices/userSlice.ts";
 import { Loader } from "../components/ui/Loader.tsx";
 import { UsersList } from "../components/users/UsersList.tsx";
+import { Pagination } from "../components/pagination/Pagination.tsx";
+import { useSearchParams } from "react-router-dom";
 
 export const UsersPage = () => {
     const dispatch = useAppDispatch();
+    const [searchParams] = useSearchParams();
 
     const {
         users,
         usersListLoading,
         error,
+        totalPages,
+        prevPage,
+        nextPage,
     } = useAppSelector(({ userSlice }) => userSlice);
 
+    const page =
+        Number(searchParams.get("page")) || 1;
+
+    const pageSize =
+        Number(searchParams.get("pageSize")) || 10;
+
     useEffect(() => {
-        dispatch(userSliceActions.loadUsers({}));
-    }, [dispatch]);
+        dispatch(userSliceActions.loadUsers({page, pageSize}));
+    }, [dispatch, page, pageSize]);
 
     if (usersListLoading) {
         return <Loader />;
@@ -46,6 +58,8 @@ export const UsersPage = () => {
             ) : (
                 <UsersList users={users} />
             )}
+
+            <Pagination totalPages={totalPages} prevPage={prevPage} nextPage={nextPage}/>
         </main>
     );
 };

@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { MainLayout } from "../layouts/MainLayout.tsx";
 import { HomePage } from "../pages/HomePage.tsx";
 import { AdvertDetailsPage } from "../pages/AdvertDetailsPage.tsx";
@@ -45,28 +45,13 @@ export const routes = createBrowserRouter([
             {
                 element: <ProtectedRoute />,
                 children: [
-                    {
-                        path: 'profile',
-                        element: <ProfilePage />,
-                    },
+                    { path: 'profile', element: <ProfilePage /> },
 
                     // Seller
-                    {
-                        path: 'my-adverts',
-                        element: <MyAdvertsPage />,
-                    },
-                    {
-                        path: 'adverts/create',
-                        element: <CreateAdvertPage />,
-                    },
-                    {
-                        path: 'adverts/:id/edit',
-                        element: <EditAdvertPage />,
-                    },
-                    {
-                        path: 'requests',
-                        element: <RequestsPage />,
-                    },
+                    { path: 'my-adverts', element: <MyAdvertsPage /> },
+                    { path: 'adverts/create', element: <CreateAdvertPage /> },
+                    { path: 'adverts/:id/edit', element: <EditAdvertPage /> },
+                    { path: 'requests', element: <RequestsPage /> },
                 ],
             },
 
@@ -78,34 +63,13 @@ export const routes = createBrowserRouter([
                         path: 'manager',
                         element: <AdminLayout />,
                         children: [
-                            {
-                                index: true,
-                                element: <UsersPage />,
-                            },
-                            {
-                                path: 'create-manager',
-                                element: <CreateManagerPage />,
-                            },
-                            {
-                                path: 'users',
-                                element: <UsersPage />,
-                            },
-                            {
-                                path: 'users/:id',
-                                element: <UserDetailsPage />,
-                            },
-                            {
-                                path: 'brand-requests',
-                                element: <BrandRequestsPage />,
-                            },
-                            {
-                                path: 'model-requests',
-                                element: <ModelRequestsPage />,
-                            },
-                            {
-                                path: 'catalog',
-                                element: <CatalogPage />,
-                            },
+                            { index: true, element: <Navigate to="users" replace /> },
+                            { path: 'users', element: <UsersPage /> },
+                            { path: 'users/:id', element: <UserDetailsPage /> },
+                            { path: 'create-manager', element: <CreateManagerPage /> },
+                            { path: 'brand-requests', element: <BrandRequestsPage /> },
+                            { path: 'model-requests', element: <ModelRequestsPage /> },
+                            { path: 'catalog', element: <CatalogPage /> },
                         ],
                     },
                 ],

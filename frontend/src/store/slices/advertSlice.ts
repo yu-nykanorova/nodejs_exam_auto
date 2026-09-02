@@ -9,10 +9,11 @@ type AdvertSliceType = {
     statistics: IAdvertStatistics | null;
     totalPages: number;
     totalItems: number;
-    prevPage: number;
-    nextPage: number;
+    prevPage: boolean;
+    nextPage: boolean;
     advertsListLoading: boolean;
     advertDetailsLoading: boolean;
+    createAdvertLoading: boolean;
     error: string | null;
 };
 
@@ -22,10 +23,11 @@ const initialState: AdvertSliceType = {
     statistics: null,
     totalPages: 1,
     totalItems: 0,
-    prevPage: 0,
-    nextPage: 0,
+    prevPage: false,
+    nextPage: false,
     advertsListLoading: false,
     advertDetailsLoading: false,
+    createAdvertLoading: false,
     error: null,
 };
 
@@ -244,6 +246,7 @@ export const advertSlice = createSlice({
                     state.advertsListLoading = false;
                 },
             )
+            // GET /me/adverts
             .addCase(
                 loadMyAdverts.fulfilled,
                 (
@@ -284,9 +287,8 @@ export const advertSlice = createSlice({
                 createAdvert.fulfilled,
                 (
                     state,
-                    action: PayloadAction<IAdvert>,
                 ) => {
-                    state.advert = action.payload;
+                    state.createAdvertLoading = false;
                 },
             )
             // PUT /adverts/:id
@@ -354,6 +356,21 @@ export const advertSlice = createSlice({
                     );
                 },
             )
+            // Loading create new advert
+            .addCase(createAdvert.pending, (state) => {
+                state.createAdvertLoading = true;
+            })
+            .addCase(createAdvert.rejected, (state) => {
+                state.createAdvertLoading = false;
+            })
+            // Loading advert details
+            .addCase(loadAdvert.pending, (state) => {
+                state.advertDetailsLoading = true;
+                state.advert = null;
+            })
+            .addCase(loadAdvert.rejected, (state) => {
+                    state.advertDetailsLoading = false;
+            })
             // Loading list
             .addMatcher(
                 isPending(loadAdverts, loadMyAdverts),
@@ -365,20 +382,6 @@ export const advertSlice = createSlice({
                 isRejected(loadAdverts, loadMyAdverts),
                 (state) => {
                     state.advertsListLoading = false;
-                },
-            )
-            // Loading advert details
-            .addMatcher(
-                isPending(loadAdvert),
-                (state) => {
-                    state.advertDetailsLoading = true;
-                    state.advert = null;
-                },
-            )
-            .addMatcher(
-                isRejected(loadAdvert),
-                (state) => {
-                    state.advertDetailsLoading = false;
                 },
             )
             // General error handling
@@ -397,7 +400,7 @@ export const advertSlice = createSlice({
                 ),
                 (state, action) => {
                     state.error =
-                        (action.payload as string) ?? 'Error';
+                        (action.payload as string) ?? "Error";
                 },
             )
             // New request - clear old errors
