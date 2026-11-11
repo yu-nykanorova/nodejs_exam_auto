@@ -33,7 +33,7 @@ export const SetPasswordForm = ({
     });
 
     return (
-        <main className="min-h-[calc(100vh-128px)] flex items-center justify-center p-4">
+        <div className="min-h-[calc(100vh-128px)] flex items-center justify-center p-4">
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="w-full max-w-md p-6 flex flex-col gap-5 bg-white rounded-lg shadow-md"
@@ -102,6 +102,6 @@ export const SetPasswordForm = ({
                     {loading ? "Saving..." : buttonText}
                 </button>
             </form>
-        </main>
+        </div>
     );
 };

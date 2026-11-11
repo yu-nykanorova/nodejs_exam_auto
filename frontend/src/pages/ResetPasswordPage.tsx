@@ -28,11 +28,11 @@ export const ResetPasswordPage = () => {
 
     if (!token) {
         return (
-            <main className="min-h-[calc(100vh-128px)] flex items-center justify-center">
+            <div className="min-h-[calc(100vh-128px)] flex items-center justify-center">
                 <p className="text-red-600">
                     Invalid or missing token
                 </p>
-            </main>
+            </div>
         );
     }
 

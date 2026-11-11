@@ -58,8 +58,8 @@ class AdvertStatisticsService {
             viewsToday: views.viewsToday,
             viewsWeek: views.viewsWeek,
             viewsMonth: views.viewsMonth,
-            averageRegionPrice,
-            averageCountryPrice,
+            averageRegionPrice: Number(averageRegionPrice.toFixed(2)),
+            averageCountryPrice: Number(averageCountryPrice.toFixed(2)),
         };
     }
 

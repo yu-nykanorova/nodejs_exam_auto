@@ -4,7 +4,7 @@ export const SignUpPage = () => {
     const navigate = useNavigate();
 
     return (
-        <main className="min-h-[calc(100vh-128px)] flex items-center justify-center p-4">
+        <div className="min-h-[calc(100vh-128px)] flex items-center justify-center p-4">
             <div className="w-full max-w-md p-6 flex flex-col gap-6 bg-white rounded-lg shadow-md">
                 <h1 className="text-2xl font-semibold text-center">
                     Create account
@@ -28,6 +28,6 @@ export const SignUpPage = () => {
                     </button>
                 </div>
             </div>
-        </main>
+        </div>
     );
 };

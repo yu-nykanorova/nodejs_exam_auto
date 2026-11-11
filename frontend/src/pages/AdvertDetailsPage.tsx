@@ -6,6 +6,8 @@ import { advertSliceActions } from "../store/slices/advertSlice.ts";
 import { Loader } from "../components/ui/Loader.tsx";
 import { ErrorComponent } from "../components/ui/ErrorComponent.tsx";
 import { ADVERT_STATUS_CLASS } from "../constants/advertStatusClass.ts";
+import { roles } from "../constants/roles.ts";
+import { sellerAccountTypes } from "../constants/accountTypes.ts";
 
 export const AdvertDetailsPage = () => {
     const { id } = useParams();
@@ -13,13 +15,20 @@ export const AdvertDetailsPage = () => {
 
     const {
         advert,
+        statistics,
         advertDetailsLoading,
         error,
     } = useAppSelector(({ advertSlice }) => advertSlice);
 
+    const { user } = useAppSelector(({ authSlice }) => authSlice);
+
+    const allowedToViewStatistics =
+        (user?._id === advert?._ownerId && user?.accountType === sellerAccountTypes.PREMIUM) || user?.role === roles.ADMIN || user?.role === roles.MANAGER;
+
     useEffect(() => {
         if (id) {
             dispatch(advertSliceActions.loadAdvert(id));
+            dispatch(advertSliceActions.loadAdvertStatistics(id));
         }
     }, [id, dispatch]);
 
@@ -41,7 +50,6 @@ export const AdvertDetailsPage = () => {
         <div className="mx-auto max-w-6xl p-4">
             <div className="overflow-hidden rounded-lg bg-white shadow-md">
 
-                {/* Photo */}
                 <div className="flex min-h-80 items-center justify-center bg-gray-100">
                     {advert.photo ? (
                         <img
@@ -56,7 +64,6 @@ export const AdvertDetailsPage = () => {
                     )}
                 </div>
 
-                {/* Main information */}
                 <div className="p-6">
                     <div className="mb-6 flex flex-col gap-2 border-b pb-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
@@ -128,7 +135,6 @@ export const AdvertDetailsPage = () => {
                         </div>
                     </div>
 
-                    {/* Price */}
                     <div className="mb-6 rounded-md bg-gray-50 p-4">
                         <h2 className="mb-3 text-lg font-semibold">
                             Price
@@ -174,7 +180,6 @@ export const AdvertDetailsPage = () => {
                         </div>
                     </div>
 
-                    {/* Description */}
                     <div className="mb-6">
                         <h2 className="mb-3 text-lg font-semibold">
                             Description
@@ -185,8 +190,7 @@ export const AdvertDetailsPage = () => {
                         </p>
                     </div>
 
-                    {/* Owner */}
-                    <div className="rounded-md bg-gray-50 p-4">
+                    <div className="mb-6 rounded-md bg-gray-50 p-4">
                         <h2 className="mb-3 text-lg font-semibold">
                             Seller contacts
                         </h2>
@@ -214,6 +218,57 @@ export const AdvertDetailsPage = () => {
                             </p>
                         </div>
                     </div>
+
+                    {statistics && allowedToViewStatistics &&
+                        <div className="mb-6">
+                            <h2 className="mb-3 text-lg font-semibold">
+                                Advert statistics
+                            </h2>
+
+                            <p>
+                                <span className="text-gray-500">
+                                    Total views:
+                                </span>{" "}
+                                {statistics.viewsCount}
+                            </p>
+
+                            <p>
+                                <span className="text-gray-500">
+                                    Today views:
+                                </span>{" "}
+                                {statistics.viewsToday}
+                            </p>
+
+                            <p>
+                                <span className="text-gray-500">
+                                    Week views:
+                                </span>{" "}
+                                {statistics.viewsWeek}
+                            </p>
+
+                            <p>
+                                <span className="text-gray-500">
+                                    Month views:
+                                </span>{" "}
+                                {statistics.viewsMonth}
+                            </p>
+
+                            <p>
+                                <span className="text-gray-500">
+                                    Average region price:
+                                </span>{" "}
+                                {statistics.averageRegionPrice}
+                            </p>
+
+                            <p>
+                                <span className="text-gray-500">
+                                    Average country price:
+                                </span>{" "}
+                                {statistics.averageCountryPrice}
+                            </p>
+
+                        </div>
+                    }
                 </div>
             </div>
         </div>

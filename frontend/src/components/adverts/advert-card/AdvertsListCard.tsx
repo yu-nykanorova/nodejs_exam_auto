@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import { type FC } from "react";
 import type { IAdvert } from "../../../interfaces/IAdvert.ts";
 import { Link } from "react-router-dom";
 import { ADVERT_STATUS_CLASS } from "../../../constants/advertStatusClass.ts";

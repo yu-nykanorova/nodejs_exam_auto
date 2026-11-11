@@ -40,7 +40,7 @@ export const UsersPage = () => {
     }
 
     return (
-        <main className="mx-auto w-full max-w-7xl px-4 py-8">
+        <div className="mx-auto w-full max-w-7xl px-4 py-8">
             <div className="mb-6">
                 <h1 className="text-2xl font-bold text-gray-800">
                     Users
@@ -60,6 +60,6 @@ export const UsersPage = () => {
             )}
 
             <Pagination totalPages={totalPages} prevPage={prevPage} nextPage={nextPage}/>
-        </main>
+        </div>
     );
 };

@@ -74,15 +74,9 @@ class AdvertRepository {
             {
                 $lookup: {
                     from: "users",
-                    let: { ownerId: "$_ownerId" },
+                    localField: "_ownerId",
+                    foreignField: "_id",
                     pipeline: [
-                        {
-                            $match: {
-                                $expr: {
-                                    $eq: ["$_id", "$$ownerId"],
-                                },
-                            },
-                        },
                         {
                             $project: {
                                 _id: 0,
@@ -112,15 +106,25 @@ class AdvertRepository {
                 },
             },
             {
-                $unwind: "$ownerContacts",
+                $unwind: {
+                    path: "$ownerContacts",
+                    preserveNullAndEmptyArrays: true,
+                },
             },
             {
-                $unwind: "$brand",
+                $unwind: {
+                    path: "$brand",
+                    preserveNullAndEmptyArrays: true,
+                },
             },
             {
-                $unwind: "$model",
+                $unwind: {
+                    path: "$model",
+                    preserveNullAndEmptyArrays: true,
+                },
             },
         ]);
+
         return advert ?? null;
     }
 
@@ -264,15 +268,9 @@ class AdvertRepository {
             {
                 $lookup: {
                     from: "users",
-                    let: { ownerId: "$_ownerId" },
+                    localField: "_ownerId",
+                    foreignField: "_id",
                     pipeline: [
-                        {
-                            $match: {
-                                $expr: {
-                                    $eq: ["$_id", "$$ownerId"],
-                                },
-                            },
-                        },
                         {
                             $project: {
                                 _id: 0,
@@ -302,13 +300,22 @@ class AdvertRepository {
                 },
             },
             {
-                $unwind: "$ownerContacts",
+                $unwind: {
+                    path: "$ownerContacts",
+                    preserveNullAndEmptyArrays: true,
+                },
             },
             {
-                $unwind: "$brand",
+                $unwind: {
+                    path: "$brand",
+                    preserveNullAndEmptyArrays: true,
+                },
             },
             {
-                $unwind: "$model",
+                $unwind: {
+                    path: "$model",
+                    preserveNullAndEmptyArrays: true,
+                },
             },
             {
                 $sort: sortOrder,
@@ -328,3 +335,5 @@ class AdvertRepository {
 }
 
 export const advertRepository = new AdvertRepository();
+
+

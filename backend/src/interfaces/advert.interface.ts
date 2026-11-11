@@ -25,7 +25,6 @@ export interface IAdvert {
     exchangeRate: IExchangeRateData;
     status: AdvertStatusEnum;
     _ownerId: string;
-    ownerContacts: IOwnerContacts;
     photo?: string;
     attemptModerate: number;
     createdAt: Date;

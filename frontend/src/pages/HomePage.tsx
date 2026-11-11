@@ -50,7 +50,7 @@ export const HomePage = () => {
     }
 
     return (
-        <section className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-7xl">
             <div className="px-6 pt-8">
                 <h1 className="text-3xl font-bold">
                     AutoDeal
@@ -70,6 +70,6 @@ export const HomePage = () => {
             )}
 
             <Pagination totalPages={totalPages} prevPage={prevPage} nextPage={nextPage}/>
-        </section>
+        </div>
     );
 };

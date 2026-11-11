@@ -68,7 +68,7 @@ export const SignUpForm: FC<SignUpFormProps> = ({ isSeller }) => {
     };
 
     return (
-        <main className="min-h-[calc(100vh-128px)] flex items-center justify-center p-4">
+        <div className="flex-1 min-h-[calc(100vh-128px)] flex items-center justify-center p-4">
             <form
                 onSubmit={handleSubmit(handleSignUp)}
                 className="w-full max-w-md p-6 flex flex-col gap-4 bg-white rounded-lg shadow-md"
@@ -266,6 +266,6 @@ export const SignUpForm: FC<SignUpFormProps> = ({ isSeller }) => {
                     Already have an account? Login
                 </button>
             </form>
-        </main>
+        </div>
     );
 };

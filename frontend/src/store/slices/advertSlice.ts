@@ -14,7 +14,9 @@ type AdvertSliceType = {
     advertsListLoading: boolean;
     advertDetailsLoading: boolean;
     createAdvertLoading: boolean;
+    statisticsLoading: boolean;
     error: string | null;
+    statisticsError: string | null;
 };
 
 const initialState: AdvertSliceType = {
@@ -28,7 +30,9 @@ const initialState: AdvertSliceType = {
     advertsListLoading: false,
     advertDetailsLoading: false,
     createAdvertLoading: false,
+    statisticsLoading: false,
     error: null,
+    statisticsError: null,
 };
 
 const loadAdverts = createAsyncThunk(
@@ -371,6 +375,27 @@ export const advertSlice = createSlice({
             .addCase(loadAdvert.rejected, (state) => {
                     state.advertDetailsLoading = false;
             })
+            // Loading statistics
+            .addCase(
+                loadAdvertStatistics.pending,
+                (
+                    state,
+                ) => {
+                    state.statistics = null;
+                    state.statisticsLoading = true;
+                    state.statisticsError = null;
+                },
+            )
+            .addCase(
+                loadAdvertStatistics.rejected,
+                (
+                    state, action,
+                ) => {
+                    state.statistics = null;
+                    state.statisticsLoading = false;
+                    state.statisticsError = (action.payload as string) ?? "Error";
+                },
+            )
             // Loading list
             .addMatcher(
                 isPending(loadAdverts, loadMyAdverts),
@@ -396,7 +421,6 @@ export const advertSlice = createSlice({
                     deletePhoto,
                     deleteAdvert,
                     updateAdvertStatus,
-                    loadAdvertStatistics,
                 ),
                 (state, action) => {
                     state.error =
@@ -415,7 +439,6 @@ export const advertSlice = createSlice({
                     deletePhoto,
                     deleteAdvert,
                     updateAdvertStatus,
-                    loadAdvertStatistics,
                 ),
                 (state) => {
                     state.error = null;

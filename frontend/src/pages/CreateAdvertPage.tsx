@@ -81,7 +81,7 @@ export const CreateAdvertPage = () => {
     };
 
     return (
-        <main className="min-h-[calc(100vh-128px)] flex items-center justify-center p-4">
+        <div className="min-h-[calc(100vh-128px)] flex items-center justify-center p-4">
             <form
                 onSubmit={handleSubmit(handleCreateAdvert)}
                 className="w-full max-w-2xl p-6 flex flex-col gap-4 bg-white rounded-lg shadow-md"
@@ -377,6 +377,6 @@ export const CreateAdvertPage = () => {
                     Back to my adverts
                 </button>
             </form>
-        </main>
+        </div>
     );
 };

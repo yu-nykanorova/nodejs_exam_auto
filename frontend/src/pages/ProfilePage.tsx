@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { Loader } from "../components/ui/Loader.tsx";
 import { ErrorComponent } from "../components/ui/ErrorComponent.tsx";
 import { userSliceActions } from "../store/slices/userSlice.ts";
+import { sellerAccountTypes } from "../constants/accountTypes.ts";
 
 export const ProfilePage = () => {
     const dispatch = useAppDispatch();
@@ -34,7 +35,7 @@ export const ProfilePage = () => {
     }
 
     return (
-        <main className="min-h-[calc(100vh-128px)] bg-gray-50 px-4 py-8">
+        <div className="min-h-[calc(100vh-128px)] bg-gray-50 px-4 py-8">
             <div className="mx-auto max-w-2xl rounded-lg bg-white p-6 shadow-md">
 
                 <div className="mb-8 flex flex-col items-center gap-4 sm:flex-row">
@@ -66,9 +67,11 @@ export const ProfilePage = () => {
                                 {user.role}
                             </span>
 
-                            <span className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-700">
-                                {user.accountType}
-                            </span>
+                            {user.accountType &&
+                                <span className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-700">
+                                    {user.accountType}
+                                </span>
+                            }
                         </div>
                     </div>
                 </div>
@@ -116,7 +119,7 @@ export const ProfilePage = () => {
                             Phone
                         </p>
                         <p className="font-medium text-gray-800">
-                            {user.phone || "Not specified"}
+                            {user.phone || "not specified"}
                         </p>
                     </div>
 
@@ -128,6 +131,17 @@ export const ProfilePage = () => {
                             {user.status}
                         </p>
                     </div>
+
+                    {user.accountType &&
+                        <div>
+                            <p className="text-sm text-gray-500">
+                                Account type
+                            </p>
+                            <p className={`font-medium ${user.accountType === sellerAccountTypes.PREMIUM ? "text-yellow-600" : "text-gray-800"}`}>
+                                {user.accountType}
+                            </p>
+                        </div>
+                    }
 
                 </div>
 
@@ -141,10 +155,8 @@ export const ProfilePage = () => {
                             My adverts
                         </Link>
                     )}
-
                 </div>
-
             </div>
-        </main>
+        </div>
     );
 };

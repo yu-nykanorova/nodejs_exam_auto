@@ -3,7 +3,7 @@ import { UploadedFile } from "express-fileupload";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ApiError } from "../errors/api.errors";
-import { toListResponse } from "../helpers/toListResponse";
+import { toListResponse } from "../helpers/to-list-response";
 import {
     IAdvertChangeStatusDTO,
     IAdvertCreateDTO,

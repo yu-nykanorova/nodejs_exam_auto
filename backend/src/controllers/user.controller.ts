@@ -3,7 +3,7 @@ import { UploadedFile } from "express-fileupload";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ApiError } from "../errors/api.errors";
-import { toListResponse } from "../helpers/toListResponse";
+import { toListResponse } from "../helpers/to-list-response";
 import { IAdvertQuery } from "../interfaces/advert.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
 import {
@@ -13,10 +13,10 @@ import {
     IUserUpdateAccountTypeDTO,
     IUserUpdateDTO,
 } from "../interfaces/user.interface";
+import { advertPresenter } from "../presenters/advert.presenter";
 import { userPresenter } from "../presenters/user.presenter";
 import { advertService } from "../services/advert.service";
 import { userService } from "../services/user.service";
-import { advertPresenter } from "../presenters/advert.presenter";
 
 class UserController {
     public async getAllUsers(req: Request, res: Response, next: NextFunction) {
