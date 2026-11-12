@@ -16,6 +16,8 @@ export const ProfilePage = () => {
         error,
     } = useAppSelector(({ userSlice }) => userSlice);
 
+    const isPremium = user?.accountType === sellerAccountTypes.PREMIUM;
+
     useEffect(() => {
         if (!user) {
             dispatch(userSliceActions.loadMe());
@@ -68,7 +70,7 @@ export const ProfilePage = () => {
                             </span>
 
                             {user.accountType &&
-                                <span className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-700">
+                                <span className={`rounded bg-gray-100 px-2 py-1 text-xs font-medium ${isPremium ? "text-yellow-600" : "text-gray-700"}`}>
                                     {user.accountType}
                                 </span>
                             }
@@ -131,17 +133,6 @@ export const ProfilePage = () => {
                             {user.status}
                         </p>
                     </div>
-
-                    {user.accountType &&
-                        <div>
-                            <p className="text-sm text-gray-500">
-                                Account type
-                            </p>
-                            <p className={`font-medium ${user.accountType === sellerAccountTypes.PREMIUM ? "text-yellow-600" : "text-gray-800"}`}>
-                                {user.accountType}
-                            </p>
-                        </div>
-                    }
 
                 </div>
 

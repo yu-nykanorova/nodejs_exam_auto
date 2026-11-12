@@ -229,6 +229,23 @@ const loadAdvertStatistics = createAsyncThunk(
     },
 );
 
+const increaseAdvertViews = createAsyncThunk(
+    'advertSlice/increaseAdvertViews',
+    async (
+        id: string,
+        thunkAPI,
+    )=> {
+        try {
+            await advertsService.postAdvertView(id);
+            return thunkAPI.fulfillWithValue(null);
+        } catch (error) {
+            return thunkAPI.rejectWithValue(
+                getError(error),
+            );
+        }
+    },
+);
+
 export const advertSlice = createSlice({
     name: 'advertSlice',
     initialState,
@@ -284,6 +301,8 @@ export const advertSlice = createSlice({
                     action: PayloadAction<IAdvertStatistics>,
                 ) => {
                     state.statistics = action.payload;
+                    state.statisticsLoading = false;
+                    state.statisticsError = null;
                 },
             )
             // POST /adverts
@@ -421,6 +440,7 @@ export const advertSlice = createSlice({
                     deletePhoto,
                     deleteAdvert,
                     updateAdvertStatus,
+                    increaseAdvertViews,
                 ),
                 (state, action) => {
                     state.error =
@@ -439,6 +459,7 @@ export const advertSlice = createSlice({
                     deletePhoto,
                     deleteAdvert,
                     updateAdvertStatus,
+                    increaseAdvertViews,
                 ),
                 (state) => {
                     state.error = null;
@@ -459,4 +480,5 @@ export const advertSliceActions = {
     deletePhoto,
     deleteAdvert,
     updateAdvertStatus,
+    increaseAdvertViews,
 };

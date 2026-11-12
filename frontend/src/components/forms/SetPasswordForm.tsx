@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { passwordFormValidator } from "../../validators/passwordForm.validator.ts";
+import { Form } from "../ui/Form.tsx";
 
 export type PasswordFormParams = {
     password: string;
@@ -34,9 +35,9 @@ export const SetPasswordForm = ({
 
     return (
         <div className="min-h-[calc(100vh-128px)] flex items-center justify-center p-4">
-            <form
+            <Form
                 onSubmit={handleSubmit(onSubmit)}
-                className="w-full max-w-md p-6 flex flex-col gap-5 bg-white rounded-lg shadow-md"
+                className="w-full max-w-md p-6 gap-5 rounded-lg shadow-md"
             >
                 <h1 className="text-2xl font-semibold text-center">
                     {title}
@@ -101,7 +102,7 @@ export const SetPasswordForm = ({
                 >
                     {loading ? "Saving..." : buttonText}
                 </button>
-            </form>
+            </Form>
         </div>
     );
 };

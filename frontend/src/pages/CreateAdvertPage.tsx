@@ -10,6 +10,7 @@ import { advertSliceActions } from "../store/slices/advertSlice.ts";
 import { Currencies } from "../constants/currencies.ts";
 import { useAppSelector } from "../store/hooks/useAppSelector.tsx";
 import { brandSliceActions } from "../store/slices/brandSlice.ts";
+import { Form } from "../components/ui/Form.tsx";
 
 export const CreateAdvertPage = () => {
     const dispatch = useAppDispatch();
@@ -82,9 +83,9 @@ export const CreateAdvertPage = () => {
 
     return (
         <div className="min-h-[calc(100vh-128px)] flex items-center justify-center p-4">
-            <form
+            <Form
                 onSubmit={handleSubmit(handleCreateAdvert)}
-                className="w-full max-w-2xl p-6 flex flex-col gap-4 bg-white rounded-lg shadow-md"
+                className="w-full max-w-2xl p-6 gap-4 rounded-lg shadow-md"
             >
                 <h1 className="text-2xl font-semibold text-center">
                     Create advert
@@ -376,7 +377,7 @@ export const CreateAdvertPage = () => {
                 >
                     Back to my adverts
                 </button>
-            </form>
+            </Form>
         </div>
     );
 };

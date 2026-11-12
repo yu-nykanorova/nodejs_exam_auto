@@ -85,9 +85,9 @@ export const getItems = async <T, >(
     return data;
 };
 
-export const postItem = async <T, D>(
+export const postItem = async <T, D = undefined>(
     url: string,
-    body: D,
+    body?: D,
 ): Promise<T> => {
     const { data } = await axiosInstance.post<T>(url, body);
 

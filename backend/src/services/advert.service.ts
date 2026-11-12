@@ -97,7 +97,7 @@ class AdvertService {
                 payload.role === UserRoleEnum.MANAGER);
 
         const isOwner =
-            payload && advert._ownerId.toString() === payload.userId;
+            payload?.userId && advert._ownerId.toString() === payload.userId;
 
         if (
             advert.status !== AdvertStatusEnum.ACTIVE &&
@@ -105,10 +105,6 @@ class AdvertService {
             !isOwner
         ) {
             throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
-        }
-
-        if (!payload?.userId || !isOwner) {
-            await advertStatisticsService.incrementAdvertViews(advertId);
         }
 
         return advert;
@@ -236,6 +232,20 @@ class AdvertService {
             throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
         }
         return updatedAdvert;
+    }
+
+    public async saveAdvertView(
+        advertId: string,
+        payload?: ITokenPayload,
+    ): Promise<void> {
+        const advert = await this.getById(advertId, payload);
+
+        const isOwner =
+            payload?.userId && advert._ownerId.toString() === payload.userId;
+
+        if (!payload?.userId || !isOwner) {
+            await advertStatisticsService.incrementAdvertViews(advertId);
+        }
     }
 
     public async deleteAdvert(

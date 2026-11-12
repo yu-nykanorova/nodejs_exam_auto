@@ -89,4 +89,10 @@ export const advertsService = {
             `/adverts/${id}/statistics`,
         );
     },
+
+    postAdvertView: async (
+        id: string,
+    ): Promise<void> => {
+        await postItem<void>(`/adverts/${id}/view`);
+    },
 };

@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { signUpValidator } from "../../validators/signup.validator.ts";
 import { authSliceActions } from "../../store/slices/authSlice.ts";
+import { Form } from "../ui/Form.tsx";
 
 type SignUpFormParams = {
     email: string;
@@ -69,9 +70,9 @@ export const SignUpForm: FC<SignUpFormProps> = ({ isSeller }) => {
 
     return (
         <div className="flex-1 min-h-[calc(100vh-128px)] flex items-center justify-center p-4">
-            <form
+            <Form
                 onSubmit={handleSubmit(handleSignUp)}
-                className="w-full max-w-md p-6 flex flex-col gap-4 bg-white rounded-lg shadow-md"
+                className="w-full max-w-md p-6 gap-4 rounded-lg shadow-md"
             >
                 <h1 className="text-2xl font-semibold text-center">
                     Sign up as {isSeller ? "Seller" : "Buyer"}
@@ -265,7 +266,7 @@ export const SignUpForm: FC<SignUpFormProps> = ({ isSeller }) => {
                 >
                     Already have an account? Login
                 </button>
-            </form>
+            </Form>
         </div>
     );
 };

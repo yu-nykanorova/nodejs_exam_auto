@@ -7,6 +7,7 @@ import { createManagerValidator } from "../validators/createManager.validator.ts
 import { Loader } from "../components/ui/Loader.tsx";
 import { ErrorComponent } from "../components/ui/ErrorComponent.tsx";
 import { usersService } from "../services/usersService.ts";
+import { Form } from "../components/ui/Form.tsx";
 
 export const CreateManagerPage = () => {
     const navigate = useNavigate();
@@ -39,11 +40,11 @@ export const CreateManagerPage = () => {
 
     return (
         <div className="flex-1 mx-auto w-full max-w-lg px-4 py-8">
-            <form
+            <Form
                 onSubmit={handleSubmit(
                     handleCreateManager,
                 )}
-                className="flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
+                className="gap-4 rounded-lg border border-gray-200 p-6 shadow-sm"
             >
                 <h1 className="mb-6 text-2xl font-bold text-gray-800">
                     Create Manager
@@ -164,7 +165,7 @@ export const CreateManagerPage = () => {
                 >
                     Create Manager
                 </button>
-            </form>
+            </Form>
         </div>
     );
 };

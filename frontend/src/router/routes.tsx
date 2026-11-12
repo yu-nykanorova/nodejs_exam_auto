@@ -22,6 +22,7 @@ import { CatalogPage } from "../pages/CatalogPage.tsx";
 import { CreateManagerPage } from "../pages/CreateManagerPage.tsx";
 import { ProtectedRoute } from "./ProtectedRoute.tsx";
 import { ManagerRoute } from "./ManagerRoute.tsx";
+import { GuestRoute } from "./GuestRoute.tsx";
 
 export const routes = createBrowserRouter([
     {
@@ -32,14 +33,21 @@ export const routes = createBrowserRouter([
             { index: true, element: <HomePage /> },
             { path: 'advert/:id', element: <AdvertDetailsPage /> },
 
-            { path: 'login', element: <LoginPage /> },
-            { path: 'sign-up', element: <SignUpPage /> },
-            { path: 'sign-up/buyer', element: <SignUpFormPage /> },
-            { path: 'sign-up/seller', element: <SignUpFormPage /> },
-
-            { path: 'forgot-password', element: <ForgotPasswordPage /> },
+            // Special link with action token
             { path: 'reset-password', element: <ResetPasswordPage /> },
             { path: 'set-password', element: <SetPasswordPage /> },
+
+            // Only unauthorized
+            {
+                element: <GuestRoute />,
+                children: [
+                    { path: 'login', element: <LoginPage /> },
+                    { path: 'sign-up', element: <SignUpPage /> },
+                    { path: 'sign-up/buyer', element: <SignUpFormPage /> },
+                    { path: 'sign-up/seller', element: <SignUpFormPage /> },
+                    { path: 'forgot-password', element: <ForgotPasswordPage /> },
+                ],
+            },
 
             // Protected
             {
@@ -55,7 +63,7 @@ export const routes = createBrowserRouter([
                 ],
             },
 
-            // Manager / Admin
+            // Manager & Admin
             {
                 element: <ManagerRoute />,
                 children: [

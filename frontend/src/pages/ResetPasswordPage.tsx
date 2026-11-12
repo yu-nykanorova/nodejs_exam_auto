@@ -2,6 +2,7 @@ import { authService } from "../services/authService.ts";
 import { type PasswordFormParams, SetPasswordForm } from "../components/forms/SetPasswordForm.tsx";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAppSelector } from "../store/hooks/useAppSelector.tsx";
+import { ErrorComponent } from "../components/ui/ErrorComponent.tsx";
 
 export const ResetPasswordPage = () => {
     const navigate = useNavigate();
@@ -27,13 +28,7 @@ export const ResetPasswordPage = () => {
     };
 
     if (!token) {
-        return (
-            <div className="min-h-[calc(100vh-128px)] flex items-center justify-center">
-                <p className="text-red-600">
-                    Invalid or missing token
-                </p>
-            </div>
-        );
+        return <ErrorComponent message="Invalid or missing action token" />
     }
 
     return (

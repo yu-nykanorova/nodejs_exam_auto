@@ -3,6 +3,7 @@ import { useAppSelector } from "../store/hooks/useAppSelector.tsx";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { forgotPasswordValidator } from "../validators/forgotPassword.validator.ts"
 import { authService } from "../services/authService.ts";
+import { Form } from "../components/ui/Form.tsx";
 
 type ForgotPasswordFormParams = {
     email: string;
@@ -45,9 +46,9 @@ export const ForgotPasswordPage = () => {
                     to reset your password.
                 </p>
 
-                <form
+                <Form
                     onSubmit={handleSubmit(handleSendEmail)}
-                    className="flex flex-col gap-4"
+                    className="gap-4"
                 >
                     <div className="relative">
                         <label
@@ -86,7 +87,7 @@ export const ForgotPasswordPage = () => {
                     >
                         {loading ? "Sending..." : "Send reset link"}
                     </button>
-                </form>
+                </Form>
             </div>
         </div>
     );

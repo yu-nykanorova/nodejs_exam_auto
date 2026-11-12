@@ -5,6 +5,7 @@ import { useAppSelector } from "../store/hooks/useAppSelector.tsx";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { loginValidator } from "../validators/login.validator.ts";
 import { authSliceActions } from "../store/slices/authSlice.ts";
+import { Form } from "../components/ui/Form.tsx";
 
 type LoginFormParams = {
     email: string;
@@ -41,9 +42,9 @@ export const LoginPage = () => {
 
     return (
         <div className="min-h-[calc(100vh-128px)] flex items-center justify-center p-4">
-            <form
+            <Form
                 onSubmit={handleSubmit(handleLogin)}
-                className="w-full max-w-md p-6 flex flex-col gap-5 bg-white rounded-lg shadow-md"
+                className="w-full max-w-md p-6 gap-5 rounded-lg shadow-md"
             >
                 <h1 className="text-2xl font-semibold text-center">
                     Login
@@ -120,7 +121,7 @@ export const LoginPage = () => {
                         Sign up
                     </button>
                 </div>
-            </form>
+            </Form>
         </div>
     );
 };

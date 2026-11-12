@@ -75,6 +75,13 @@ router.get(
     advertController.getStatistics,
 );
 
+router.post(
+    "/:id/view",
+    commonMiddleware.isIdValid("id"),
+    commonMiddleware.identifyUser,
+    advertController.saveAdvertView,
+);
+
 router.delete(
     "/:id",
     authMiddleware.checkAccessToken,

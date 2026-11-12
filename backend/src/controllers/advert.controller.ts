@@ -147,6 +147,22 @@ class AdvertController {
         }
     }
 
+    public async saveAdvertView(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
+        try {
+            const id = req.params.id as string;
+            const payload = res.locals.tokenPayload as
+                ITokenPayload | undefined;
+            await advertService.saveAdvertView(id, payload);
+            res.status(StatusCodesEnum.NO_CONTENT).end();
+        } catch (e) {
+            next(e);
+        }
+    }
+
     public async deleteAdvert(req: Request, res: Response, next: NextFunction) {
         try {
             const payload = res.locals.tokenPayload as ITokenPayload;

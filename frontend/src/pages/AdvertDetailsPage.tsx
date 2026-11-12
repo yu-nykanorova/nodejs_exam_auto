@@ -1,7 +1,7 @@
 import { useAppSelector } from "../store/hooks/useAppSelector.tsx";
 import { useParams } from "react-router-dom";
 import { useAppDispatch } from "../store/hooks/useAppDispatch.tsx";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { advertSliceActions } from "../store/slices/advertSlice.ts";
 import { Loader } from "../components/ui/Loader.tsx";
 import { ErrorComponent } from "../components/ui/ErrorComponent.tsx";
@@ -25,12 +25,25 @@ export const AdvertDetailsPage = () => {
     const allowedToViewStatistics =
         (user?._id === advert?._ownerId && user?.accountType === sellerAccountTypes.PREMIUM) || user?.role === roles.ADMIN || user?.role === roles.MANAGER;
 
+    const openedAdvertId = useRef<string | null>(null);
+
     useEffect(() => {
-        if (id) {
-            dispatch(advertSliceActions.loadAdvert(id));
-            dispatch(advertSliceActions.loadAdvertStatistics(id));
+        if (!id) return;
+
+        dispatch(advertSliceActions.loadAdvert(id));
+
+        if (openedAdvertId.current !== id) {
+            openedAdvertId.current = id;
+            dispatch(advertSliceActions.increaseAdvertViews(id));
         }
     }, [id, dispatch]);
+
+    useEffect(() => {
+        if (!id || advert?._id !== id || !allowedToViewStatistics) {
+            return;
+        }
+        dispatch(advertSliceActions.loadAdvertStatistics(id));
+    }, [id, advert?._id, allowedToViewStatistics, dispatch]);
 
     if (advertDetailsLoading) {
         return <Loader />;
