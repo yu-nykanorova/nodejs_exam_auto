@@ -11,6 +11,11 @@ import { Currencies } from "../constants/currencies.ts";
 import { useAppSelector } from "../store/hooks/useAppSelector.tsx";
 import { brandSliceActions } from "../store/slices/brandSlice.ts";
 import { Form } from "../components/ui/Form.tsx";
+import { FormInputLabel } from "../components/ui/FormInputLabel.tsx";
+import { FormInput } from "../components/ui/FormInput.tsx";
+import { ErrorComponent } from "../components/ui/ErrorComponent.tsx";
+import { FormSelect } from "../components/ui/FormSelect.tsx";
+import { buildOptionsFromArray } from "../utils/buildSelectOptions.ts";
 
 export const CreateAdvertPage = () => {
     const dispatch = useAppDispatch();
@@ -19,13 +24,15 @@ export const CreateAdvertPage = () => {
     const { createAdvertLoading, error: createAdvertError } = useAppSelector(({ advertSlice }) => advertSlice);
 
     const {
-        brands
+        brands,
+        error: brandsError,
     } = useAppSelector(
         ({ brandSlice }) => brandSlice,
     );
 
     const {
-        models
+        models,
+        error: modelsError,
     } = useAppSelector(
         ({ modelSlice }) => modelSlice,
     );
@@ -92,61 +99,37 @@ export const CreateAdvertPage = () => {
                 </h1>
 
                 <div className="flex flex-col gap-1">
-                    <label
-                        htmlFor="title"
-                        className="text-sm font-medium"
-                    >
+                    <FormInputLabel htmlFor="title">
                         Title
-                    </label>
+                    </FormInputLabel>
 
-                    <input
+                    <FormInput
                         id="title"
-                        type="text"
+                        placeholder="Title"
+                        error={!!errors.title}
                         {...register("title")}
                         onBlur={() => clearErrors("title")}
-                        className="h-10 px-3 border border-gray-300 rounded-md outline-none focus:border-blue-500"
                     />
-
-                    {errors.title && (
-                        <p className="text-sm text-red-600">
-                            {errors.title.message}
-                        </p>
+                    {errors.title?.message && (
+                        <ErrorComponent message={errors.title.message}/>
                     )}
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="flex flex-col gap-1">
-                        <label
-                            htmlFor="brandId"
-                            className="text-sm font-medium"
-                        >
+                        <FormInputLabel htmlFor="brandId">
                             Brand
-                        </label>
-
-                        <select
+                        </FormInputLabel>
+                        
+                        <FormSelect
                             id="brandId"
+                            defaultOption="Select brand"
+                            optionValues={buildOptionsFromArray(brands)}
                             {...register("brandId")}
                             onBlur={() => clearErrors("brandId")}
-                            className="h-10 px-3 border border-gray-300 rounded-md bg-white outline-none focus:border-blue-500"
-                        >
-                            <option value="">
-                                Select brand
-                            </option>
-
-                            {brands.map((brand) => (
-                                <option
-                                    key={brand._id}
-                                    value={brand._id}
-                                >
-                                    {brand.name}
-                                </option>
-                            ))}
-                        </select>
-
-                        {errors.brandId && (
-                            <p className="text-sm text-red-600">
-                                {errors.brandId.message}
-                            </p>
+                        />
+                        {brandsError && (
+                            <ErrorComponent message={brandsError}/>
                         )}
                     </div>
 

@@ -2,6 +2,10 @@ import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { passwordFormValidator } from "../../validators/passwordForm.validator.ts";
 import { Form } from "../ui/Form.tsx";
+import { FormInputLabel } from "../ui/FormInputLabel.tsx";
+import { FormInput } from "../ui/FormInput.tsx";
+import { ErrorComponent } from "../ui/ErrorComponent.tsx";
+import { FormButton } from "../ui/FormButton.tsx";
 
 export type PasswordFormParams = {
     password: string;
@@ -17,12 +21,12 @@ type PasswordFormProps = {
 };
 
 export const SetPasswordForm = ({
-                                 title,
-                                 buttonText,
-                                 loading,
-                                 error,
-                                 onSubmit,
-                             }: PasswordFormProps) => {
+     title,
+     buttonText,
+     loading,
+     error,
+     onSubmit,
+ }: PasswordFormProps) => {
     const {
         handleSubmit,
         register,
@@ -44,64 +48,52 @@ export const SetPasswordForm = ({
                 </h1>
 
                 <div className="flex flex-col gap-1">
-                    <label
-                        htmlFor="password"
-                        className="text-sm font-medium"
-                    >
+                    <FormInputLabel htmlFor="password">
                         Password
-                    </label>
+                    </FormInputLabel>
 
-                    <input
+                    <FormInput
                         id="password"
                         type="password"
+                        placeholder="Password"
+                        error={!!errors.password}
                         {...register("password")}
                         onBlur={() => clearErrors("password")}
-                        className="h-10 px-3 border border-gray-300 rounded-md outline-none focus:border-blue-500"
                     />
-
-                    {errors.password && (
-                        <p className="text-sm text-red-600">
-                            {errors.password.message}
-                        </p>
+                    {errors.password?.message && (
+                        <ErrorComponent message={errors.password.message}/>
                     )}
                 </div>
 
                 <div className="flex flex-col gap-1">
-                    <label
-                        htmlFor="confirmPassword"
-                        className="text-sm font-medium"
-                    >
-                        Repeat password
-                    </label>
+                    <FormInputLabel htmlFor="confirmPassword">
+                        Confirm password
+                    </FormInputLabel>
 
-                    <input
+                    <FormInput
                         id="confirmPassword"
                         type="password"
+                        placeholder="Confirm password"
+                        error={!!errors.confirmPassword}
                         {...register("confirmPassword")}
                         onBlur={() => clearErrors("confirmPassword")}
-                        className="h-10 px-3 border border-gray-300 rounded-md outline-none focus:border-blue-500"
                     />
-
-                    {errors.confirmPassword && (
-                        <p className="text-sm text-red-600">
-                            {errors.confirmPassword.message}
-                        </p>
+                    {errors.confirmPassword?.message && (
+                        <ErrorComponent message={errors.confirmPassword.message}/>
                     )}
                 </div>
 
                 {error && (
-                    <p className="text-sm text-center text-red-600">
-                        {error}
-                    </p>
+                    <ErrorComponent message={error}/>
                 )}
 
-                <button
+                <FormButton
                     type="submit"
+                    className="bg-blue-600 text-white hover:bg-blue-700"
                     disabled={loading}
-                    className="h-10 bg-blue-600 text-white rounded-md cursor-pointer hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {loading ? "Saving..." : buttonText}
-                </button>
+                </FormButton>
             </Form>
         </div>
     );

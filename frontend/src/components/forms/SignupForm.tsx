@@ -7,6 +7,10 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import { signUpValidator } from "../../validators/signup.validator.ts";
 import { authSliceActions } from "../../store/slices/authSlice.ts";
 import { Form } from "../ui/Form.tsx";
+import { FormInputLabel } from "../ui/FormInputLabel.tsx";
+import { FormInput } from "../ui/FormInput.tsx";
+import { ErrorComponent } from "../ui/ErrorComponent.tsx";
+import { FormButton } from "../ui/FormButton.tsx";
 
 type SignUpFormParams = {
     email: string;
@@ -79,193 +83,158 @@ export const SignUpForm: FC<SignUpFormProps> = ({ isSeller }) => {
                 </h1>
 
                 <div className="flex flex-col gap-1">
-                    <label
-                        htmlFor="email"
-                        className="text-sm font-medium"
-                    >
+                    <FormInputLabel htmlFor="email">
                         Email
-                    </label>
+                    </FormInputLabel>
 
-                    <input
+                    <FormInput
                         id="email"
                         type="email"
+                        placeholder="Email"
+                        error={!!errors.email}
                         {...register("email")}
                         onBlur={() => clearErrors("email")}
-                        className="h-10 px-3 border border-gray-300 rounded-md outline-none focus:border-blue-500"
                     />
-
-                    {errors.email && (
-                        <p className="text-sm text-red-600">
-                            {errors.email.message}
-                        </p>
+                    {errors.email?.message && (
+                        <ErrorComponent message={errors.email.message}/>
                     )}
                 </div>
 
                 <div className="flex flex-col gap-1">
-                    <label
-                        htmlFor="password"
-                        className="text-sm font-medium"
-                    >
+                    <FormInputLabel htmlFor="password">
                         Password
-                    </label>
+                    </FormInputLabel>
 
-                    <input
+                    <FormInput
                         id="password"
                         type="password"
+                        placeholder="Password"
+                        error={!!errors.password}
                         {...register("password")}
                         onBlur={() => clearErrors("password")}
-                        className="h-10 px-3 border border-gray-300 rounded-md outline-none focus:border-blue-500"
                     />
 
-                    {errors.password && (
-                        <p className="text-sm text-red-600">
-                            {errors.password.message}
-                        </p>
+                    {errors.password?.message && (
+                        <ErrorComponent message={errors.password.message}/>
                     )}
                 </div>
 
                 <div className="flex flex-col gap-1">
-                    <label
-                        htmlFor="confirmPassword"
-                        className="text-sm font-medium"
-                    >
-                        Repeat password
-                    </label>
+                    <FormInputLabel htmlFor="confirmPassword">
+                        Confirm password
+                    </FormInputLabel>
 
-                    <input
+                    <FormInput
                         id="confirmPassword"
                         type="password"
+                        placeholder="Confirm password"
+                        error={!!errors.confirmPassword}
                         {...register("confirmPassword")}
                         onBlur={() => clearErrors("confirmPassword")}
-                        className="h-10 px-3 border border-gray-300 rounded-md outline-none focus:border-blue-500"
                     />
 
-                    {errors.confirmPassword && (
-                        <p className="text-sm text-red-600">
-                            {errors.confirmPassword.message}
-                        </p>
+                    {errors.confirmPassword?.message && (
+                        <ErrorComponent message={errors.confirmPassword.message}/>
                     )}
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="flex flex-col gap-1">
-                        <label
-                            htmlFor="name"
-                            className="text-sm font-medium"
-                        >
+                        <FormInputLabel htmlFor="name">
                             Name
-                        </label>
+                        </FormInputLabel>
 
-                        <input
+                        <FormInput
                             id="name"
-                            type="text"
+                            placeholder="Name"
+                            error={!!errors.name}
                             {...register("name")}
                             onBlur={() => clearErrors("name")}
-                            className="h-10 px-3 border border-gray-300 rounded-md outline-none focus:border-blue-500"
                         />
-
-                        {errors.name && (
-                            <p className="text-sm text-red-600">
-                                {errors.name.message}
-                            </p>
+                        {errors.name?.message && (
+                            <ErrorComponent message={errors.name.message}/>
                         )}
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <label
-                            htmlFor="surname"
-                            className="text-sm font-medium"
-                        >
+                        <FormInputLabel htmlFor="surname">
                             Surname
-                        </label>
+                        </FormInputLabel>
 
-                        <input
+                        <FormInput
                             id="surname"
-                            type="text"
+                            placeholder="Surname"
+                            error={!!errors.surname}
                             {...register("surname")}
                             onBlur={() => clearErrors("surname")}
-                            className="h-10 px-3 border border-gray-300 rounded-md outline-none focus:border-blue-500"
                         />
 
-                        {errors.surname && (
-                            <p className="text-sm text-red-600">
-                                {errors.surname.message}
-                            </p>
+                        {errors.surname?.message && (
+                            <ErrorComponent message={errors.surname.message}/>
                         )}
                     </div>
                 </div>
 
                 <div className="flex flex-col gap-1">
-                    <label
-                        htmlFor="age"
-                        className="text-sm font-medium"
-                    >
+                    <FormInputLabel htmlFor="age">
                         Age
-                    </label>
+                    </FormInputLabel>
 
-                    <input
+                    <FormInput
                         id="age"
                         type="number"
+                        step={1}
+                        placeholder="Age"
+                        error={!!errors.confirmPassword}
                         {...register("age", {
                             valueAsNumber: true,
                         })}
                         onBlur={() => clearErrors("age")}
-                        className="h-10 px-3 border border-gray-300 rounded-md outline-none focus:border-blue-500"
                     />
-
-                    {errors.age && (
-                        <p className="text-sm text-red-600">
-                            {errors.age.message}
-                        </p>
+                    {errors.age?.message && (
+                        <ErrorComponent message={errors.age.message}/>
                     )}
                 </div>
 
                 <div className="flex flex-col gap-1">
-                    <label
-                        htmlFor="phone"
-                        className="text-sm font-medium"
-                    >
+                    <FormInputLabel htmlFor="phone">
                         Phone {isSeller && "*"}
-                    </label>
+                    </FormInputLabel>
 
-                    <input
+                    <FormInput
                         id="phone"
                         type="tel"
+                        placeholder="Phone"
+                        error={!!errors.phone}
                         {...register("phone")}
                         onBlur={() => clearErrors("phone")}
-                        className="h-10 px-3 border border-gray-300 rounded-md outline-none focus:border-blue-500"
                     />
-
-                    {errors.phone && (
-                        <p className="text-sm text-red-600">
-                            {errors.phone.message}
-                        </p>
+                    {errors.phone?.message && (
+                        <ErrorComponent message={errors.phone.message}/>
                     )}
                 </div>
 
                 {error && (
-                    <p className="text-sm text-center text-red-600">
-                        {error}
-                    </p>
+                    <ErrorComponent message={error}/>
                 )}
 
-                <button
+                <FormButton
                     type="submit"
+                    className="mt-2 bg-blue-600 text-white hover:bg-blue-700"
                     disabled={loading}
-                    className="h-10 mt-2 bg-blue-600 text-white rounded-md cursor-pointer hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {loading
                         ? "Creating account..."
                         : "Sign up"}
-                </button>
+                </FormButton>
 
-                <button
-                    type="button"
+                <FormButton
+                    className="text-sm text-blue-600 hover:underline"
                     onClick={() => navigate("/login")}
-                    className="text-sm text-blue-600 hover:underline cursor-pointer"
+                    disabled={loading}
                 >
                     Already have an account? Login
-                </button>
+                </FormButton>
             </Form>
         </div>
     );
