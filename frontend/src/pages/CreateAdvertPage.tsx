@@ -15,7 +15,8 @@ import { FormInputLabel } from "../components/ui/FormInputLabel.tsx";
 import { FormInput } from "../components/ui/FormInput.tsx";
 import { ErrorComponent } from "../components/ui/ErrorComponent.tsx";
 import { FormSelect } from "../components/ui/FormSelect.tsx";
-import { buildOptionsFromArray } from "../utils/buildSelectOptions.ts";
+import { buildOptionsFromArray, buildOptionsFromObject } from "../utils/buildSelectOptions.ts";
+import { FormButton } from "../components/ui/FormButton.tsx";
 
 export const CreateAdvertPage = () => {
     const dispatch = useAppDispatch();
@@ -134,191 +135,123 @@ export const CreateAdvertPage = () => {
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <label
-                            htmlFor="modelId"
-                            className="text-sm font-medium"
-                        >
+                        <FormInputLabel htmlFor="modelId">
                             Model
-                        </label>
+                        </FormInputLabel>
 
-                        <select
-                            {...register("modelId")}
-                            className="h-10 rounded border border-gray-300 px-3 focus:border-blue-500 focus:outline-none"
+                        <FormSelect
+                            id="modelId"
                             disabled={!selectedBrandId}
-                        >
-                            <option value="">Select model</option>
-
-                            {models.map((model) => (
-                                <option key={model._id} value={model._id}>
-                                    {model.name}
-                                </option>
-                            ))}
-                        </select>
-
-                        {errors.modelId && (
-                            <p className="text-sm text-red-600">
-                                {errors.modelId.message}
-                            </p>
+                            className="disabled:text-gray-400 disabled:cursor-not-allowed"
+                            defaultOption="Select model"
+                            optionValues={buildOptionsFromArray(models)}
+                            {...register("modelId")}
+                            onBlur={() => clearErrors("modelId")}
+                        />
+                        {modelsError && (
+                            <ErrorComponent message={modelsError}/>
                         )}
                     </div>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="flex flex-col gap-1">
-                        <label
-                            htmlFor="year"
-                            className="text-sm font-medium"
-                        >
+                        <FormInputLabel htmlFor="year">
                             Year
-                        </label>
+                        </FormInputLabel>
 
-                        <input
+                        <FormInput
                             id="year"
                             type="number"
+                            placeholder="Year"
+                            error={!!errors.year}
                             {...register("year", {
                                 valueAsNumber: true,
                             })}
                             onBlur={() => clearErrors("year")}
-                            className="h-10 px-3 border border-gray-300 rounded-md outline-none focus:border-blue-500"
                         />
-
-                        {errors.year && (
-                            <p className="text-sm text-red-600">
-                                {errors.year.message}
-                            </p>
+                        {errors.year?.message && (
+                            <ErrorComponent message={errors.year.message}/>
                         )}
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <label
-                            htmlFor="initialCurrency"
-                            className="text-sm font-medium"
-                        >
+                        <FormInputLabel htmlFor="initialCurrency">
                             Currency
-                        </label>
+                        </FormInputLabel>
 
-                        <select
+                        <FormSelect
                             id="initialCurrency"
+                            defaultOption="Select currency"
+                            optionValues={buildOptionsFromObject(Currencies)}
                             {...register("initialCurrency")}
-                            onBlur={() =>
-                                clearErrors(
-                                    "initialCurrency",
-                                )
-                            }
-                            className="h-10 px-3 border border-gray-300 rounded-md bg-white outline-none focus:border-blue-500"
-                        >
-                            <option value="">
-                                Select currency
-                            </option>
-
-                            {Object.values(Currencies).map(
-                                (currency) => (
-                                    <option
-                                        key={currency}
-                                        value={currency}
-                                    >
-                                        {currency}
-                                    </option>
-                                ),
-                            )}
-                        </select>
-
-                        {errors.initialCurrency && (
-                            <p className="text-sm text-red-600">
-                                {
-                                    errors.initialCurrency
-                                        .message
-                                }
-                            </p>
-                        )}
+                            onBlur={() => clearErrors("initialCurrency")}
+                        />
                     </div>
                 </div>
 
                 <div className="flex flex-col gap-1">
-                    <label
-                        htmlFor="initialPrice"
-                        className="text-sm font-medium"
-                    >
+                    <FormInputLabel htmlFor="initialPrice">
                         Price
-                    </label>
+                    </FormInputLabel>
 
-                    <input
+                    <FormInput
                         id="initialPrice"
                         type="number"
                         step="0.01"
+                        placeholder="Price"
+                        error={!!errors.initialPrice}
                         {...register("initialPrice", {
                             valueAsNumber: true,
                         })}
-                        onBlur={() =>
-                            clearErrors("initialPrice")
-                        }
-                        className="h-10 px-3 border border-gray-300 rounded-md outline-none focus:border-blue-500"
+                        onBlur={() => clearErrors("initialPrice")}
                     />
 
-                    {errors.initialPrice && (
-                        <p className="text-sm text-red-600">
-                            {errors.initialPrice.message}
-                        </p>
+                    {errors.initialPrice?.message && (
+                        <ErrorComponent message={errors.initialPrice.message}/>
                     )}
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="flex flex-col gap-1">
-                        <label
-                            htmlFor="region"
-                            className="text-sm font-medium"
-                        >
+                        <FormInputLabel htmlFor="region">
                             Region
-                        </label>
+                        </FormInputLabel>
 
-                        <input
+                        <FormInput
                             id="region"
-                            type="text"
+                            placeholder="Region"
+                            error={!!errors.region}
                             {...register("region")}
-                            onBlur={() =>
-                                clearErrors("region")
-                            }
-                            className="h-10 px-3 border border-gray-300 rounded-md outline-none focus:border-blue-500"
+                            onBlur={() => clearErrors("region")}
                         />
-
-                        {errors.region && (
-                            <p className="text-sm text-red-600">
-                                {errors.region.message}
-                            </p>
+                        {errors.region?.message && (
+                            <ErrorComponent message={errors.region.message}/>
                         )}
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <label
-                            htmlFor="city"
-                            className="text-sm font-medium"
-                        >
+                        <FormInputLabel htmlFor="city">
                             City
-                        </label>
+                        </FormInputLabel>
 
-                        <input
+                        <FormInput
                             id="city"
-                            type="text"
+                            placeholder="City"
+                            error={!!errors.city}
                             {...register("city")}
                             onBlur={() => clearErrors("city")}
-                            className="h-10 px-3 border border-gray-300 rounded-md outline-none focus:border-blue-500"
                         />
-
-                        {errors.city && (
-                            <p className="text-sm text-red-600">
-                                {errors.city.message}
-                            </p>
+                        {errors.city?.message && (
+                            <ErrorComponent message={errors.city.message}/>
                         )}
                     </div>
                 </div>
 
                 <div className="flex flex-col gap-1">
-                    <label
-                        htmlFor="description"
-                        className="text-sm font-medium"
-                    >
+                    <FormInputLabel htmlFor="description">
                         Description
-                    </label>
+                    </FormInputLabel>
 
                     <textarea
                         id="description"
@@ -329,37 +262,31 @@ export const CreateAdvertPage = () => {
                         }
                         className="px-3 py-2 border border-gray-300 rounded-md outline-none focus:border-blue-500 resize-y"
                     />
-
-                    {errors.description && (
-                        <p className="text-sm text-red-600">
-                            {errors.description.message}
-                        </p>
+                    {errors.description?.message && (
+                        <ErrorComponent message={errors.description.message}/>
                     )}
                 </div>
 
                 {createAdvertError && (
-                    <p className="text-sm text-center text-red-600">
-                        {createAdvertError}
-                    </p>
+                    <ErrorComponent message={createAdvertError}/>
                 )}
 
-                <button
+                <FormButton
                     type="submit"
                     disabled={createAdvertLoading}
-                    className="h-10 mt-2 bg-blue-600 text-white rounded-md cursor-pointer hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="mt-2 bg-blue-600 text-white hover:bg-blue-700"
                 >
                     {createAdvertLoading
                         ? "Creating advert..."
                         : "Create advert"}
-                </button>
+                </FormButton>
 
-                <button
-                    type="button"
+                <FormButton
                     onClick={() => navigate("/my-adverts")}
                     className="text-sm text-blue-600 hover:underline cursor-pointer"
                 >
                     Back to my adverts
-                </button>
+                </FormButton>
             </Form>
         </div>
     );
