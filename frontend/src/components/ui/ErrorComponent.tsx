@@ -11,6 +11,6 @@ export const ErrorComponent: FC<ErrorComponentProps> = ({ message, className = "
     }
 
     return (
-        <div className={`p-10 text-red-500 text-center ${className}`}>{message}</div>
+        <div className={`text-red-500 text-center ${className}`}>{message}</div>
     );
 };

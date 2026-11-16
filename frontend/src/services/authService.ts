@@ -1,5 +1,5 @@
-import type { IAuthUserResponse, IChangePasswordRequest, ILoginRequest, ISetPasswordRequest } from "../interfaces/IAuth.ts";
-import type { IUserCreate } from "../interfaces/IUser.ts";
+import type { IAuthUserResponse, IChangePasswordRequest, ILoginRequest, IResetPasswordRequest, ISetPasswordRequest } from "../interfaces/IAuth.ts";
+import type { IUser, IUserCreate } from "../interfaces/IUser.ts";
 import { postItem, putItem } from "./api.service.ts";
 
 export const authService = {
@@ -50,9 +50,9 @@ export const authService = {
     },
 
     resetPassword: async (
-        body: ISetPasswordRequest,
-    ): Promise<void> => {
-        await putItem(
+        body: IResetPasswordRequest,
+    ): Promise<IUser> => {
+        return await putItem(
             "/auth/forgot-password",
             body,
         );

@@ -5,7 +5,7 @@ import {
     IUser,
     IUserCreate,
     IUserQuery,
-    IUserUpdateDTO,
+    IUserRepositoryUpdate,
 } from "../interfaces/user.interface";
 import { User } from "../models/user.model";
 
@@ -79,7 +79,7 @@ class UserRepository {
 
     public async updateById(
         userId: string,
-        user: IUserUpdateDTO,
+        user: IUserRepositoryUpdate,
     ): Promise<IUser | null> {
         return await User.findByIdAndUpdate(userId, user, {
             returnDocument: "after",

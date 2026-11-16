@@ -47,8 +47,6 @@ export class UserValidator {
 
     public static update = joi.object({
         email: this.email,
-        password: this.password,
-        oldPassword: this.password,
         name: this.name,
         surname: this.surname,
         age: this.age,
@@ -64,11 +62,20 @@ export class UserValidator {
         email: this.email.required(),
     });
 
-    public static setNewPassword = joi
-        .object({
-            password: this.password.required(),
-        })
-        .unknown(true);
+    public static resetPassword = joi.object({
+        password: this.password.required(),
+        token: joi.string().required(),
+    });
+
+    public static changePassword = joi.object({
+        oldPassword: this.password.required(),
+        password: this.password.required(),
+    });
+
+    public static setNewPassword = joi.object({
+        password: this.password.required(),
+        token: joi.string().required(),
+    });
 
     public static query = queryValidator(UserQueryOrderEnum);
 

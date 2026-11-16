@@ -11,12 +11,4 @@ export  const passwordFormValidator = Joi.object({
                 "Password must be 8-16 characters and contain uppercase, lowercase, number and special character",
             "any.required": "Password is required",
         }),
-
-    confirmPassword: Joi.any()
-        .valid(Joi.ref("password"))
-        .required()
-        .messages({
-            "any.only": "Passwords do not match",
-            "any.required": "Please repeat your password",
-        }),
 });

@@ -1,6 +1,5 @@
 import type { IUser, IUserChangeStatus, IUserCreate, IUserQuery, IUserResponse, IUserUpdate } from "../interfaces/IUser.ts";
 import { deleteItem, getItems, patchItem, postItem, putItem } from "./api.service.ts";
-import type { IAdvertResponse } from "../interfaces/IAdvert.ts";
 
 export const usersService = {
 
@@ -15,12 +14,6 @@ export const usersService = {
 
     getMe: async (): Promise<IUser> => {
         return await getItems<IUser>("/users/me");
-    },
-
-    getMeAdverts: async (): Promise<IAdvertResponse> => {
-        return await getItems<IAdvertResponse>(
-            "/users/me/adverts",
-        );
     },
 
     updateMe: async (

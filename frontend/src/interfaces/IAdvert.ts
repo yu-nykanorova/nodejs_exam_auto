@@ -66,6 +66,19 @@ export interface IAdvertQuery {
     priceTo?: number;
 }
 
+export interface IAdvertFilters {
+    title: string;
+    brandId: string;
+    modelId: string;
+    yearFrom: string;
+    yearTo: string;
+    region: string;
+    city: string;
+    priceFrom: string;
+    priceTo: string;
+    currency: Currency;
+};
+
 export interface IAdvertResponse
 {
     totalItems: number;

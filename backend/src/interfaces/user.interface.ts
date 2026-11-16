@@ -72,6 +72,21 @@ export type IUserUpdateDTO = Partial<
     Pick<
         IUser,
         | "email"
+        | "name"
+        | "surname"
+        | "age"
+        | "avatar"
+        | "accountType"
+        | "status"
+        | "phone"
+        | "deletedAt"
+    >
+>;
+
+export type IUserRepositoryUpdate = Partial<
+    Pick<
+        IUser,
+        | "email"
         | "password"
         | "name"
         | "surname"
@@ -84,14 +99,27 @@ export type IUserUpdateDTO = Partial<
     >
 >;
 
-export type IUserChangeStatusDTO = Pick<IUser, "status">;
+export interface IUserChangeStatusDTO {
+    status: UserStatusEnum;
+}
 
-export type IUserUpdateAccountTypeDTO = Pick<IUser, "accountType">;
+export interface IUserUpdateAccountTypeDTO {
+    accountType: AccountTypeEnum;
+}
 
-export type IResetPasswordSendEmail = Pick<IUser, "email">;
+export interface IResetPasswordSendEmail {
+    email: string;
+}
 
-export type IResetPassword = Pick<IUser, "password"> & { token: string };
+export interface IResetPassword {
+    password: string;
+}
 
-export type IChangePassword = Pick<IUser, "password"> & { oldPassword: string };
+export interface IChangePassword {
+    oldPassword: string;
+    password: string;
+}
 
-export type ISetPassword = Pick<IUser, "password">;
+export interface ISetPassword {
+    password: string;
+}

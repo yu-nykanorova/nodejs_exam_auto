@@ -8,6 +8,9 @@ import { Loader } from "../components/ui/Loader.tsx";
 import { ErrorComponent } from "../components/ui/ErrorComponent.tsx";
 import { usersService } from "../services/usersService.ts";
 import { Form } from "../components/ui/Form.tsx";
+import { FormInputLabel } from "../components/ui/FormInputLabel.tsx";
+import { FormInput } from "../components/ui/FormInput.tsx";
+import { FormButton } from "../components/ui/FormButton.tsx";
 
 export const CreateManagerPage = () => {
     const navigate = useNavigate();
@@ -56,115 +59,86 @@ export const CreateManagerPage = () => {
                     </div>
                 )}
 
-                <div>
-                    <label
-                        htmlFor="email"
-                        className="mb-1 block text-sm font-medium text-gray-700"
-                    >
+                <div className="flex flex-col gap-1">
+                    <FormInputLabel htmlFor="email">
                         Email
-                    </label>
+                    </FormInputLabel>
 
-                    <input
+                    <FormInput
                         id="email"
                         type="email"
+                        placeholder="Email"
+                        error={!!errors.email}
                         {...register("email")}
-                        onBlur={() =>
-                            clearErrors("email")
-                        }
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-blue-500"
+                        onBlur={() => clearErrors("email")}
                     />
-
-                    {errors.email && (
-                        <p className="mt-1 text-sm text-red-600">
-                            {errors.email.message}
-                        </p>
+                    {errors.email?.message && (
+                        <ErrorComponent message={errors.email.message}/>
                     )}
                 </div>
 
-                <div>
-                    <label
-                        htmlFor="name"
-                        className="mb-1 block text-sm font-medium text-gray-700"
-                    >
+                <div className="flex flex-col gap-1">
+                    <FormInputLabel htmlFor="name">
                         Name
-                    </label>
+                    </FormInputLabel>
 
-                    <input
+                    <FormInput
                         id="name"
-                        type="text"
+                        placeholder="Name"
+                        error={!!errors.name}
                         {...register("name")}
-                        onBlur={() =>
-                            clearErrors("name")
-                        }
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-blue-500"
+                        onBlur={() => clearErrors("name")}
                     />
-
-                    {errors.name && (
-                        <p className="mt-1 text-sm text-red-600">
-                            {errors.name.message}
-                        </p>
+                    {errors.name?.message && (
+                        <ErrorComponent message={errors.name.message}/>
                     )}
                 </div>
 
-                <div>
-                    <label
-                        htmlFor="surname"
-                        className="mb-1 block text-sm font-medium text-gray-700"
-                    >
+                <div className="flex flex-col gap-1">
+                    <FormInputLabel htmlFor="surname">
                         Surname
-                    </label>
+                    </FormInputLabel>
 
-                    <input
+                    <FormInput
                         id="surname"
-                        type="text"
+                        placeholder="Surname"
+                        error={!!errors.surname}
                         {...register("surname")}
-                        onBlur={() =>
-                            clearErrors("surname")
-                        }
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-blue-500"
+                        onBlur={() => clearErrors("surname")}
                     />
-
-                    {errors.surname && (
-                        <p className="mt-1 text-sm text-red-600">
-                            {errors.surname.message}
-                        </p>
+                    {errors.surname?.message && (
+                        <ErrorComponent message={errors.surname.message}/>
                     )}
                 </div>
 
-                <div>
-                    <label
-                        htmlFor="age"
-                        className="mb-1 block text-sm font-medium text-gray-700"
-                    >
+                <div className="flex flex-col gap-1">
+                    <FormInputLabel htmlFor="age">
                         Age
-                    </label>
+                    </FormInputLabel>
 
-                    <input
+                    <FormInput
                         id="age"
                         type="number"
+                        step={1}
+                        placeholder="Age"
+                        error={!!errors.age}
                         {...register("age", {
                             valueAsNumber: true,
                         })}
-                        onBlur={() =>
-                            clearErrors("age")
-                        }
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-blue-500"
+                        onBlur={() => clearErrors("age")}
                     />
-
-                    {errors.age && (
-                        <p className="mt-1 text-sm text-red-600">
-                            {errors.age.message}
-                        </p>
+                    {errors.age?.message && (
+                        <ErrorComponent message={errors.age.message}/>
                     )}
                 </div>
 
-                <button
+                <FormButton
                     type="submit"
+                    className="mt-2 bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700"
                     disabled={userLoading}
-                    className="mt-2 rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                     Create Manager
-                </button>
+                </FormButton>
             </Form>
         </div>
     );

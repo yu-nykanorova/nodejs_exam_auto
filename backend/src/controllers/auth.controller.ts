@@ -14,6 +14,7 @@ import {
 } from "../interfaces/user.interface";
 import { userPresenter } from "../presenters/user.presenter";
 import { authService } from "../services/auth.service";
+import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
 
 class AuthController {
     public signUpSeller = async (
@@ -99,11 +100,16 @@ class AuthController {
         try {
             const payload = res.locals.tokenPayload as ITokenPayload;
             const dto = req.body as IResetPassword;
+            const actionToken = res.locals.actionToken as ActionTokenTypeEnum.FORGOT_PASSWORD;
+
             const updatedUser = await authService.forgotPasswordChange(
                 dto,
                 payload,
+                actionToken,
             );
+
             const result = userPresenter.toPublicResDto(updatedUser);
+
             res.status(StatusCodesEnum.OK).json(result);
         } catch (e) {
             next(e);
@@ -128,8 +134,11 @@ class AuthController {
     public async setPassword(req: Request, res: Response, next: NextFunction) {
         try {
             const payload = res.locals.tokenPayload as ITokenPayload;
-            const password = req.body as ISetPassword;
-            await authService.setPassword(password, payload);
+            const dto = req.body as ISetPassword;
+            const actionToken = res.locals.actionToken as ActionTokenTypeEnum.CREATE_PASSWORD;
+
+            await authService.setPassword(dto, payload, actionToken);
+
             res.sendStatus(StatusCodesEnum.NO_CONTENT);
         } catch (e) {
             next(e);

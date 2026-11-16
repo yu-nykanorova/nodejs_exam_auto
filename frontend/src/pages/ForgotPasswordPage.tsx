@@ -1,37 +1,43 @@
 import { useForm } from "react-hook-form";
-import { useAppSelector } from "../store/hooks/useAppSelector.tsx";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { forgotPasswordValidator } from "../validators/forgotPassword.validator.ts"
 import { authService } from "../services/authService.ts";
 import { Form } from "../components/ui/Form.tsx";
+import { FormInputLabel } from "../components/ui/FormInputLabel.tsx";
+import { FormInput } from "../components/ui/FormInput.tsx";
+import { ErrorComponent } from "../components/ui/ErrorComponent.tsx";
+import { FormButton } from "../components/ui/FormButton.tsx";
+import { getError } from "../utils/getError.ts";
 
 type ForgotPasswordFormParams = {
     email: string;
 };
 
-
 export const ForgotPasswordPage = () => {
-    const { loading, error } = useAppSelector(
-        ({ authSlice }) => authSlice,
-    );
-
     const {
         handleSubmit,
         register,
         clearErrors,
-        formState: { errors },
+        setError,
+        formState: { errors, isSubmitting },
     } = useForm<ForgotPasswordFormParams>({
         mode: "onSubmit",
         resolver: joiResolver(forgotPasswordValidator),
     });
 
-
     const handleSendEmail = async (
         data: ForgotPasswordFormParams,
     ) => {
-        await authService.sendForgotPasswordEmail(data);
-    };
+        try {
+            await authService.sendForgotPasswordEmail(data);
+        } catch (error) {
+            setError("root.serverError", {
+                type: "server",
+                message: getError(error),
+            });
+        }
 
+    };
 
     return (
         <div className="min-h-[calc(100vh-128px)] flex items-center justify-center px-4">
@@ -50,43 +56,35 @@ export const ForgotPasswordPage = () => {
                     onSubmit={handleSubmit(handleSendEmail)}
                     className="gap-4"
                 >
-                    <div className="relative">
-                        <label
-                            htmlFor="email"
-                            className="mb-1 block text-sm font-medium text-gray-700"
-                        >
+                    <div className="flex flex-col gap-1 relative">
+                        <FormInputLabel htmlFor="email">
                             Email
-                        </label>
+                        </FormInputLabel>
 
-                        <input
+                        <FormInput
                             id="email"
                             type="email"
+                            placeholder="Email"
+                            error={!!errors.email}
                             {...register("email")}
                             onBlur={() => clearErrors("email")}
-                            className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                            placeholder="example@email.com"
                         />
-
-                        {errors.email && (
-                            <p className="mt-1 text-sm text-red-600">
-                                {errors.email.message}
-                            </p>
+                        {errors.email?.message && (
+                            <ErrorComponent message={errors.email.message}/>
                         )}
                     </div>
 
-                    {error && (
-                        <p className="text-center text-sm text-red-600">
-                            {error}
-                        </p>
+                    {errors.root?.serverError?.message && (
+                        <ErrorComponent message={errors.root.serverError.message}/>
                     )}
 
-                    <button
+                    <FormButton
                         type="submit"
-                        disabled={loading}
-                        className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="mt-2 px-4 py-2 bg-blue-600 text-white font-medium transition hover:bg-blue-700"
+                        disabled={isSubmitting}
                     >
-                        {loading ? "Sending..." : "Send reset link"}
-                    </button>
+                        {isSubmitting ? "Sending..." : "Send reset link"}
+                    </FormButton>
                 </Form>
             </div>
         </div>

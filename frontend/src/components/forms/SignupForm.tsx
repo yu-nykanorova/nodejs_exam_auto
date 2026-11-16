@@ -185,7 +185,7 @@ export const SignUpForm: FC<SignUpFormProps> = ({ isSeller }) => {
                         type="number"
                         step={1}
                         placeholder="Age"
-                        error={!!errors.confirmPassword}
+                        error={!!errors.age}
                         {...register("age", {
                             valueAsNumber: true,
                         })}

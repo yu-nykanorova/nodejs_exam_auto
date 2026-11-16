@@ -6,6 +6,10 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import { loginValidator } from "../validators/login.validator.ts";
 import { authSliceActions } from "../store/slices/authSlice.ts";
 import { Form } from "../components/ui/Form.tsx";
+import { FormInputLabel } from "../components/ui/FormInputLabel.tsx";
+import { FormInput } from "../components/ui/FormInput.tsx";
+import { ErrorComponent } from "../components/ui/ErrorComponent.tsx";
+import { FormButton } from "../components/ui/FormButton.tsx";
 
 type LoginFormParams = {
     email: string;
@@ -51,75 +55,67 @@ export const LoginPage = () => {
                 </h1>
 
                 <div className="flex flex-col gap-1">
-                    <label htmlFor="email" className="text-sm font-medium">
+                    <FormInputLabel htmlFor="email">
                         Email
-                    </label>
+                    </FormInputLabel>
 
-                    <input
+                    <FormInput
                         id="email"
                         type="email"
+                        placeholder="Email"
+                        error={!!errors.email}
                         {...register("email")}
                         onBlur={() => clearErrors("email")}
-                        className="h-10 px-3 border border-gray-300 rounded-md outline-none focus:border-blue-500"
                     />
-
-                    {errors.email && (
-                        <p className="text-sm text-red-600">
-                            {errors.email.message}
-                        </p>
+                    {errors.email?.message && (
+                        <ErrorComponent message={errors.email.message}/>
                     )}
                 </div>
 
                 <div className="flex flex-col gap-1">
-                    <label htmlFor="password" className="text-sm font-medium">
+                    <FormInputLabel htmlFor="password">
                         Password
-                    </label>
+                    </FormInputLabel>
 
-                    <input
+                    <FormInput
                         id="password"
                         type="password"
+                        placeholder="Password"
+                        error={!!errors.password}
                         {...register("password")}
                         onBlur={() => clearErrors("password")}
-                        className="h-10 px-3 border border-gray-300 rounded-md outline-none focus:border-blue-500"
                     />
-
-                    {errors.password && (
-                        <p className="text-sm text-red-600">
-                            {errors.password.message}
-                        </p>
+                    {errors.password?.message && (
+                        <ErrorComponent message={errors.password.message}/>
                     )}
                 </div>
 
                 {error && (
-                    <p className="text-sm text-center text-red-600">
-                        {error}
-                    </p>
+                    <ErrorComponent message={error}/>
                 )}
 
-                <button
+                <FormButton
                     type="submit"
+                    className="bg-blue-600 text-white hover:bg-blue-700"
                     disabled={loading}
-                    className="h-10 bg-blue-600 text-white rounded-md cursor-pointer hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {loading ? "Logging in..." : "Login"}
-                </button>
+                </FormButton>
 
                 <div className="flex justify-between text-sm">
-                    <button
-                        type="button"
+                    <FormButton
+                        className="text-blue-600 hover:underline"
                         onClick={() => navigate("/forgot-password")}
-                        className="text-blue-600 hover:underline cursor-pointer"
                     >
                         Forgot password?
-                    </button>
+                    </FormButton>
 
-                    <button
-                        type="button"
+                    <FormButton
+                        className="text-blue-600 hover:underline"
                         onClick={() => navigate("/sign-up")}
-                        className="text-blue-600 hover:underline cursor-pointer"
                     >
                         Sign up
-                    </button>
+                    </FormButton>
                 </div>
             </Form>
         </div>

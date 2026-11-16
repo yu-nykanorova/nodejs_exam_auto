@@ -8,8 +8,8 @@ export const MainMenu = () => {
 
     const activeLink = ({ isActive }: { isActive: boolean }) =>
         isActive
-            ? "font-semibold text-blue-600"
-            : "text-gray-700 hover:text-blue-600";
+            ? "p-1 font-semibold text-blue-600"
+            : "p-1 text-gray-700 hover:text-blue-600";
 
     return (
         <nav>

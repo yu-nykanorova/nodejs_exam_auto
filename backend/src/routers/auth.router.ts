@@ -40,14 +40,14 @@ router.post(
 router.put(
     "/forgot-password",
     authMiddleware.checkActionToken(ActionTokenTypeEnum.FORGOT_PASSWORD),
-    commonMiddleware.isBodyValid(UserValidator.setNewPassword),
+    commonMiddleware.isBodyValid(UserValidator.resetPassword),
     authController.forgotPasswordChange,
 );
 
 router.put(
     "/change-password",
     authMiddleware.checkAccessToken,
-    commonMiddleware.isBodyValid(UserValidator.update),
+    commonMiddleware.isBodyValid(UserValidator.changePassword),
     authController.changePassword,
 );
 

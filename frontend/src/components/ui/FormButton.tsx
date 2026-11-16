@@ -10,7 +10,7 @@ export const FormButton: FC<FormButtonProps> = ({ className = "", type="button",
     return (
         <button
             type={type}
-            className={`h-10 rounded-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+            className={`h-10 rounded-md cursor-pointer transition disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
             {...rest}
         >
             {children}

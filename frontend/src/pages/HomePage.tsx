@@ -6,10 +6,13 @@ import { useEffect } from "react";
 import { Loader } from "../components/ui/Loader.tsx";
 import { Pagination } from "../components/pagination/Pagination.tsx";
 import { useSearchParams } from "react-router-dom";
+import { FiltersPanel } from "../components/adverts/advert-filters/FiltersPanel.tsx";
+import { brandSliceActions } from "../store/slices/brandSlice.ts";
+import { modelSliceActions } from "../store/slices/modelSlice.ts";
 
 export const HomePage = () => {
     const dispatch = useAppDispatch();
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams({ page: "1" });
 
     const {
         adverts,
@@ -20,6 +23,20 @@ export const HomePage = () => {
         nextPage
     } = useAppSelector(
         ({ advertSlice }) => advertSlice,
+    );
+
+    const {
+        brands,
+        error: brandsError,
+    } = useAppSelector(
+        ({ brandSlice }) => brandSlice,
+    );
+
+    const {
+        models,
+        error: modelsError,
+    } = useAppSelector(
+        ({ modelSlice }) => modelSlice,
     );
 
     const page =
@@ -37,6 +54,15 @@ export const HomePage = () => {
         );
     }, [dispatch, page, pageSize]);
 
+    useEffect(() => {
+        dispatch(
+            brandSliceActions.loadBrands(),
+        );
+        dispatch(
+            modelSliceActions.loadModels(),
+        );
+    }, [dispatch]);
+
     if (loadingAdverts) {
         return <Loader />;
     }
@@ -47,6 +73,12 @@ export const HomePage = () => {
                 {errorAdverts}
             </div>
         );
+    }
+
+    const handleResetFilters = () => {
+        setSearchParams({
+            page: "1",
+        })
     }
 
     return (
@@ -60,6 +92,14 @@ export const HomePage = () => {
                     Find your next car
                 </p>
             </div>
+
+            <FiltersPanel
+                brands = {brands}
+                brandsError = {brandsError}
+                models = {models}
+                modelsError = {modelsError}
+                onResetFilters={handleResetFilters}
+            />
 
             {adverts.length ? (
                 <AdvertsList adverts={adverts} />

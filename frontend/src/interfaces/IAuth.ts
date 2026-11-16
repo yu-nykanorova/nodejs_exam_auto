@@ -14,6 +14,11 @@ export interface ISignUpRequest {
     phone?: string;
 }
 
+export interface IResetPasswordRequest {
+    token: string;
+    password: string;
+}
+
 export interface IChangePasswordRequest {
     oldPassword: string;
     newPassword: string;

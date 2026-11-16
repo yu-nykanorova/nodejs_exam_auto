@@ -53,6 +53,7 @@ export const CreateAdvertPage = () => {
         control,
         handleSubmit,
         clearErrors,
+        setValue,
         formState: { errors },
     } = useForm<IAdvertCreate>({
         mode: "onSubmit",
@@ -126,7 +127,9 @@ export const CreateAdvertPage = () => {
                             id="brandId"
                             defaultOption="Select brand"
                             optionValues={buildOptionsFromArray(brands)}
-                            {...register("brandId")}
+                            {...register("brandId", {onChange: () => {
+                                setValue("modelId", "");
+                                }})}
                             onBlur={() => clearErrors("brandId")}
                         />
                         {brandsError && (

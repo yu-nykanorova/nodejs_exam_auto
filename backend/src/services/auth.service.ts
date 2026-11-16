@@ -137,6 +137,7 @@ class AuthService {
     public async forgotPasswordChange(
         dto: IResetPassword,
         payload: ITokenPayload,
+        actionToken: ActionTokenTypeEnum.FORGOT_PASSWORD,
     ): Promise<IUser> {
         const user = await userRepository.getById(payload.userId);
 
@@ -162,7 +163,7 @@ class AuthService {
         });
 
         await actionTokenRepository.deleteActionToken({
-            token: dto.token,
+            token: actionToken,
         });
 
         return updatedUser;
@@ -209,6 +210,7 @@ class AuthService {
     public async setPassword(
         dto: ISetPassword,
         payload: ITokenPayload,
+        actionToken: ActionTokenTypeEnum.CREATE_PASSWORD,
     ): Promise<void> {
         const user = await userRepository.getById(payload.userId);
 
@@ -221,7 +223,7 @@ class AuthService {
         await userRepository.updateById(payload.userId, { password });
 
         await actionTokenRepository.deleteActionToken({
-            _userId: payload.userId,
+            token: actionToken,
         });
     }
 
