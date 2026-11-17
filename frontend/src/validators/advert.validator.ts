@@ -1,5 +1,6 @@
 import * as Joi from "joi";
 import { Currencies } from "../constants/currencies.ts";
+import { advertsSortOrder } from "../constants/advertSortOrder.ts";
 
 export const advertCreateValidator = Joi.object({
     title: Joi.string()
@@ -89,37 +90,45 @@ export const advertFilterValidator = Joi.object({
         .max(100)
         .messages({
             "string.max": "Title must be at most 100 characters",
-        }),
+        })
+        .empty(""),
 
-    brandId: Joi.string(),
+    brandId: Joi.string().empty(""),
 
-    modelId: Joi.string(),
+    modelId: Joi.string().empty(""),
 
     yearFrom: Joi.number()
         .integer()
         .min(1900)
         .max(new Date().getFullYear())
+        .empty("")
+        .when("yearTo", {
+            is: Joi.number().required(),
+            then: Joi.number().max(Joi.ref("yearTo")),
+        })
         .messages({
             "number.base": "Year must be a number",
             "number.integer": "Year must be an integer",
             "number.min": "Year must be at least 1900",
-            "number.max": "Year cannot be in the future",
+            "number.max": "Year from cannot be in the future or greater than year to",
         }),
 
     yearTo: Joi.number()
         .integer()
         .min(1900)
         .max(new Date().getFullYear())
+        .empty("")
         .messages({
             "number.base": "Year must be a number",
             "number.integer": "Year must be an integer",
             "number.min": "Year must be at least 1900",
-            "number.max": "Year cannot be in the future",
+            "number.max": "Year to cannot be in the future",
         }),
 
     region: Joi.string()
         .trim()
         .max(30)
+        .empty("")
         .messages({
             "string.max": "Region name must be at most 30 characters",
         }),
@@ -127,19 +136,27 @@ export const advertFilterValidator = Joi.object({
     city: Joi.string()
         .trim()
         .max(30)
+        .empty("")
         .messages({
             "string.max": "City name must be at most 30 characters",
         }),
 
     priceFrom: Joi.number()
         .positive()
+        .empty("")
+        .when("priceTo", {
+            is: Joi.number().required(),
+            then: Joi.number().max(Joi.ref("priceTo")),
+        })
         .messages({
             "number.base": "Price must be a number",
             "number.positive": "Price must be greater than 0",
+            "number.max": "Minimum price cannot exceed maximum price",
         }),
 
     priceTo: Joi.number()
         .positive()
+        .empty("")
         .messages({
             "number.base": "Price must be a number",
             "number.positive": "Price must be greater than 0",
@@ -148,7 +165,12 @@ export const advertFilterValidator = Joi.object({
     currency: Joi.string()
         .valid(...Object.values(Currencies))
         .default(Currencies.USD)
+        .empty("")
         .messages({
             "any.only": "Select a valid currency",
         }),
+
+    order: Joi.string()
+        .default(`-${ advertsSortOrder.CREATED_AT }`),
+
 });

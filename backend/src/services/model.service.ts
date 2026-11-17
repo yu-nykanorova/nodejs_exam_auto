@@ -8,6 +8,8 @@ import {
     IModelCreateDTO,
     IModelCreateRequestDTO,
     IModelRequest,
+    IModelRequestWithOwnerData,
+    IModelWithBrandName,
 } from "../interfaces/model.interface";
 import { brandRepository } from "../repositories/brand.repository";
 import { modelRepository } from "../repositories/model.repository";
@@ -15,7 +17,9 @@ import { userRepository } from "../repositories/user.repository";
 import { emailService } from "./email.service";
 
 class ModelService {
-    public async getAllModels(brandId?: string): Promise<IModel[]> {
+    public async getAllModels(
+        brandId?: string,
+    ): Promise<IModel[] | IModelWithBrandName[]> {
         if (brandId) {
             return await modelRepository.getModelsByBrandId(brandId);
         }
@@ -45,13 +49,13 @@ class ModelService {
         return await modelRepository.createModel(dto);
     }
 
-    public async getModelRequests(): Promise<IModelRequest[]> {
+    public async getModelRequests(): Promise<IModelRequestWithOwnerData[]> {
         return await modelRepository.getModelRequests();
     }
 
     public async getModelRequestById(
         modelRequestId: string,
-    ): Promise<IModelRequest> {
+    ): Promise<IModelRequestWithOwnerData> {
         const modelRequest =
             await modelRepository.getModelRequestById(modelRequestId);
 

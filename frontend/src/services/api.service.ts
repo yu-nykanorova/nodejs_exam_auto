@@ -2,17 +2,28 @@ import axios, { type InternalAxiosRequestConfig } from "axios";
 import { getFromLocalStorage, removeFromLocalStorage, saveToLocalStorage } from "../utils/localStorage.ts";
 import type { IAuthResponse } from "../interfaces/IAuth.ts";
 
+type RetryRequestConfig = InternalAxiosRequestConfig & {
+    _retry?: boolean;
+};
+
+const publicEndpoints = [
+    "/auth/login",
+    "/auth/refresh",
+    "/auth/forgot-password",
+    "/auth/set-password",
+    "/auth/logout",
+]
+
 export const axiosInstance = axios.create({
     baseURL: "http://localhost:3000",
     headers: {"Content-Type": "application/json"},
 });
 
-const refreshAxiosInstance = axios.create({
-    baseURL: "http://localhost:3000",
-    headers: {"Content-Type": "application/json"},
-});
-
 axiosInstance.interceptors.request.use((requestObject) => {
+    if (publicEndpoints.includes(requestObject.url ?? "")) {
+        return requestObject;
+    }
+
     const accessToken = getFromLocalStorage<IAuthResponse>("tokens")?.accessToken;
 
     if(accessToken) {
@@ -22,10 +33,6 @@ axiosInstance.interceptors.request.use((requestObject) => {
     return requestObject;
 });
 
-type RetryRequestConfig = InternalAxiosRequestConfig & {
-    _retry?: boolean;
-};
-
 axiosInstance.interceptors.response.use(
     (response) => response,
 
@@ -34,7 +41,8 @@ axiosInstance.interceptors.response.use(
 
         if (
             error.response?.status === 401 &&
-            !originalRequest._retry
+            !originalRequest._retry &&
+            !publicEndpoints.includes(originalRequest.url ?? "")
         ) {
             originalRequest._retry = true;
 
@@ -49,7 +57,7 @@ axiosInstance.interceptors.response.use(
                 }
 
                 const { data } =
-                    await refreshAxiosInstance.post<IAuthResponse>(
+                    await axiosInstance.post<IAuthResponse>(
                         "/auth/refresh",
                         {
                             refreshToken:

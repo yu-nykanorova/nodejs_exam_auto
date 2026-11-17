@@ -43,7 +43,13 @@ export const AdvertsListCard: FC<AdvertProps> = ({ advert }) => {
                         {advert.initialCurrency}
                     </p>
 
-                    <p className="text-sm text-gray-500">
+                    <div className="flex flex-col text-sm text-gray-500">
+                        <p>{advert.priceUSD} USD</p>
+                        <p>{advert.priceEUR} EUR</p>
+                        <p>{advert.priceUAH} UAH</p>
+                    </div>
+
+                    <p className="text-sm">
                         {advert.description}
                     </p>
 

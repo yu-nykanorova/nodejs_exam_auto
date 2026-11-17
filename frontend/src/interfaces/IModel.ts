@@ -3,7 +3,7 @@ import type { RequestStatus } from "./IRequestStatus.ts";
 export interface IModel {
     _id: string;
     name: string;
-    brandId: string;
+    brandId: { _id: string; name: string };
     createdAt: string;
     updatedAt: string;
 }

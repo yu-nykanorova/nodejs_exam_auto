@@ -1,5 +1,6 @@
 import type { IAdvertFilters, IAdvertQuery } from "../interfaces/IAdvert.ts";
 import type { Currency } from "../constants/currencies.ts";
+import type { AdvertsSortOrderFull } from "../constants/advertSortOrder.ts";
 
 export const getAdvertsFilters = (filters: IAdvertFilters): IAdvertQuery => {
     return {
@@ -13,6 +14,7 @@ export const getAdvertsFilters = (filters: IAdvertFilters): IAdvertQuery => {
         ...(filters.priceFrom && {priceFrom: Number(filters.priceFrom)}),
         ...(filters.priceTo && {priceTo: Number(filters.priceTo)}),
         ...(filters.currency && {currency: filters.currency as Currency}),
+        ...(filters.order && {order: filters.order as AdvertsSortOrderFull}),
     };
 };
 

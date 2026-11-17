@@ -10,11 +10,14 @@ import { defaultAdvertFilters } from "../../../constants/defaultAdvertFilters.ts
 import type { IAdvertFilters } from "../../../interfaces/IAdvert.ts";
 import { useSearchParams } from "react-router-dom";
 import { useForm, useWatch } from "react-hook-form";
-import { type FC, useMemo } from "react";
+import { type FC } from "react";
 import { Form } from "../../ui/Form.tsx";
 import { ErrorComponent } from "../../ui/ErrorComponent.tsx";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { advertFilterValidator } from "../../../validators/advert.validator.ts";
+import { filterKeys } from "../../../constants/advertFilterKeys.ts";
+import { advertsSortOrder, type AdvertsSortOrderFull } from "../../../constants/advertSortOrder.ts";
+import { advertSortOptions } from "../../../constants/advertsSortOptions.ts";
 
 type FiltersPanelProps = {
     brands: IBrand[];
@@ -28,7 +31,7 @@ export const FiltersPanel: FC<FiltersPanelProps> = ({ brands, brandsError, model
     const [searchParams, setSearchParams] = useSearchParams();
 
     const initialFilters: IAdvertFilters = {
-        title: "",
+        title: searchParams.get("title") ?? "",
         brandId: searchParams.get("brandId") ?? "",
         modelId: searchParams.get("modelId") ?? "",
         yearFrom: searchParams.get("yearFrom") ?? "",
@@ -37,7 +40,8 @@ export const FiltersPanel: FC<FiltersPanelProps> = ({ brands, brandsError, model
         city: searchParams.get("city") ?? "",
         priceFrom: searchParams.get("priceFrom") ?? "",
         priceTo: searchParams.get("priceTo") ?? "",
-        currency: searchParams.get("currency") as Currency ?? Currencies.USD,
+        currency: (searchParams.get("currency") || Currencies.USD) as Currency,
+        order: (searchParams.get("order") || `-${advertsSortOrder.CREATED_AT}`) as AdvertsSortOrderFull,
     };
 
     const {
@@ -57,20 +61,18 @@ export const FiltersPanel: FC<FiltersPanelProps> = ({ brands, brandsError, model
         name: "brandId",
     });
 
-    const filteredModels = useMemo(() => {
-        if (!selectedBrandId) return [];
-
-        return models.filter((model) => model.brandId === selectedBrandId);
-    }, [models, selectedBrandId]);
+    const filteredModels = selectedBrandId ? models.filter((model) => model.brandId._id === selectedBrandId) : [];
 
     const handleSubmitFilters = (data: Partial<IAdvertFilters>) => {
         const newSearchParams = new URLSearchParams(searchParams);
 
+        filterKeys.forEach((key) => {
+            newSearchParams.delete(key);
+        })
+
         Object.entries(data).forEach(([name, value]) => {
-            if (value !== "") {
+            if (value !== "" && value !== undefined && value !== null) {
                 newSearchParams.set(name, String(value));
-            } else {
-                newSearchParams.delete(name);
             }
         });
 
@@ -87,14 +89,28 @@ export const FiltersPanel: FC<FiltersPanelProps> = ({ brands, brandsError, model
     return (
         <Form
             onSubmit={handleSubmit(handleSubmitFilters)}
-            className="mx-6 mt-6 p-5 bg-white border border-gray-200 rounded-lg shadow-sm"
+            className="mx-6 mt-4 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm"
         >
             <h2 className="text-xl font-semibold mb-4">
                 Filters
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1">
+            <div className="flex justify-between gap-4">
+                <div className="flex-1 flex flex-col gap-1">
+                    <FormInputLabel htmlFor="title">
+                        Title
+                    </FormInputLabel>
+
+                    <FormInput
+                        id="title"
+                        placeholder="Title"
+                        error={!!errors.title}
+                        {...register("title")}
+                    />
+                    {errors.title?.message && (
+                        <ErrorComponent message={errors.title.message} />
+                    )}
+
                     <FormInputLabel htmlFor="brandId">
                         Brand
                     </FormInputLabel>
@@ -103,16 +119,16 @@ export const FiltersPanel: FC<FiltersPanelProps> = ({ brands, brandsError, model
                         id="brandId"
                         defaultOption="Select brand"
                         optionValues={buildOptionsFromArray(brands)}
-                        {...register("brandId", {onChange: () => {
+                        {...register("brandId", {
+                            onChange: () => {
                                 setValue("modelId", "");
-                            }})}
+                            },
+                        })}
                     />
                     {brandsError && (
                         <ErrorComponent message={brandsError} />
                     )}
-                </div>
 
-                <div className="flex flex-col gap-1">
                     <FormInputLabel htmlFor="modelId">
                         Model
                     </FormInputLabel>
@@ -121,102 +137,141 @@ export const FiltersPanel: FC<FiltersPanelProps> = ({ brands, brandsError, model
                         id="modelId"
                         disabled={!selectedBrandId}
                         className="disabled:text-gray-400 disabled:cursor-not-allowed"
-                        defaultOption="All models"
+                        defaultOption="Select model"
                         optionValues={buildOptionsFromArray(filteredModels)}
                         {...register("modelId")}
                     />
                     {modelsError && (
                         <ErrorComponent message={modelsError} />
                     )}
+
+                    <FormInputLabel>
+                        Year
+                    </FormInputLabel>
+
+                    <div className="flex gap-2">
+                        <FormInput
+                            type="number"
+                            placeholder="From"
+                            className="flex-1"
+                            error={!!errors.yearFrom}
+                            {...register("yearFrom")}
+                        />
+                        {errors.yearFrom?.message && (
+                            <ErrorComponent message={errors.yearFrom.message} />
+                        )}
+
+                        <FormInput
+                            type="number"
+                            placeholder="To"
+                            className="flex-1"
+                            error={!!errors.yearTo}
+                            {...register("yearTo")}
+                        />
+                        {errors.yearTo?.message && (
+                            <ErrorComponent message={errors.yearTo.message} />
+                        )}
+                    </div>
                 </div>
-            </div>
 
-            <div className="mt-4">
-                <FormInputLabel>
-                    Year
-                </FormInputLabel>
-
-                <div className="grid grid-cols-2 gap-4 mt-1">
+                <div className="flex-1 flex flex-col gap-1">
+                    <FormInputLabel htmlFor="region">
+                        Region
+                    </FormInputLabel>
                     <FormInput
-                        type="number"
-                        placeholder="From"
-                        error={!!errors.yearFrom}
-                        {...register("yearFrom")}
-                    />
-
-                    <FormInput
-                        type="number"
-                        placeholder="To"
-                        error={!!errors.yearTo}
-                        {...register("yearTo")}
-                    />
-                </div>
-            </div>
-
-            <div className="mt-4">
-                <FormInputLabel>
-                    Location
-                </FormInputLabel>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-1">
-                    <FormInput
+                        id="region"
                         placeholder="Region"
                         error={!!errors.region}
                         {...register("region")}
                     />
+                    {errors.region?.message && (
+                        <ErrorComponent message={errors.region.message} />
+                    )}
 
+                    <FormInputLabel htmlFor="city">
+                        City
+                    </FormInputLabel>
                     <FormInput
+                        id="city"
                         placeholder="City"
                         error={!!errors.city}
                         {...register("city")}
                     />
-                </div>
-            </div>
+                    {errors.city?.message && (
+                        <ErrorComponent message={errors.city.message} />
+                    )}
 
-            <div className="mt-4">
-                <FormInputLabel>
-                    Price
-                </FormInputLabel>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-1">
-                    <FormInput
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        placeholder="From"
-                        error={!!errors.priceFrom}
-                        {...register("priceFrom")}
-                    />
-
-                    <FormInput
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        placeholder="To"
-                        error={!!errors.priceTo}
-                        {...register("priceTo")}
-                    />
+                    <FormInputLabel htmlFor="currency">
+                        Currency
+                    </FormInputLabel>
 
                     <FormSelect
+                        id="currency"
                         defaultOption="Currency"
                         optionValues={buildOptionsFromObject(Currencies)}
                         {...register("currency")}
                         required
                     />
+
+                    <FormInputLabel>
+                        Price
+                    </FormInputLabel>
+                    <div className="flex gap-2">
+                        <FormInput
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            placeholder="From"
+                            className="flex-1"
+                            error={!!errors.priceFrom}
+                            {...register("priceFrom")}
+                        />
+                        {errors.priceFrom?.message && (
+                            <ErrorComponent message={errors.priceFrom.message} />
+                        )}
+
+                        <FormInput
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            placeholder="To"
+                            className="flex-1"
+                            error={!!errors.priceTo}
+                            {...register("priceTo")}
+                        />
+                        {errors.priceTo?.message && (
+                            <ErrorComponent message={errors.priceTo.message} />
+                        )}
+                    </div>
                 </div>
             </div>
 
-            <div className="flex flex-wrap gap-3 mt-5">
+            <h2 className="text-xl font-semibold my-4">
+                Sort by
+            </h2>
+
+            <select
+                className="w-1/2 h-10 px-3 border border-gray-300 rounded-md bg-white outline-none focus:border-blue-500"
+                {...register("order")}
+            >
+                {advertSortOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                        {option.label}
+                    </option>
+                ))}
+            </select>
+
+            <div className="mt-4 flex flex-wrap justify-end gap-3">
                 <FormButton
                     type="submit"
-                    className="mt-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                    className="mt-2 px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700"
                 >
                     Apply filters
                 </FormButton>
 
                 <FormButton
                     onClick={handleResetFilters}
-                    className="mt-2 border border-gray-300 hover:bg-gray-100"
+                    className="mt-2 px-3 py-1 border border-gray-300 hover:bg-gray-100"
                 >
                     Reset filters
                 </FormButton>

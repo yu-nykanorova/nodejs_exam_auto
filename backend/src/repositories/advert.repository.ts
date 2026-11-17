@@ -186,19 +186,25 @@ class AdvertRepository {
         }
 
         if (query.brandId) {
-            filterObject.brandId = query.brandId;
+            filterObject.brandId = new Types.ObjectId(query.brandId);
         }
 
         if (query.modelId) {
-            filterObject.modelId = query.modelId;
+            filterObject.modelId = new Types.ObjectId(query.modelId);
         }
 
         if (query.city) {
-            filterObject.city = query.city;
+            filterObject.city = {
+                $regex: query.city,
+                $options: "i",
+            };
         }
 
         if (query.region) {
-            filterObject.region = query.region;
+            filterObject.region = {
+                $regex: query.region,
+                $options: "i",
+            };
         }
 
         if (query.priceFrom !== undefined && query.currency) {
@@ -335,5 +341,3 @@ class AdvertRepository {
 }
 
 export const advertRepository = new AdvertRepository();
-
-

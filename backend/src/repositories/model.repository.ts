@@ -4,14 +4,19 @@ import {
     IModelCreateDTO,
     IModelCreateRequestDTO,
     IModelRequest,
+    IModelRequestWithOwnerData,
+    IModelWithBrandName,
 } from "../interfaces/model.interface";
 import { Model } from "../models/model.model";
 import { ModelRequest } from "../models/model-request.model";
 
 class ModelRepository {
-    public async getAllModels(): Promise<IModel[]> {
+    public async getAllModels(): Promise<IModelWithBrandName[]> {
         return await Model.find()
-            .populate("brandId", "name")
+            .populate<{ brandId: IModelWithBrandName["brandId"] }>(
+                "brandId",
+                "name",
+            )
             .sort({ createdAt: -1 });
     }
 
@@ -37,19 +42,21 @@ class ModelRepository {
         return await Model.create(dto);
     }
 
-    public async getModelRequests(): Promise<IModelRequest[]> {
+    public async getModelRequests(): Promise<IModelRequestWithOwnerData[]> {
         return await ModelRequest.find()
-            .populate("_ownerId", "name email")
+            .populate<{ _ownerId: IModelRequestWithOwnerData["_ownerId"] }>(
+                "_ownerId",
+                "name email",
+            )
             .sort({ createdAt: -1 });
     }
 
     public async getModelRequestById(
         id: string,
-    ): Promise<IModelRequest | null> {
-        return await ModelRequest.findById(id).populate(
-            "_ownerId",
-            "name email",
-        );
+    ): Promise<IModelRequestWithOwnerData | null> {
+        return await ModelRequest.findById(id).populate<{
+            _ownerId: IModelRequestWithOwnerData["_ownerId"];
+        }>("_ownerId", "name email");
     }
 
     public async createModelRequest(

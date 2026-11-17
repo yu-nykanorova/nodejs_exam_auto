@@ -52,6 +52,7 @@ export class AdvertValidator {
     });
 
     public static query = queryValidator(AdvertQueryOrderEnum, {
+        title: this.title,
         brandId: this.brandId,
         modelId: this.modelId,
         yearFrom: this.yearFrom,
@@ -59,7 +60,7 @@ export class AdvertValidator {
         currency: this.initialCurrency.default(CurrencyEnum.USD),
         priceFrom: this.priceFrom,
         priceTo: this.priceTo,
-        city: this.city,
-        region: this.region,
+        city: joi.string().max(30).trim(),
+        region: joi.string().max(30).trim(),
     });
 }

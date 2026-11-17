@@ -1,6 +1,7 @@
 import type { IModel } from "./IModel.ts";
 import type { IBrand } from "./IBrand.ts";
 import type { Currency } from "../constants/currencies.ts";
+import type { AdvertsSortOrderFull } from "../constants/advertSortOrder.ts";
 
 export interface IAdvert {
     _id: string;
@@ -55,7 +56,7 @@ export interface IAdvertQuery {
     pageSize?: number;
     page?: number;
     search?: string;
-    order?: string;
+    order?: AdvertsSortOrderFull;
     brandId?: string;
     modelId?: string;
     yearFrom?: number;
@@ -78,6 +79,7 @@ export interface IAdvertFilters {
     priceFrom: string;
     priceTo: string;
     currency: Currency;
+    order: AdvertsSortOrderFull;
 }
 
 export interface IAdvertResponse
