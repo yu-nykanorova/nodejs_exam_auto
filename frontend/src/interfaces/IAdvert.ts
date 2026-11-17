@@ -1,5 +1,6 @@
 import type { IModel } from "./IModel.ts";
 import type { IBrand } from "./IBrand.ts";
+import type { Currency } from "../constants/currencies.ts";
 
 export interface IAdvert {
     _id: string;
@@ -77,7 +78,7 @@ export interface IAdvertFilters {
     priceFrom: string;
     priceTo: string;
     currency: Currency;
-};
+}
 
 export interface IAdvertResponse
 {
@@ -96,8 +97,6 @@ export interface IAdvertStatistics {
     averageRegionPrice: number;
     averageCountryPrice: number;
 }
-
-export type Currency = 'UAH' | 'USD' | 'EUR';
 
 export type AdvertStatus = "PENDING" | "ACTIVE" | "BLOCKED" | "DELETED" | "SOLD";
 

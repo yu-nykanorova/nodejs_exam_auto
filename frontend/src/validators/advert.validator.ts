@@ -82,3 +82,73 @@ export const advertCreateValidator = Joi.object({
             "any.required": "Currency is required",
         }),
 });
+
+export const advertFilterValidator = Joi.object({
+    title: Joi.string()
+        .trim()
+        .max(100)
+        .messages({
+            "string.max": "Title must be at most 100 characters",
+        }),
+
+    brandId: Joi.string(),
+
+    modelId: Joi.string(),
+
+    yearFrom: Joi.number()
+        .integer()
+        .min(1900)
+        .max(new Date().getFullYear())
+        .messages({
+            "number.base": "Year must be a number",
+            "number.integer": "Year must be an integer",
+            "number.min": "Year must be at least 1900",
+            "number.max": "Year cannot be in the future",
+        }),
+
+    yearTo: Joi.number()
+        .integer()
+        .min(1900)
+        .max(new Date().getFullYear())
+        .messages({
+            "number.base": "Year must be a number",
+            "number.integer": "Year must be an integer",
+            "number.min": "Year must be at least 1900",
+            "number.max": "Year cannot be in the future",
+        }),
+
+    region: Joi.string()
+        .trim()
+        .max(30)
+        .messages({
+            "string.max": "Region name must be at most 30 characters",
+        }),
+
+    city: Joi.string()
+        .trim()
+        .max(30)
+        .messages({
+            "string.max": "City name must be at most 30 characters",
+        }),
+
+    priceFrom: Joi.number()
+        .positive()
+        .messages({
+            "number.base": "Price must be a number",
+            "number.positive": "Price must be greater than 0",
+        }),
+
+    priceTo: Joi.number()
+        .positive()
+        .messages({
+            "number.base": "Price must be a number",
+            "number.positive": "Price must be greater than 0",
+        }),
+
+    currency: Joi.string()
+        .valid(...Object.values(Currencies))
+        .default(Currencies.USD)
+        .messages({
+            "any.only": "Select a valid currency",
+        }),
+});
