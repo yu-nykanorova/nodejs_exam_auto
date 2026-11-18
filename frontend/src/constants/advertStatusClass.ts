@@ -1,4 +1,4 @@
-import type { AdvertStatus } from "../interfaces/IAdvert.ts";
+import type { AdvertStatus } from "./advertStatuses.ts";
 
 export const ADVERT_STATUS_CLASS: Record<AdvertStatus, string> = {
     ACTIVE: "bg-green-100",

@@ -1,7 +1,7 @@
 import { authService } from "../services/authService.ts";
 import { SetPasswordForm } from "../components/forms/SetPasswordForm.tsx";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ErrorComponent } from "../components/ui/ErrorComponent.tsx";
+import { NotFoundPage } from "./NotFoundPage.tsx";
 
 export const ResetPasswordPage = () => {
     const [searchParams] = useSearchParams();
@@ -23,12 +23,7 @@ export const ResetPasswordPage = () => {
     };
 
     if (!token) {
-        return (
-            <ErrorComponent
-                message="Invalid or missing action token"
-                className="p-10"
-            />
-        );
+        return <NotFoundPage/>
     }
 
     return (

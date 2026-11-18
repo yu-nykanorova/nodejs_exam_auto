@@ -10,7 +10,7 @@ import { usersService } from "../services/usersService.ts";
 import { Form } from "../components/ui/Form.tsx";
 import { FormInputLabel } from "../components/ui/FormInputLabel.tsx";
 import { FormInput } from "../components/ui/FormInput.tsx";
-import { FormButton } from "../components/ui/FormButton.tsx";
+import { Button } from "../components/ui/Button.tsx";
 
 export const CreateManagerPage = () => {
     const navigate = useNavigate();
@@ -132,13 +132,13 @@ export const CreateManagerPage = () => {
                     )}
                 </div>
 
-                <FormButton
+                <Button
                     type="submit"
                     className="mt-2 bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700"
                     disabled={userLoading}
                 >
                     Create Manager
-                </FormButton>
+                </Button>
             </Form>
         </div>
     );

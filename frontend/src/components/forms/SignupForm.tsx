@@ -10,7 +10,7 @@ import { Form } from "../ui/Form.tsx";
 import { FormInputLabel } from "../ui/FormInputLabel.tsx";
 import { FormInput } from "../ui/FormInput.tsx";
 import { ErrorComponent } from "../ui/ErrorComponent.tsx";
-import { FormButton } from "../ui/FormButton.tsx";
+import { Button } from "../ui/Button.tsx";
 
 type SignUpFormParams = {
     email: string;
@@ -218,7 +218,7 @@ export const SignUpForm: FC<SignUpFormProps> = ({ isSeller }) => {
                     <ErrorComponent message={error}/>
                 )}
 
-                <FormButton
+                <Button
                     type="submit"
                     className="mt-2 bg-blue-600 text-white hover:bg-blue-700"
                     disabled={loading}
@@ -226,15 +226,15 @@ export const SignUpForm: FC<SignUpFormProps> = ({ isSeller }) => {
                     {loading
                         ? "Creating account..."
                         : "Sign up"}
-                </FormButton>
+                </Button>
 
-                <FormButton
+                <Button
                     className="text-sm text-blue-600 hover:underline"
                     onClick={() => navigate("/login")}
                     disabled={loading}
                 >
                     Already have an account? Login
-                </FormButton>
+                </Button>
             </Form>
         </div>
     );

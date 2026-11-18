@@ -1,12 +1,22 @@
-build/
-client/
-dist/
-node_modules/
+# Dependencies
+**/node_modules/
 
-.DS_Store
+# Build output
+**/dist/
+**/build/
 
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE
 .idea/
 
-dist
-
-.env
+# Operating system
+.DS_Store
+Thumbs.db

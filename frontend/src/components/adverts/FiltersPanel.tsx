@@ -1,23 +1,23 @@
-import { FormInputLabel } from "../../ui/FormInputLabel.tsx";
-import { FormSelect } from "../../ui/FormSelect.tsx";
-import { buildOptionsFromArray, buildOptionsFromObject } from "../../../utils/buildSelectOptions.ts";
-import { FormInput } from "../../ui/FormInput.tsx";
-import { Currencies, type Currency } from "../../../constants/currencies.ts";
-import { FormButton } from "../../ui/FormButton.tsx";
-import type { IBrand } from "../../../interfaces/IBrand.ts";
-import type { IModel } from "../../../interfaces/IModel.ts";
-import { defaultAdvertFilters } from "../../../constants/defaultAdvertFilters.ts";
-import type { IAdvertFilters } from "../../../interfaces/IAdvert.ts";
+import { FormInputLabel } from "../ui/FormInputLabel.tsx";
+import { FormSelect } from "../ui/FormSelect.tsx";
+import { buildOptionsFromArray, buildOptionsFromObject } from "../../utils/buildSelectOptions.ts";
+import { FormInput } from "../ui/FormInput.tsx";
+import { Currencies, type Currency } from "../../constants/currencies.ts";
+import { Button } from "../ui/Button.tsx";
+import type { IBrand } from "../../interfaces/IBrand.ts";
+import type { IModel } from "../../interfaces/IModel.ts";
+import { defaultAdvertFilters } from "../../constants/defaultAdvertFilters.ts";
+import type { IAdvertFilters } from "../../interfaces/IAdvert.ts";
 import { useSearchParams } from "react-router-dom";
 import { useForm, useWatch } from "react-hook-form";
 import { type FC } from "react";
-import { Form } from "../../ui/Form.tsx";
-import { ErrorComponent } from "../../ui/ErrorComponent.tsx";
+import { Form } from "../ui/Form.tsx";
+import { ErrorComponent } from "../ui/ErrorComponent.tsx";
 import { joiResolver } from "@hookform/resolvers/joi";
-import { advertFilterValidator } from "../../../validators/advert.validator.ts";
-import { filterKeys } from "../../../constants/advertFilterKeys.ts";
-import { advertsSortOrder, type AdvertsSortOrderFull } from "../../../constants/advertSortOrder.ts";
-import { advertSortOptions } from "../../../constants/advertsSortOptions.ts";
+import { advertFilterValidator } from "../../validators/advert.validator.ts";
+import { filterKeys } from "../../constants/advertFilterKeys.ts";
+import { advertsSortOrder, type AdvertsSortOrderFull } from "../../constants/advertSortOrder.ts";
+import { advertSortOptions } from "../../constants/advertsSortOptions.ts";
 
 type FiltersPanelProps = {
     brands: IBrand[];
@@ -262,19 +262,19 @@ export const FiltersPanel: FC<FiltersPanelProps> = ({ brands, brandsError, model
             </select>
 
             <div className="mt-4 flex flex-wrap justify-end gap-3">
-                <FormButton
+                <Button
                     type="submit"
                     className="mt-2 px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700"
                 >
                     Apply filters
-                </FormButton>
+                </Button>
 
-                <FormButton
+                <Button
                     onClick={handleResetFilters}
                     className="mt-2 px-3 py-1 border border-gray-300 hover:bg-gray-100"
                 >
                     Reset filters
-                </FormButton>
+                </Button>
             </div>
         </Form>
     );

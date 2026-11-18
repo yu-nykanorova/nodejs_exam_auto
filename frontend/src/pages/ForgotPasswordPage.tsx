@@ -6,7 +6,7 @@ import { Form } from "../components/ui/Form.tsx";
 import { FormInputLabel } from "../components/ui/FormInputLabel.tsx";
 import { FormInput } from "../components/ui/FormInput.tsx";
 import { ErrorComponent } from "../components/ui/ErrorComponent.tsx";
-import { FormButton } from "../components/ui/FormButton.tsx";
+import { Button } from "../components/ui/Button.tsx";
 import { getError } from "../utils/getError.ts";
 
 type ForgotPasswordFormParams = {
@@ -78,13 +78,13 @@ export const ForgotPasswordPage = () => {
                         <ErrorComponent message={errors.root.serverError.message}/>
                     )}
 
-                    <FormButton
+                    <Button
                         type="submit"
                         className="mt-2 px-4 py-2 bg-blue-600 text-white font-medium transition hover:bg-blue-700"
                         disabled={isSubmitting}
                     >
                         {isSubmitting ? "Sending..." : "Send reset link"}
-                    </FormButton>
+                    </Button>
                 </Form>
             </div>
         </div>

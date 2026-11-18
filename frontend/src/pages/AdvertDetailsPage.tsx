@@ -8,6 +8,9 @@ import { ErrorComponent } from "../components/ui/ErrorComponent.tsx";
 import { ADVERT_STATUS_CLASS } from "../constants/advertStatusClass.ts";
 import { roles } from "../constants/roles.ts";
 import { sellerAccountTypes } from "../constants/accountTypes.ts";
+import { AdvertStatistics } from "../components/adverts/AdvertStatistics.tsx";
+import { Button } from "../components/ui/Button.tsx";
+import { type AdvertStatus, advertStatuses } from "../constants/advertStatuses.ts";
 
 export const AdvertDetailsPage = () => {
     const { id } = useParams();
@@ -24,6 +27,8 @@ export const AdvertDetailsPage = () => {
 
     const allowedToViewStatistics =
         (user?._id === advert?._ownerId && user?.accountType === sellerAccountTypes.PREMIUM) || user?.role === roles.ADMIN || user?.role === roles.MANAGER;
+
+    const isAdmin = user?.role === roles.ADMIN || user?.role === roles.MANAGER;
 
     const openedAdvertId = useRef<string | null>(null);
 
@@ -50,14 +55,25 @@ export const AdvertDetailsPage = () => {
     }
 
     if (error) {
-        return <ErrorComponent message={error} />;
+        return <ErrorComponent className="mt-6" message={error} />;
     }
 
     if (!advert) {
-        return <ErrorComponent message="Advert not found" />;
+        return <ErrorComponent className="mt-6" message="Advert not found" />;
     }
 
     const advertStatusClass = ADVERT_STATUS_CLASS[advert.status] ?? "";
+
+    const handleChangeStatus = (status: AdvertStatus) => {
+        if (!id) return;
+
+        dispatch(
+            advertSliceActions.updateAdvertStatus({
+                id,
+                status,
+            }),
+        );
+    };
 
     return (
         <div className="mx-auto max-w-6xl p-4">
@@ -68,17 +84,17 @@ export const AdvertDetailsPage = () => {
                         <img
                             src={advert.photo}
                             alt={advert.title}
-                            className="max-h-[500px] w-full object-cover"
+                            className="max-h-125 w-full object-cover"
                         />
                     ) : (
-                        <p className="text-gray-500">
+                        <p className="text-gray-500 text-lg">
                             No photo
                         </p>
                     )}
                 </div>
 
                 <div className="p-6">
-                    <div className="mb-6 flex flex-col gap-2 border-b pb-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="mb-4 flex flex-col gap-2 border-b pb-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <h1 className="text-2xl font-semibold text-gray-800">
                                 {advert.title}
@@ -94,7 +110,32 @@ export const AdvertDetailsPage = () => {
                         </span>
                     </div>
 
-                    {/* Car information */}
+                    {isAdmin && (
+                        <div className="mb-4 flex justify-end gap-2">
+                            <Button
+                                onClick={() => handleChangeStatus(advertStatuses.ACTIVE)}
+                                className="px-3 py-1 border border-green-600 text-green-600 enabled:hover:bg-green-500 enabled:hover:text-white disabled:text-gray-500 disabled:border-gray-500"
+                                disabled={advert.status === advertStatuses.ACTIVE}
+                            >
+                                Activate
+                            </Button>
+                            <Button
+                                onClick={() => handleChangeStatus(advertStatuses.BLOCKED)}
+                                className="px-3 py-1 border border-red-500 text-red-600 enabled:hover:bg-red-500 enabled:hover:text-white disabled:text-gray-500 disabled:border-gray-500"
+                                disabled={advert.status === advertStatuses.BLOCKED}
+                            >
+                                Block
+                            </Button>
+                            <Button
+                                onClick={() => handleChangeStatus(advertStatuses.DELETED)}
+                                className="px-3 py-1 border border-gray-900 text-gray-900 enabled:hover:bg-gray-900 enabled:hover:text-white disabled:text-gray-500 disabled:border-gray-500"
+                                disabled={advert.status === advertStatuses.DELETED}
+                            >
+                                Delete
+                            </Button>
+                        </div>
+                    )}
+
                     <div className="mb-6">
                         <h2 className="mb-3 text-lg font-semibold">
                             Car information
@@ -233,54 +274,7 @@ export const AdvertDetailsPage = () => {
                     </div>
 
                     {statistics && allowedToViewStatistics &&
-                        <div className="mb-6">
-                            <h2 className="mb-3 text-lg font-semibold">
-                                Advert statistics
-                            </h2>
-
-                            <p>
-                                <span className="text-gray-500">
-                                    Total views:
-                                </span>{" "}
-                                {statistics.viewsCount}
-                            </p>
-
-                            <p>
-                                <span className="text-gray-500">
-                                    Today views:
-                                </span>{" "}
-                                {statistics.viewsToday}
-                            </p>
-
-                            <p>
-                                <span className="text-gray-500">
-                                    Week views:
-                                </span>{" "}
-                                {statistics.viewsWeek}
-                            </p>
-
-                            <p>
-                                <span className="text-gray-500">
-                                    Month views:
-                                </span>{" "}
-                                {statistics.viewsMonth}
-                            </p>
-
-                            <p>
-                                <span className="text-gray-500">
-                                    Average region price:
-                                </span>{" "}
-                                {statistics.averageRegionPrice}
-                            </p>
-
-                            <p>
-                                <span className="text-gray-500">
-                                    Average country price:
-                                </span>{" "}
-                                {statistics.averageCountryPrice}
-                            </p>
-
-                        </div>
+                        <AdvertStatistics statistics={statistics} />
                     }
                 </div>
             </div>

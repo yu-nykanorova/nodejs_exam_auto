@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { Button } from "../components/ui/Button.tsx";
 
 export const SignUpPage = () => {
     const navigate = useNavigate();
@@ -11,21 +12,19 @@ export const SignUpPage = () => {
                 </h1>
 
                 <div className="flex flex-col gap-3">
-                    <button
-                        type="button"
+                    <Button
                         onClick={() => navigate("/sign-up/buyer")}
-                        className="h-12 rounded-md bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+                        className="bg-blue-600 text-white hover:bg-blue-700"
                     >
                         Sign up as Buyer
-                    </button>
+                    </Button>
 
-                    <button
-                        type="button"
+                    <Button
                         onClick={() => navigate("/sign-up/seller")}
-                        className="h-12 rounded-md border border-blue-600 text-blue-600 hover:bg-blue-50 cursor-pointer"
+                        className="border border-blue-600 text-blue-600 hover:bg-blue-50"
                     >
                         Sign up as Seller
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

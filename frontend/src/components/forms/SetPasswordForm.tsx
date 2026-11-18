@@ -5,7 +5,7 @@ import { Form } from "../ui/Form.tsx";
 import { FormInputLabel } from "../ui/FormInputLabel.tsx";
 import { FormInput } from "../ui/FormInput.tsx";
 import { ErrorComponent } from "../ui/ErrorComponent.tsx";
-import { FormButton } from "../ui/FormButton.tsx";
+import { Button } from "../ui/Button.tsx";
 import { getError } from "../../utils/getError.ts";
 
 type PasswordFormProps = {
@@ -71,13 +71,13 @@ export const SetPasswordForm = ({
                     <ErrorComponent message={errors.root.serverError.message}/>
                 )}
 
-                <FormButton
+                <Button
                     type="submit"
                     className="bg-blue-600 text-white hover:bg-blue-700"
                     disabled={isSubmitting}
                 >
                     {isSubmitting ? "Saving..." : buttonText}
-                </FormButton>
+                </Button>
             </Form>
         </div>
     );

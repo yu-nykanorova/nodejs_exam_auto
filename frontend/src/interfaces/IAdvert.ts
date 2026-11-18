@@ -2,6 +2,7 @@ import type { IModel } from "./IModel.ts";
 import type { IBrand } from "./IBrand.ts";
 import type { Currency } from "../constants/currencies.ts";
 import type { AdvertsSortOrderFull } from "../constants/advertSortOrder.ts";
+import type { AdvertStatus } from "../constants/advertStatuses.ts";
 
 export interface IAdvert {
     _id: string;
@@ -50,8 +51,6 @@ export type IAdvertUpdate = Partial<Pick<IAdvert,
     | "photo"
 > & { brandId: string; modelId: string; }>;
 
-export type IAdvertChangeStatus = Pick<IAdvert, "status">;
-
 export interface IAdvertQuery {
     pageSize?: number;
     page?: number;
@@ -99,8 +98,6 @@ export interface IAdvertStatistics {
     averageRegionPrice: number;
     averageCountryPrice: number;
 }
-
-export type AdvertStatus = "PENDING" | "ACTIVE" | "BLOCKED" | "DELETED" | "SOLD";
 
 interface IExchangeRateData {
     EUR: number;

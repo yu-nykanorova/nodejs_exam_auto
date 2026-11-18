@@ -16,7 +16,7 @@ import { FormInput } from "../components/ui/FormInput.tsx";
 import { ErrorComponent } from "../components/ui/ErrorComponent.tsx";
 import { FormSelect } from "../components/ui/FormSelect.tsx";
 import { buildOptionsFromArray, buildOptionsFromObject } from "../utils/buildSelectOptions.ts";
-import { FormButton } from "../components/ui/FormButton.tsx";
+import { Button } from "../components/ui/Button.tsx";
 
 export const CreateAdvertPage = () => {
     const dispatch = useAppDispatch();
@@ -274,7 +274,7 @@ export const CreateAdvertPage = () => {
                     <ErrorComponent message={createAdvertError}/>
                 )}
 
-                <FormButton
+                <Button
                     type="submit"
                     disabled={createAdvertLoading}
                     className="mt-2 bg-blue-600 text-white hover:bg-blue-700"
@@ -282,14 +282,14 @@ export const CreateAdvertPage = () => {
                     {createAdvertLoading
                         ? "Creating advert..."
                         : "Create advert"}
-                </FormButton>
+                </Button>
 
-                <FormButton
+                <Button
                     onClick={() => navigate("/my-adverts")}
                     className="text-sm text-blue-600 hover:underline cursor-pointer"
                 >
                     Back to my adverts
-                </FormButton>
+                </Button>
             </Form>
         </div>
     );

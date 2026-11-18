@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice, isPending, isRejected, type PayloadAction } from "@reduxjs/toolkit";
-import type { IAdvert, IAdvertChangeStatus, IAdvertCreate, IAdvertQuery, IAdvertResponse, IAdvertStatistics, IAdvertUpdate } from "../../interfaces/IAdvert.ts";
+import type { IAdvert, IAdvertCreate, IAdvertQuery, IAdvertResponse, IAdvertStatistics, IAdvertUpdate } from "../../interfaces/IAdvert.ts";
 import { getError } from "../../utils/getError.ts";
 import { advertsService } from "../../services/advertsService.ts";
+import type { AdvertStatus } from "../../constants/advertStatuses.ts";
 
 type AdvertSliceType = {
     adverts: IAdvert[];
@@ -190,7 +191,7 @@ const updateAdvertStatus = createAsyncThunk(
     async (
         params: {
             id: string;
-            body: IAdvertChangeStatus;
+            status: AdvertStatus;
         },
         thunkAPI,
     ) => {
@@ -198,7 +199,7 @@ const updateAdvertStatus = createAsyncThunk(
             const advert =
                 await advertsService.updateAdvertStatus(
                     params.id,
-                    params.body,
+                    params.status,
                 );
 
             return thunkAPI.fulfillWithValue(advert);
@@ -377,6 +378,8 @@ export const advertSlice = createSlice({
                                 ? action.payload
                                 : advert,
                     );
+
+                    state.error = null;
                 },
             )
             // Loading create new advert

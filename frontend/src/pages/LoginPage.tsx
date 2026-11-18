@@ -9,7 +9,7 @@ import { Form } from "../components/ui/Form.tsx";
 import { FormInputLabel } from "../components/ui/FormInputLabel.tsx";
 import { FormInput } from "../components/ui/FormInput.tsx";
 import { ErrorComponent } from "../components/ui/ErrorComponent.tsx";
-import { FormButton } from "../components/ui/FormButton.tsx";
+import { Button } from "../components/ui/Button.tsx";
 
 type LoginFormParams = {
     email: string;
@@ -94,28 +94,28 @@ export const LoginPage = () => {
                     <ErrorComponent message={error}/>
                 )}
 
-                <FormButton
+                <Button
                     type="submit"
                     className="bg-blue-600 text-white hover:bg-blue-700"
                     disabled={loading}
                 >
                     {loading ? "Logging in..." : "Login"}
-                </FormButton>
+                </Button>
 
                 <div className="flex justify-between text-sm">
-                    <FormButton
+                    <Button
                         className="text-blue-600 hover:underline"
                         onClick={() => navigate("/forgot-password")}
                     >
                         Forgot password?
-                    </FormButton>
+                    </Button>
 
-                    <FormButton
+                    <Button
                         className="text-blue-600 hover:underline"
                         onClick={() => navigate("/sign-up")}
                     >
                         Sign up
-                    </FormButton>
+                    </Button>
                 </div>
             </Form>
         </div>

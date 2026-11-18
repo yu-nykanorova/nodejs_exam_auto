@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { Loader } from "../components/ui/Loader.tsx";
 import { Pagination } from "../components/pagination/Pagination.tsx";
 import { useSearchParams } from "react-router-dom";
-import { FiltersPanel } from "../components/adverts/advert-filters/FiltersPanel.tsx";
+import { FiltersPanel } from "../components/adverts/FiltersPanel.tsx";
 import { brandSliceActions } from "../store/slices/brandSlice.ts";
 import { modelSliceActions } from "../store/slices/modelSlice.ts";
 import { buildAdvertsQuery } from "../utils/buildAdvertsQuery.ts";

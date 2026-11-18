@@ -17,15 +17,19 @@ class AdvertStatisticsService {
         userId: string,
     ): Promise<IAdvertStatistics> {
         const advert = await advertRepository.getById(advertId);
-
-        if (!advert || advert.status !== AdvertStatusEnum.ACTIVE) {
-            throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
-        }
-
         const user = await userRepository.getById(userId);
 
         if (!user) {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        if (
+            !advert ||
+            (advert.status !== AdvertStatusEnum.ACTIVE &&
+                user.role !== UserRoleEnum.ADMIN &&
+                user.role !== UserRoleEnum.MANAGER)
+        ) {
+            throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
         }
 
         if (

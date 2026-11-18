@@ -1,5 +1,6 @@
 import { deleteItem, getItems, patchItem, postItem, putItem } from "./api.service.ts";
-import type { IAdvert, IAdvertChangeStatus, IAdvertCreate, IAdvertQuery, IAdvertResponse, IAdvertStatistics, IAdvertUpdate } from "../interfaces/IAdvert.ts";
+import type { IAdvert, IAdvertCreate, IAdvertQuery, IAdvertResponse, IAdvertStatistics, IAdvertUpdate } from "../interfaces/IAdvert.ts";
+import type { AdvertStatus } from "../constants/advertStatuses.ts";
 
 export const advertsService = {
     getAdverts: async (
@@ -65,14 +66,14 @@ export const advertsService = {
 
     updateAdvertStatus: async (
         id: string,
-        body: IAdvertChangeStatus,
+        status: AdvertStatus,
     ): Promise<IAdvert> => {
         return await patchItem<
             IAdvert,
-            IAdvertChangeStatus
+            { status: AdvertStatus }
         >(
             `/adverts/${id}/status`,
-            body,
+            { status },
         );
     },
 

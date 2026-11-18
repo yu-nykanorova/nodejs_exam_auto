@@ -23,6 +23,7 @@ import { CreateManagerPage } from "../pages/CreateManagerPage.tsx";
 import { ProtectedRoute } from "./ProtectedRoute.tsx";
 import { ManagerRoute } from "./ManagerRoute.tsx";
 import { GuestRoute } from "./GuestRoute.tsx";
+import { NotFoundPage } from "../pages/NotFoundPage.tsx";
 
 export const routes = createBrowserRouter([
     {
@@ -81,6 +82,10 @@ export const routes = createBrowserRouter([
                         ],
                     },
                 ],
+            },
+            {
+                path: "*",
+                element: <NotFoundPage/>
             },
         ],
     },

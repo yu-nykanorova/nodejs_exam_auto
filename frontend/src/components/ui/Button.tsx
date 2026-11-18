@@ -1,12 +1,12 @@
 import type { ButtonHTMLAttributes, FC, ReactNode } from "react";
 
-export interface FormButtonProps
+export interface ButtonProps
     extends ButtonHTMLAttributes<HTMLButtonElement>
 {
     children: ReactNode;
 }
 
-export const FormButton: FC<FormButtonProps> = ({ className = "", type="button", children, ...rest }) => {
+export const Button: FC<ButtonProps> = ({ className = "", type="button", children, ...rest }) => {
     return (
         <button
             type={type}

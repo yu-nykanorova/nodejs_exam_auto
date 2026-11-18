@@ -231,7 +231,14 @@ class AdvertService {
         if (!updatedAdvert) {
             throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
         }
-        return updatedAdvert;
+
+        const result = await advertRepository.getById(advertId);
+
+        if (!result) {
+            throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        return result;
     }
 
     public async saveAdvertView(
@@ -243,7 +250,10 @@ class AdvertService {
         const isOwner =
             payload?.userId && advert._ownerId.toString() === payload.userId;
 
-        if (!payload?.userId || !isOwner) {
+        if (
+            (!payload?.userId || !isOwner) &&
+            advert.status === AdvertStatusEnum.ACTIVE
+        ) {
             await advertStatisticsService.incrementAdvertViews(advertId);
         }
     }

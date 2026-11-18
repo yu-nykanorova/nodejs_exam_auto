@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../store/hooks/useAppDispatch.tsx";
 import { useAppSelector } from "../../store/hooks/useAppSelector.tsx";
 import { authSliceActions } from "../../store/slices/authSlice.ts";
+import { Button } from "../ui/Button.tsx";
 
 export const AuthInfo = () => {
     const dispatch = useAppDispatch();
@@ -37,7 +38,7 @@ export const AuthInfo = () => {
     }
 
     return (
-        <div className="flex items-center gap-3">
+        <div className="flex align-center gap-3">
             <Link
                 to="/profile"
                 className="flex items-center gap-2"
@@ -65,12 +66,12 @@ export const AuthInfo = () => {
                 </div>
             </Link>
 
-            <button
+            <Button
                 onClick={handleLogout}
-                className="p-1 text-sm text-gray-500 border border-red-600 rounded-sm hover:text-red-600"
+                className="px-4 py-1 text-sm text-gray-500 border border-red-600 rounded-sm hover:text-red-600"
             >
                 Logout
-            </button>
+            </Button>
         </div>
     );
 };

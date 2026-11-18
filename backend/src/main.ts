@@ -1,17 +1,21 @@
 import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
+import fileUpload from "express-fileupload";
 import mongoose from "mongoose";
 
 import { config } from "./configs/config";
 import { cronRunner } from "./crons";
 import { ApiError } from "./errors/api.errors";
 import { apiRouter } from "./routers/api.router";
-import fileUpload from "express-fileupload";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(
+    cors({
+        origin: process.env.FRONT_URL,
+    }),
+);
 app.use(fileUpload());
 app.use("/", apiRouter);
 
