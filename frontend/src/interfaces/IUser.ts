@@ -1,5 +1,6 @@
 import type { Role } from "../constants/roles.ts";
 import type { AccountType } from "../constants/accountTypes.ts";
+import type { UserStatus } from "../constants/userStatuses.ts";
 
 export interface IUser {
     _id: string;
@@ -11,7 +12,7 @@ export interface IUser {
     avatar: string | undefined;
     role: Role;
     accountType?: AccountType;
-    status: string;
+    status: UserStatus;
     createdAt: string;
     updatedAt: string;
 }

@@ -124,7 +124,6 @@ export const authSlice = createSlice({
                     state,
                     action: PayloadAction<IAuthUserResponse>,
                 ) => {
-                    console.log("LOGIN FULFILLED", action.payload.user);
                     state.user = action.payload.user;
                     state.isAuthenticated = true;
                     state.loading = false;

@@ -89,13 +89,13 @@ export const FiltersPanel: FC<FiltersPanelProps> = ({ brands, brandsError, model
     return (
         <Form
             onSubmit={handleSubmit(handleSubmitFilters)}
-            className="mx-6 mt-4 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm"
+            className="mx-6 mt-2 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm"
         >
             <h2 className="text-xl font-semibold mb-4">
                 Filters
             </h2>
 
-            <div className="flex justify-between gap-4">
+            <div className="flex flex-wrap justify-between gap-4">
                 <div className="flex-1 flex flex-col gap-1">
                     <FormInputLabel htmlFor="title">
                         Title
@@ -261,7 +261,7 @@ export const FiltersPanel: FC<FiltersPanelProps> = ({ brands, brandsError, model
                 ))}
             </select>
 
-            <div className="mt-4 flex flex-wrap justify-end gap-3">
+            <div className="mt-2 flex flex-wrap justify-end gap-3">
                 <Button
                     type="submit"
                     className="mt-2 px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700"

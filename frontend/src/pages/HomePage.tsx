@@ -85,7 +85,7 @@ export const HomePage = () => {
 
     return (
         <div className="mx-auto max-w-7xl">
-            <div className="px-6 pt-8">
+            <div className="px-6 pt-4">
                 <h1 className="text-3xl font-bold">
                     AutoDeal
                 </h1>

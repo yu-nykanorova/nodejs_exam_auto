@@ -13,7 +13,7 @@ export interface FormSelectProps extends SelectHTMLAttributes<HTMLSelectElement>
 export const FormSelect: FC<FormSelectProps> = ({ defaultOption, optionValues, className = "", ...rest }) => {
     return (
         <select
-            className={`h-10 px-3 border border-gray-300 rounded-md bg-white outline-none focus:border-blue-500 ${className}`}
+            className={`h-8 px-3 border border-gray-300 rounded-md bg-white outline-none focus:border-blue-500 ${className}`}
             {...rest}
         >
             <option value="">{defaultOption}</option>

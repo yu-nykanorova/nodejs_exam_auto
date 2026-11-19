@@ -1,7 +1,7 @@
 import { useAppSelector } from "../store/hooks/useAppSelector.tsx";
 import { useParams } from "react-router-dom";
 import { useAppDispatch } from "../store/hooks/useAppDispatch.tsx";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { advertSliceActions } from "../store/slices/advertSlice.ts";
 import { Loader } from "../components/ui/Loader.tsx";
 import { ErrorComponent } from "../components/ui/ErrorComponent.tsx";
@@ -11,10 +11,13 @@ import { sellerAccountTypes } from "../constants/accountTypes.ts";
 import { AdvertStatistics } from "../components/adverts/AdvertStatistics.tsx";
 import { Button } from "../components/ui/Button.tsx";
 import { type AdvertStatus, advertStatuses } from "../constants/advertStatuses.ts";
+import { ModalConfirm } from "../components/ui/ModalConfirm.tsx";
 
 export const AdvertDetailsPage = () => {
     const { id } = useParams();
     const dispatch = useAppDispatch();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedStatus, setSelectedStatus] = useState<AdvertStatus | null>(null);
 
     const {
         advert,
@@ -64,6 +67,11 @@ export const AdvertDetailsPage = () => {
 
     const advertStatusClass = ADVERT_STATUS_CLASS[advert.status] ?? "";
 
+    const handleModalOpen = (status: AdvertStatus) => {
+        setSelectedStatus(status);
+        setIsModalOpen(true);
+    };
+
     const handleChangeStatus = (status: AdvertStatus) => {
         if (!id) return;
 
@@ -73,6 +81,14 @@ export const AdvertDetailsPage = () => {
                 status,
             }),
         );
+    };
+
+    const handleConfirm = () => {
+        if (!selectedStatus) return;
+
+        handleChangeStatus(selectedStatus);
+        setIsModalOpen(false);
+        setSelectedStatus(null);
     };
 
     return (
@@ -113,26 +129,36 @@ export const AdvertDetailsPage = () => {
                     {isAdmin && (
                         <div className="mb-4 flex justify-end gap-2">
                             <Button
-                                onClick={() => handleChangeStatus(advertStatuses.ACTIVE)}
+                                onClick={() => handleModalOpen(advertStatuses.ACTIVE)}
                                 className="px-3 py-1 border border-green-600 text-green-600 enabled:hover:bg-green-500 enabled:hover:text-white disabled:text-gray-500 disabled:border-gray-500"
                                 disabled={advert.status === advertStatuses.ACTIVE}
                             >
                                 Activate
                             </Button>
                             <Button
-                                onClick={() => handleChangeStatus(advertStatuses.BLOCKED)}
+                                onClick={() => handleModalOpen(advertStatuses.BLOCKED)}
                                 className="px-3 py-1 border border-red-500 text-red-600 enabled:hover:bg-red-500 enabled:hover:text-white disabled:text-gray-500 disabled:border-gray-500"
                                 disabled={advert.status === advertStatuses.BLOCKED}
                             >
                                 Block
                             </Button>
                             <Button
-                                onClick={() => handleChangeStatus(advertStatuses.DELETED)}
+                                onClick={() => handleModalOpen(advertStatuses.DELETED)}
                                 className="px-3 py-1 border border-gray-900 text-gray-900 enabled:hover:bg-gray-900 enabled:hover:text-white disabled:text-gray-500 disabled:border-gray-500"
                                 disabled={advert.status === advertStatuses.DELETED}
                             >
                                 Delete
                             </Button>
+                            {isModalOpen && selectedStatus && (
+                                <ModalConfirm
+                                    message={"Do you confirm changing status of this advert?"}
+                                    onClose={() => {
+                                        setIsModalOpen(false);
+                                        setSelectedStatus(null);
+                                    }}
+                                    onConfirm={handleConfirm}
+                                />
+                            )}
                         </div>
                     )}
 

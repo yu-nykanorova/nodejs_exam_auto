@@ -10,7 +10,7 @@ export const Button: FC<ButtonProps> = ({ className = "", type="button", childre
     return (
         <button
             type={type}
-            className={`h-10 rounded-md cursor-pointer transition disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+            className={`h-8 rounded-md cursor-pointer transition disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
             {...rest}
         >
             {children}

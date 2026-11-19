@@ -68,7 +68,7 @@ export const AuthInfo = () => {
 
             <Button
                 onClick={handleLogout}
-                className="px-4 py-1 text-sm text-gray-500 border border-red-600 rounded-sm hover:text-red-600"
+                className="self-center px-4 py-1 text-sm text-gray-500 border border-red-600 rounded-sm hover:text-red-600"
             >
                 Logout
             </Button>
