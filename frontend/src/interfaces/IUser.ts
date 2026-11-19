@@ -33,7 +33,7 @@ export type IUserUpdate = Partial<Pick<IUser,
     | "avatar"
     | "accountType"
     | "phone"
-> & { password: string; }>;
+>>;
 
 export type IUserChangeStatus = Pick<IUser, "status">;
 

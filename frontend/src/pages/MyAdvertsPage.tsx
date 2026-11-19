@@ -4,10 +4,13 @@ import { useAppDispatch } from "../store/hooks/useAppDispatch.tsx";
 import { useAppSelector } from "../store/hooks/useAppSelector.tsx";
 import { advertSliceActions } from "../store/slices/advertSlice.ts";
 import { Loader } from "../components/ui/Loader.tsx";
+import { Button } from "../components/ui/Button.tsx";
+import { useNavigate } from "react-router-dom";
 
 
 export const MyAdvertsPage = () => {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     const {
         adverts,
@@ -49,9 +52,17 @@ export const MyAdvertsPage = () => {
             {adverts.length ? (
                 <AdvertsList adverts={adverts} />
             ) : (
-                <p className="p-6 text-gray-500">
-                    You don't have any adverts yet.
-                </p>
+                <div className="p-6 ">
+                    <p className="text-gray-500">
+                        You don't have any adverts yet.
+                    </p>
+                    <Button
+                        className="text-lg font-medium text-blue-600 hover:underline"
+                        onClick={() => navigate("/adverts/create")}
+                    >
+                        Create advert
+                    </Button>
+                </div>
             )}
         </section>
     );

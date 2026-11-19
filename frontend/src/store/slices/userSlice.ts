@@ -13,6 +13,7 @@ type UserSliceType = {
     nextPage: boolean;
     usersListLoading: boolean;
     userLoading: boolean;
+    accountTypeLoading: boolean;
     error: string | null;
 };
 
@@ -26,6 +27,7 @@ const initialState: UserSliceType = {
     nextPage: false,
     usersListLoading: false,
     userLoading: false,
+    accountTypeLoading: false,
     error: null,
 };
 
@@ -79,6 +81,20 @@ const updateMe = createAsyncThunk(
             return thunkAPI.rejectWithValue(
                 getError(error),
             );
+        }
+    },
+);
+
+const updateAccountType = createAsyncThunk(
+    'userSlice/updateAccountType',
+    async (body: IUserUpdate, thunkAPI) => {
+        try {
+            const user = await usersService.updateAccountType(body);
+            return thunkAPI.fulfillWithValue(user);
+        } catch (error) {
+            return thunkAPI.rejectWithValue((
+                getError(error)
+            ));
         }
     },
 );
@@ -175,6 +191,11 @@ export const userSlice = createSlice({
     extraReducers: (builder) => {
         builder
             // GET /users
+            .addCase(loadUsers.pending,
+                (state) => {
+                    state.usersListLoading = true;
+                },
+            )
             .addCase(
                 loadUsers.fulfilled,
                 (
@@ -190,7 +211,17 @@ export const userSlice = createSlice({
                     state.nextPage = action.payload.nextPage;
                 },
             )
+            .addCase(loadUsers.rejected,
+                (state) => {
+                    state.usersListLoading = false;
+                },
+            )
             // GET /users/me
+            .addCase(loadMe.pending,
+                (state) => {
+                    state.userLoading = true;
+                },
+            )
             .addCase(
                 loadMe.fulfilled,
                 (
@@ -202,6 +233,13 @@ export const userSlice = createSlice({
                 },
             )
             // GET /users/:id
+            .addCase(
+                loadUser.pending,
+                (state) => {
+                    state.userLoading = true;
+                    state.selectedUser = null;
+                },
+            )
             .addCase(
                 loadUser.fulfilled,
                 (
@@ -220,6 +258,25 @@ export const userSlice = createSlice({
                     action: PayloadAction<IUser>,
                 ) => {
                     state.user = action.payload;
+                },
+            )
+            // PATCH /users/me/account-type
+            .addCase(
+                updateAccountType.pending, (state) => {
+                    state.accountTypeLoading = true;
+                    state.error = null;
+                },
+            )
+            .addCase(
+                updateAccountType.fulfilled,
+                (state, action: PayloadAction<IUser>) => {
+                    state.accountTypeLoading = false;
+                    state.user = action.payload;
+                },
+            )
+            .addCase(
+                updateAccountType.rejected, (state) => {
+                    state.accountTypeLoading = false;
                 },
             )
             // POST /users/me/avatar
@@ -285,29 +342,7 @@ export const userSlice = createSlice({
                     state.user = null;
                 },
             )
-            // Load me
-            .addCase(loadMe.pending, (state) => {
-                state.userLoading = true;
-                state.user = null;
-            })
-            // Load user
-            .addCase(loadUser.pending, (state) => {
-                state.userLoading = true;
-                state.selectedUser = null;
-            })
-            // Loading list
-            .addMatcher(
-                isPending(loadUsers),
-                (state) => {
-                    state.usersListLoading = true;
-                },
-            )
-            .addMatcher(
-                isRejected(loadUsers),
-                (state) => {
-                    state.usersListLoading = false;
-                },
-            )
+            // combined
             .addMatcher(
                 isRejected(loadMe, loadUser),
                 (state) => {
@@ -321,6 +356,7 @@ export const userSlice = createSlice({
                     loadMe,
                     loadUser,
                     updateMe,
+                    updateAccountType,
                     uploadAvatar,
                     deleteAvatar,
                     deleteMe,
@@ -364,4 +400,5 @@ export const userSliceActions = {
     deleteMe,
     updateUserStatus,
     deleteUser,
+    updateAccountType,
 };

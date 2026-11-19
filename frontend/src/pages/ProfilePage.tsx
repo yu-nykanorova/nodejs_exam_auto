@@ -1,18 +1,22 @@
 import { Link } from "react-router-dom";
 import { useAppDispatch } from "../store/hooks/useAppDispatch.tsx";
 import { useAppSelector } from "../store/hooks/useAppSelector.tsx";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Loader } from "../components/ui/Loader.tsx";
 import { ErrorComponent } from "../components/ui/ErrorComponent.tsx";
 import { userSliceActions } from "../store/slices/userSlice.ts";
 import { sellerAccountTypes } from "../constants/accountTypes.ts";
+import { Button } from "../components/ui/Button.tsx";
+import { ModalConfirm } from "../components/ui/ModalConfirm.tsx";
 
 export const ProfilePage = () => {
     const dispatch = useAppDispatch();
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const {
         user,
         userLoading,
+        accountTypeLoading,
         error,
     } = useAppSelector(({ userSlice }) => userSlice);
 
@@ -34,6 +38,14 @@ export const ProfilePage = () => {
 
     if (!user) {
         return <ErrorComponent message="User not found" />;
+    }
+
+    const handlePremium = async () => {
+        await dispatch(
+            userSliceActions.updateAccountType({
+                accountType: sellerAccountTypes.PREMIUM,
+            }),
+        );
     }
 
     return (
@@ -64,16 +76,38 @@ export const ProfilePage = () => {
                             {user.email}
                         </p>
 
-                        <div className="mt-2 flex gap-2">
+                        <div className="mt-2 flex items-center gap-2">
                             <span className="rounded bg-blue-100 px-2 py-1 text-xs text-blue-700">
                                 {user.role}
                             </span>
 
                             {user.accountType &&
-                                <span className={`rounded bg-gray-100 px-2 py-1 text-xs font-medium ${isPremium ? "text-yellow-600" : "text-gray-700"}`}>
+                                <span className={`flex gap-1 rounded bg-gray-100 px-2 py-1 text-xs font-medium ${isPremium ? "text-yellow-600" : "text-gray-700"}`}>
+                                    {isPremium && <span>&#9733;</span>}
                                     {user.accountType}
                                 </span>
                             }
+
+                            {!isPremium && user.role === "seller" && (
+                                <Button
+                                    onClick={() => setIsModalOpen(true)}
+                                    disabled={accountTypeLoading}
+                                    className="px-3 py-1 border border-yellow-600 text-sm font-medium text-yellow-600 hover:bg-yellow-600 hover:text-white"
+                                >
+                                    {accountTypeLoading
+                                        ? "Upgrading account..."
+                                        : "\u2605 Upgrade to Premium"}
+                                </Button>
+                            )}
+
+                            {isModalOpen && (
+                                <ModalConfirm
+                                    message={"Do you confirm upgrading your account to Premium?"}
+                                    comment={"You will have the option to create more than one advert and statistics on how many times your ads have been viewed"}
+                                    onClose={() => setIsModalOpen(false)}
+                                    onConfirm={handlePremium}
+                                />
+                            )}
                         </div>
                     </div>
                 </div>
@@ -136,7 +170,7 @@ export const ProfilePage = () => {
 
                 </div>
 
-                <div className="mt-8 flex flex-wrap gap-3 border-t border-gray-200 pt-6">
+                <div className="mt-8 flex gap-3 border-t border-gray-200 pt-6">
 
                     {user.role === "seller" && (
                         <Link
