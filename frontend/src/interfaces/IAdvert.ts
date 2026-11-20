@@ -48,7 +48,6 @@ export type IAdvertUpdate = Partial<Pick<IAdvert,
     | "year"
     | "region"
     | "city"
-    | "photo"
 > & { brandId: string; modelId: string; }>;
 
 export interface IAdvertQuery {

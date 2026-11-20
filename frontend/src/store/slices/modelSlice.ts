@@ -53,7 +53,12 @@ const loadModelRequests = createAsyncThunk(
 export const modelSlice = createSlice({
     name: "modelSlice",
     initialState,
-    reducers: {},
+    reducers: {
+        clearModels: (state) => {
+            state.models = [];
+            state.error = null;
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(

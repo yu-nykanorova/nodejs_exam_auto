@@ -18,6 +18,7 @@ export const AdvertDetailsPage = () => {
     const dispatch = useAppDispatch();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedStatus, setSelectedStatus] = useState<AdvertStatus | null>(null);
+    const [isEditFormOpen, setIsEditFormOpen] = useState(false);
 
     const {
         advert,
@@ -32,6 +33,8 @@ export const AdvertDetailsPage = () => {
         (user?._id === advert?._ownerId && user?.accountType === sellerAccountTypes.PREMIUM) || user?.role === roles.ADMIN || user?.role === roles.MANAGER;
 
     const isAdmin = user?.role === roles.ADMIN || user?.role === roles.MANAGER;
+
+    const allowedToEdit = user?.role === roles.SELLER && user?._id === advert?._ownerId;
 
     const openedAdvertId = useRef<string | null>(null);
 
@@ -67,7 +70,7 @@ export const AdvertDetailsPage = () => {
 
     const advertStatusClass = ADVERT_STATUS_CLASS[advert.status] ?? "";
 
-    const handleModalOpen = (status: AdvertStatus) => {
+    const handleChangeStatusModalOpen = (status: AdvertStatus) => {
         setSelectedStatus(status);
         setIsModalOpen(true);
     };
@@ -83,13 +86,15 @@ export const AdvertDetailsPage = () => {
         );
     };
 
-    const handleConfirm = () => {
+    const handleConfirmChangeStatus = () => {
         if (!selectedStatus) return;
 
         handleChangeStatus(selectedStatus);
         setIsModalOpen(false);
         setSelectedStatus(null);
     };
+
+    const handleConfirmEdit = () => {};
 
     return (
         <div className="mx-auto max-w-6xl p-4">
@@ -129,21 +134,21 @@ export const AdvertDetailsPage = () => {
                     {isAdmin && (
                         <div className="mb-4 flex justify-end gap-2">
                             <Button
-                                onClick={() => handleModalOpen(advertStatuses.ACTIVE)}
+                                onClick={() => handleChangeStatusModalOpen(advertStatuses.ACTIVE)}
                                 className="px-3 py-1 border border-green-600 text-green-600 enabled:hover:bg-green-500 enabled:hover:text-white disabled:text-gray-500 disabled:border-gray-500"
                                 disabled={advert.status === advertStatuses.ACTIVE}
                             >
                                 Activate
                             </Button>
                             <Button
-                                onClick={() => handleModalOpen(advertStatuses.BLOCKED)}
+                                onClick={() => handleChangeStatusModalOpen(advertStatuses.BLOCKED)}
                                 className="px-3 py-1 border border-red-500 text-red-600 enabled:hover:bg-red-500 enabled:hover:text-white disabled:text-gray-500 disabled:border-gray-500"
                                 disabled={advert.status === advertStatuses.BLOCKED}
                             >
                                 Block
                             </Button>
                             <Button
-                                onClick={() => handleModalOpen(advertStatuses.DELETED)}
+                                onClick={() => handleChangeStatusModalOpen(advertStatuses.DELETED)}
                                 className="px-3 py-1 border border-gray-900 text-gray-900 enabled:hover:bg-gray-900 enabled:hover:text-white disabled:text-gray-500 disabled:border-gray-500"
                                 disabled={advert.status === advertStatuses.DELETED}
                             >
@@ -156,7 +161,7 @@ export const AdvertDetailsPage = () => {
                                         setIsModalOpen(false);
                                         setSelectedStatus(null);
                                     }}
-                                    onConfirm={handleConfirm}
+                                    onConfirm={handleConfirmChangeStatus}
                                 />
                             )}
                         </div>
@@ -302,6 +307,38 @@ export const AdvertDetailsPage = () => {
                     {statistics && allowedToViewStatistics &&
                         <AdvertStatistics statistics={statistics} />
                     }
+
+                    {allowedToEdit && (
+                        <>
+                            <div className="mb-4 flex justify-end gap-2">
+                                <Button
+                                    onClick={() => setIsEditFormOpen(true)}
+                                    className="px-3 py-1 bg-blue-600 text-white hover:bg-blue-700"
+                                >
+                                    Edit
+                                </Button>
+                                <Button
+                                    onClick={() => setIsModalOpen(true)}
+                                    className="px-3 py-1 border border-black text-black hover:bg-black hover:text-white"
+                                >
+                                    Delete
+                                </Button>
+                                {isModalOpen && (
+                                    <ModalConfirm
+                                        message={"Do you confirm deleting of this advert?"}
+                                        onClose={() => {
+                                            setIsModalOpen(false);
+                                        }}
+                                        onConfirm={handleConfirmEdit}
+                                    />
+                                )}
+                            </div>
+
+                            {isEditFormOpen && (
+                                <p>Edit form</p>
+                            )}
+                        </>
+                    )}
                 </div>
             </div>
         </div>

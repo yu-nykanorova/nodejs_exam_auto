@@ -8,7 +8,7 @@ import {
     IAdvertCreate,
     IAdvertQuery,
     IAdvertResult,
-    IAdvertUpdateDTO,
+    IAdvertUpdateDatabase,
 } from "../interfaces/advert.interface";
 import { IAggregatedResponse } from "../interfaces/aggregated-response.interface";
 import { Advert } from "../models/advert.model";
@@ -130,7 +130,7 @@ class AdvertRepository {
 
     public async updateById(
         advertId: string,
-        dto: IAdvertUpdateDTO,
+        dto: IAdvertUpdateDatabase,
     ): Promise<IAdvertResult | null> {
         return await Advert.findByIdAndUpdate(advertId, dto, {
             returnDocument: "after",

@@ -119,16 +119,31 @@ export type IAdvertUpdateDTO = Partial<
         | "description"
         | "initialPrice"
         | "initialCurrency"
-        | "priceUAH"
-        | "priceUSD"
-        | "priceEUR"
-        | "exchangeRate"
-        | "photo"
         | "brandId"
         | "modelId"
         | "year"
         | "city"
         | "region"
+    >
+>;
+
+export type IAdvertUpdateDatabase = Partial<
+    Pick<
+        IAdvert,
+        | "title"
+        | "description"
+        | "initialPrice"
+        | "initialCurrency"
+        | "brandId"
+        | "modelId"
+        | "year"
+        | "city"
+        | "region"
+        | "priceUAH"
+        | "priceUSD"
+        | "priceEUR"
+        | "exchangeRate"
+        | "photo"
         | "status"
         | "attemptModerate"
         | "deletedAt"

@@ -7,7 +7,7 @@ type AdvertStatisticsProps = {
 
 export const AdvertStatistics: FC<AdvertStatisticsProps> = ({ statistics }) => {
     return (
-        <div className="mb-6">
+        <div className="mb-4">
             <h2 className="mb-3 text-lg font-semibold">
                 Advert statistics
             </h2>
