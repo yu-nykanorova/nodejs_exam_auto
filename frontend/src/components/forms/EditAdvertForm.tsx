@@ -6,28 +6,90 @@ import { FormSelect } from "../ui/FormSelect.tsx";
 import { buildOptionsFromArray, buildOptionsFromObject } from "../../utils/buildSelectOptions.ts";
 import { Currencies } from "../../constants/currencies.ts";
 import { Button } from "../ui/Button.tsx";
-import { useForm } from "react-hook-form";
-import type { IAdvertCreate } from "../../interfaces/IAdvert.ts";
+import { useForm, useWatch } from "react-hook-form";
+import type { IAdvert, IAdvertUpdate } from "../../interfaces/IAdvert.ts";
 import { joiResolver } from "@hookform/resolvers/joi";
-import { advertCreateValidator } from "../../validators/advert.validator.ts";
+import { advertUpdateValidator } from "../../validators/advert.validator.ts";
+import type { IBrand } from "../../interfaces/IBrand.ts";
+import type { IModel } from "../../interfaces/IModel.ts";
+import { type FC, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-export const EditAdvertForm = () => {
+type EditAdvertFormProps = {
+    advert: IAdvert;
+    updateAdvertLoading: boolean;
+    updateAdvertError: string | null;
+    brands: IBrand[];
+    brandsError: string | null;
+    models: IModel[];
+    modelsError: string | null;
+    onSubmit: (data: IAdvertUpdate) => void;
+    onBrandChange: (brandId: string) => void;
+}
+
+export const EditAdvertForm: FC<EditAdvertFormProps> = ({ advert, updateAdvertLoading, updateAdvertError, brands, brandsError, models, modelsError, onSubmit, onBrandChange }) => {
+    const navigate = useNavigate();
+
     const {
         register,
         control,
         handleSubmit,
+        reset,
         clearErrors,
         setValue,
-        formState: { errors },
-    } = useForm<IAdvertCreate>({
+        formState: { errors, dirtyFields },
+    } = useForm<IAdvertUpdate>({
         mode: "onSubmit",
-        resolver: joiResolver(advertCreateValidator),
+        resolver: joiResolver(advertUpdateValidator),
     });
 
+    useEffect(() => {
+        reset({
+            title: advert.title,
+            description: advert.description,
+            initialPrice: advert.initialPrice,
+            initialCurrency: advert.initialCurrency,
+            year: advert.year,
+            region: advert.region,
+            city: advert.city,
+            brandId: advert.brand._id,
+            modelId: advert.model._id,
+        });
+    }, [advert, reset]);
+
+    const selectedBrandId = useWatch({
+        control,
+        name: "brandId",
+    });
+
+    useEffect(() => {
+        if (selectedBrandId) {
+            onBrandChange(selectedBrandId);
+        } else {
+            onBrandChange("");
+        }
+    }, [selectedBrandId, onBrandChange]);
+
+    const onSubmitEditAdvert = (data: IAdvertUpdate) => {
+        const changedData = Object.fromEntries(
+            Object.keys(dirtyFields)
+                .filter((key) => dirtyFields[key as keyof IAdvertUpdate])
+                .map((key) => [key, data[key as keyof IAdvertUpdate]]),
+        ) as IAdvertUpdate;
+
+        if (Object.keys(changedData).length === 0) {
+            return;
+        }
+
+        onSubmit(changedData);
+    }
+
     return (
-        <Form>
+        <Form
+            onSubmit={handleSubmit(onSubmitEditAdvert)}
+        >
             <h1 className="text-2xl font-semibold text-center">
-                Create advert
+                Edit advert
             </h1>
 
             <div className="flex flex-col gap-1">
@@ -58,7 +120,10 @@ export const EditAdvertForm = () => {
                         defaultOption="Select brand"
                         optionValues={buildOptionsFromArray(brands)}
                         {...register("brandId", {onChange: () => {
-                                setValue("modelId", "");
+                                setValue("modelId", "", {
+                                    shouldDirty: true,
+                                    shouldValidate: true,
+                                });
                             }})}
                         onBlur={() => clearErrors("brandId")}
                     />
@@ -200,12 +265,12 @@ export const EditAdvertForm = () => {
                 )}
             </div>
 
-            {createAdvertError && (
-                <ErrorComponent message={createAdvertError}/>
+            {updateAdvertError && (
+                <ErrorComponent message={updateAdvertError}/>
             )}
 
             <Button
-                onClick={() => {}}
+                onClick={() => navigate(`/advert/${advert._id}`)}
                 className="text-sm text-blue-600 hover:underline cursor-pointer"
             >
                 Close
@@ -213,10 +278,10 @@ export const EditAdvertForm = () => {
 
             <Button
                 type="submit"
-                disabled={createAdvertLoading}
+                disabled={updateAdvertLoading}
                 className="mt-2 bg-blue-600 text-white hover:bg-blue-700"
             >
-                {createAdvertLoading
+                {updateAdvertLoading
                     ? "Editing advert..."
                     : "Edit advert"}
             </Button>

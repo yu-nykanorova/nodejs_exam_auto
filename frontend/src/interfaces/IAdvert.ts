@@ -40,15 +40,17 @@ export interface IAdvertCreate {
     initialCurrency: Currency;
 }
 
-export type IAdvertUpdate = Partial<Pick<IAdvert,
-    | "title"
-    | "description"
-    | "initialPrice"
-    | "initialCurrency"
-    | "year"
-    | "region"
-    | "city"
-> & { brandId: string; modelId: string; }>;
+export type IAdvertUpdate = {
+    title: string;
+    brandId: string;
+    modelId: string;
+    year: number;
+    region: string;
+    city: string;
+    description: string;
+    initialPrice: number;
+    initialCurrency: Currency;
+}
 
 export interface IAdvertQuery {
     pageSize?: number;

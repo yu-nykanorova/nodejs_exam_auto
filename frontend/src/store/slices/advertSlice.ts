@@ -15,6 +15,7 @@ type AdvertSliceType = {
     advertsListLoading: boolean;
     advertDetailsLoading: boolean;
     createAdvertLoading: boolean;
+    updateAdvertLoading: boolean;
     statisticsLoading: boolean;
     error: string | null;
     statisticsError: string | null;
@@ -31,6 +32,7 @@ const initialState: AdvertSliceType = {
     advertsListLoading: false,
     advertDetailsLoading: false,
     createAdvertLoading: false,
+    updateAdvertLoading: false,
     statisticsLoading: false,
     error: null,
     statisticsError: null,
@@ -323,6 +325,7 @@ export const advertSlice = createSlice({
                     action: PayloadAction<IAdvert>,
                 ) => {
                     state.advert = action.payload;
+                    state.updateAdvertLoading = false;
                 },
             )
             // POST /adverts/:id/photo
@@ -388,6 +391,13 @@ export const advertSlice = createSlice({
             })
             .addCase(createAdvert.rejected, (state) => {
                 state.createAdvertLoading = false;
+            })
+            // Loading update advert
+            .addCase(updateAdvert.pending, (state) => {
+                state.updateAdvertLoading = true;
+            })
+            .addCase(updateAdvert.rejected, (state) => {
+                state.updateAdvertLoading = false;
             })
             // Loading advert details
             .addCase(loadAdvert.pending, (state) => {

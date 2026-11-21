@@ -58,7 +58,6 @@ export const CreateAdvertPage = () => {
         }
     };
 
-
     return (
         <div className="min-h-[calc(100vh-128px)] flex items-center justify-center p-4">
             <CreateAdvertForm

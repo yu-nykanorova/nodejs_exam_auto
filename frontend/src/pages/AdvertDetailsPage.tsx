@@ -1,5 +1,5 @@
 import { useAppSelector } from "../store/hooks/useAppSelector.tsx";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch } from "../store/hooks/useAppDispatch.tsx";
 import { useEffect, useRef, useState } from "react";
 import { advertSliceActions } from "../store/slices/advertSlice.ts";
@@ -16,9 +16,10 @@ import { ModalConfirm } from "../components/ui/ModalConfirm.tsx";
 export const AdvertDetailsPage = () => {
     const { id } = useParams();
     const dispatch = useAppDispatch();
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const navigate = useNavigate();
+    const [isChangeStatusModalOpen, setIsChangeStatusModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedStatus, setSelectedStatus] = useState<AdvertStatus | null>(null);
-    const [isEditFormOpen, setIsEditFormOpen] = useState(false);
 
     const {
         advert,
@@ -72,7 +73,7 @@ export const AdvertDetailsPage = () => {
 
     const handleChangeStatusModalOpen = (status: AdvertStatus) => {
         setSelectedStatus(status);
-        setIsModalOpen(true);
+        setIsChangeStatusModalOpen(true);
     };
 
     const handleChangeStatus = (status: AdvertStatus) => {
@@ -90,7 +91,7 @@ export const AdvertDetailsPage = () => {
         if (!selectedStatus) return;
 
         handleChangeStatus(selectedStatus);
-        setIsModalOpen(false);
+        setIsChangeStatusModalOpen(false);
         setSelectedStatus(null);
     };
 
@@ -154,11 +155,11 @@ export const AdvertDetailsPage = () => {
                             >
                                 Delete
                             </Button>
-                            {isModalOpen && selectedStatus && (
+                            {isChangeStatusModalOpen && selectedStatus && (
                                 <ModalConfirm
                                     message={"Do you confirm changing status of this advert?"}
                                     onClose={() => {
-                                        setIsModalOpen(false);
+                                        setIsChangeStatusModalOpen(false);
                                         setSelectedStatus(null);
                                     }}
                                     onConfirm={handleConfirmChangeStatus}
@@ -312,31 +313,27 @@ export const AdvertDetailsPage = () => {
                         <>
                             <div className="mb-4 flex justify-end gap-2">
                                 <Button
-                                    onClick={() => setIsEditFormOpen(true)}
+                                    onClick={() => navigate(`adverts/${advert._id}/edit}`)}
                                     className="px-3 py-1 bg-blue-600 text-white hover:bg-blue-700"
                                 >
                                     Edit
                                 </Button>
                                 <Button
-                                    onClick={() => setIsModalOpen(true)}
+                                    onClick={() => setIsDeleteModalOpen(true)}
                                     className="px-3 py-1 border border-black text-black hover:bg-black hover:text-white"
                                 >
                                     Delete
                                 </Button>
-                                {isModalOpen && (
+                                {isDeleteModalOpen && (
                                     <ModalConfirm
                                         message={"Do you confirm deleting of this advert?"}
                                         onClose={() => {
-                                            setIsModalOpen(false);
+                                            setIsDeleteModalOpen(false);
                                         }}
                                         onConfirm={handleConfirmEdit}
                                     />
                                 )}
                             </div>
-
-                            {isEditFormOpen && (
-                                <p>Edit form</p>
-                            )}
                         </>
                     )}
                 </div>
