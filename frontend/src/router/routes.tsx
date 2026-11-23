@@ -24,6 +24,7 @@ import { ProtectedRoute } from "./ProtectedRoute.tsx";
 import { ManagerRoute } from "./ManagerRoute.tsx";
 import { GuestRoute } from "./GuestRoute.tsx";
 import { NotFoundPage } from "../pages/NotFoundPage.tsx";
+import { EditProfilePage } from "../pages/EditProfilePage.tsx";
 
 export const routes = createBrowserRouter([
     {
@@ -55,11 +56,12 @@ export const routes = createBrowserRouter([
                 element: <ProtectedRoute />,
                 children: [
                     { path: 'profile', element: <ProfilePage /> },
+                    { path: 'profile/edit', element: <EditProfilePage /> },
 
                     // Seller
                     { path: 'my-adverts', element: <MyAdvertsPage /> },
                     { path: 'adverts/create', element: <CreateAdvertPage /> },
-                    { path: 'adverts/:id/edit', element: <EditAdvertPage /> },
+                    { path: 'advert/:id/edit', element: <EditAdvertPage /> },
                     { path: 'requests', element: <RequestsPage /> },
                 ],
             },

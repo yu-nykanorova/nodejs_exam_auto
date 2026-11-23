@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, isPending, isRejected, type PayloadAction } from "@reduxjs/toolkit";
-import type { IUser, IUserChangeStatus, IUserQuery, IUserResponse, IUserUpdate } from "../../interfaces/IUser.ts";
+import type { IUser, IUserChangeStatus, IUserQuery, IUserResponse, IUserUpdate, IUserUpdateAccountType } from "../../interfaces/IUser.ts";
 import { getError } from "../../utils/getError.ts";
 import { usersService } from "../../services/usersService.ts";
 
@@ -69,7 +69,7 @@ const loadUser = createAsyncThunk(
     },
 );
 
-const updateMe = createAsyncThunk(
+export const updateMe = createAsyncThunk(
     'userSlice/updateMe',
     async (body: IUserUpdate, thunkAPI) => {
         try {
@@ -85,9 +85,9 @@ const updateMe = createAsyncThunk(
     },
 );
 
-const updateAccountType = createAsyncThunk(
+export const updateAccountType = createAsyncThunk(
     'userSlice/updateAccountType',
-    async (body: IUserUpdate, thunkAPI) => {
+    async (body: IUserUpdateAccountType, thunkAPI) => {
         try {
             const user = await usersService.updateAccountType(body);
             return thunkAPI.fulfillWithValue(user);
@@ -99,7 +99,7 @@ const updateAccountType = createAsyncThunk(
     },
 );
 
-const uploadAvatar = createAsyncThunk(
+export const uploadAvatar = createAsyncThunk(
     'userSlice/uploadAvatar',
     async (body: FormData, thunkAPI) => {
         try {
@@ -115,7 +115,7 @@ const uploadAvatar = createAsyncThunk(
     },
 );
 
-const deleteAvatar = createAsyncThunk(
+export const deleteAvatar = createAsyncThunk(
     'userSlice/deleteAvatar',
     async (_, thunkAPI) => {
         try {

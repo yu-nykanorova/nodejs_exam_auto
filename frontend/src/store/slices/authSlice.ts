@@ -5,7 +5,7 @@ import type { IUser, IUserCreate } from "../../interfaces/IUser.ts";
 import { authService } from "../../services/authService.ts";
 import { getFromLocalStorage, removeFromLocalStorage, saveToLocalStorage } from "../../utils/localStorage.ts";
 import { userSliceActions } from "./userSlice.ts";
-import { loadMe } from "./userSlice.ts"
+import { loadMe, updateMe, updateAccountType, uploadAvatar, deleteAvatar } from "./userSlice.ts"
 
 type AuthSliceType = {
     user: IUser | null;
@@ -162,7 +162,7 @@ export const authSlice = createSlice({
                     state.loading = false;
                 },
             )
-            // Synchronization with userSlice.loadMe
+            // Synchronization with userSlice
             .addCase(
                 loadMe.fulfilled,
                 (state, action: PayloadAction<IUser>) => {
@@ -178,6 +178,32 @@ export const authSlice = createSlice({
                     state.isAuthenticated=false;
                     state.isAuthChecked = true;
                 },
+            )
+            .addCase(
+                updateMe.fulfilled,
+                (state, action: PayloadAction<IUser>) => {
+                    state.user = action.payload;
+                },
+            )
+            .addCase(
+                updateAccountType.fulfilled,
+                (state, action: PayloadAction<IUser>) => {
+                    state.user = action.payload;
+                },
+            )
+            .addCase(
+                uploadAvatar.fulfilled,
+                (state, action: PayloadAction<IUser>) => {
+                    state.user = action.payload;
+                },
+            )
+            .addCase(
+                deleteAvatar.fulfilled,
+                (state) => {
+                    if (state.user) {
+                        state.user.avatar = undefined;
+                    }
+                }
             )
             // General loading
             .addMatcher(

@@ -1,4 +1,4 @@
-import type { IUser, IUserChangeStatus, IUserCreate, IUserQuery, IUserResponse, IUserUpdate } from "../interfaces/IUser.ts";
+import type { IUser, IUserChangeStatus, IUserCreate, IUserQuery, IUserResponse, IUserUpdate, IUserUpdateAccountType } from "../interfaces/IUser.ts";
 import { deleteItem, getItems, patchItem, postItem, putItem } from "./api.service.ts";
 
 export const usersService = {
@@ -26,7 +26,7 @@ export const usersService = {
     },
 
     updateAccountType: async (
-        body: IUserUpdate,
+        body: IUserUpdateAccountType,
     ): Promise<IUser> => {
         return await patchItem<
             IUser,

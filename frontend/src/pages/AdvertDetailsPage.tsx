@@ -95,7 +95,7 @@ export const AdvertDetailsPage = () => {
         setSelectedStatus(null);
     };
 
-    const handleConfirmEdit = () => {};
+    const handleConfirmDelete = () => {};
 
     return (
         <div className="mx-auto max-w-6xl p-4">
@@ -313,7 +313,7 @@ export const AdvertDetailsPage = () => {
                         <>
                             <div className="mb-4 flex justify-end gap-2">
                                 <Button
-                                    onClick={() => navigate(`adverts/${advert._id}/edit}`)}
+                                    onClick={() => navigate(`edit`)}
                                     className="px-3 py-1 bg-blue-600 text-white hover:bg-blue-700"
                                 >
                                     Edit
@@ -330,7 +330,7 @@ export const AdvertDetailsPage = () => {
                                         onClose={() => {
                                             setIsDeleteModalOpen(false);
                                         }}
-                                        onConfirm={handleConfirmEdit}
+                                        onConfirm={handleConfirmDelete}
                                     />
                                 )}
                             </div>

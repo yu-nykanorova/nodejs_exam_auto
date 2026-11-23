@@ -108,7 +108,13 @@ class ModerationService {
             throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        return updatedAdvert;
+        const result = await advertRepository.getById(advert._id);
+
+        if (!result) {
+            throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        return result;
     }
 }
 

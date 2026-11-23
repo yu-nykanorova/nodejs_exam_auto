@@ -69,21 +69,10 @@ export interface IUserCreate {
 }
 
 export type IUserUpdateDTO = Partial<
-    Pick<
-        IUser,
-        | "email"
-        | "name"
-        | "surname"
-        | "age"
-        | "avatar"
-        | "accountType"
-        | "status"
-        | "phone"
-        | "deletedAt"
-    >
+    Pick<IUser, "email" | "name" | "surname" | "age" | "avatar" | "phone">
 >;
 
-export type IUserRepositoryUpdate = Partial<
+export type IUserUpdateDatabase = Partial<
     Pick<
         IUser,
         | "email"

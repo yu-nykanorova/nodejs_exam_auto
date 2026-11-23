@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../store/hooks/useAppDispatch.tsx";
 import { useAppSelector } from "../store/hooks/useAppSelector.tsx";
 import { useEffect, useState } from "react";
@@ -11,7 +11,9 @@ import { ModalConfirm } from "../components/ui/ModalConfirm.tsx";
 
 export const ProfilePage = () => {
     const dispatch = useAppDispatch();
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const navigate = useNavigate();
+    const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     const {
         user,
@@ -47,6 +49,8 @@ export const ProfilePage = () => {
             }),
         );
     }
+
+    const handleConfirmDelete = () => {};
 
     return (
         <div className="min-h-[calc(100vh-128px)] bg-gray-50 px-4 py-8">
@@ -89,24 +93,26 @@ export const ProfilePage = () => {
                             }
 
                             {!isPremium && user.role === "seller" && (
-                                <Button
-                                    onClick={() => setIsModalOpen(true)}
-                                    disabled={accountTypeLoading}
-                                    className="px-3 py-1 border border-yellow-600 text-sm font-medium text-yellow-600 hover:bg-yellow-600 hover:text-white"
-                                >
-                                    {accountTypeLoading
-                                        ? "Upgrading account..."
-                                        : "\u2605 Upgrade to Premium"}
-                                </Button>
-                            )}
+                                <>
+                                    <Button
+                                        onClick={() => setIsUpgradeModalOpen(true)}
+                                        disabled={accountTypeLoading}
+                                        className="px-3 py-1 border border-yellow-600 text-sm font-medium text-yellow-600 hover:bg-yellow-600 hover:text-white"
+                                    >
+                                        {accountTypeLoading
+                                            ? "Upgrading account..."
+                                            : "\u2605 Upgrade to Premium"}
+                                    </Button>
 
-                            {isModalOpen && (
-                                <ModalConfirm
-                                    message={"Do you confirm upgrading your account to Premium?"}
-                                    comment={"You will have the option to create more than one advert and statistics on how many times your ads have been viewed"}
-                                    onClose={() => setIsModalOpen(false)}
-                                    onConfirm={handlePremium}
-                                />
+                                    {isUpgradeModalOpen && (
+                                        <ModalConfirm
+                                            message={"Do you confirm upgrading your account to Premium?"}
+                                            comment={"You will have the option to create more than one advert and statistics on how many times your ads have been viewed"}
+                                            onClose={() => setIsUpgradeModalOpen(false)}
+                                            onConfirm={handlePremium}
+                                        />
+                                    )}
+                                </>
                             )}
                         </div>
                     </div>
@@ -170,7 +176,7 @@ export const ProfilePage = () => {
 
                 </div>
 
-                <div className="mt-8 flex gap-3 border-t border-gray-200 pt-6">
+                <div className="mt-8 flex justify-between items-center gap-3 border-t border-gray-200 pt-6">
 
                     {user.role === "seller" && (
                         <Link
@@ -180,6 +186,30 @@ export const ProfilePage = () => {
                             My adverts
                         </Link>
                     )}
+
+                    <div className="flex gap-2">
+                        <Button
+                            onClick={() => navigate(`edit`)}
+                            className="px-3 py-1 bg-blue-600 text-white hover:bg-blue-700"
+                        >
+                            Edit
+                        </Button>
+                        <Button
+                            onClick={() => setIsDeleteModalOpen(true)}
+                            className="px-3 py-1 border border-black text-black hover:bg-black hover:text-white"
+                        >
+                            Delete
+                        </Button>
+                        {isDeleteModalOpen && (
+                            <ModalConfirm
+                                message={"Do you confirm deleting your profile?"}
+                                onClose={() => {
+                                    setIsDeleteModalOpen(false);
+                                }}
+                                onConfirm={handleConfirmDelete}
+                            />
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

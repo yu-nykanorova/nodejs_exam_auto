@@ -70,6 +70,16 @@ export const EditAdvertForm: FC<EditAdvertFormProps> = ({ advert, updateAdvertLo
         }
     }, [selectedBrandId, onBrandChange]);
 
+    useEffect(() => {
+        if (selectedBrandId !== advert.brand._id) return;
+
+        const isModel = models.some((model) => model._id === advert.model._id);
+
+        if (isModel) {
+            setValue("modelId", advert.model._id);
+        }
+    }, [models, selectedBrandId, advert.brand._id, advert.model._id, setValue]);
+
     const onSubmitEditAdvert = (data: IAdvertUpdate) => {
         const changedData = Object.fromEntries(
             Object.keys(dirtyFields)
@@ -87,6 +97,7 @@ export const EditAdvertForm: FC<EditAdvertFormProps> = ({ advert, updateAdvertLo
     return (
         <Form
             onSubmit={handleSubmit(onSubmitEditAdvert)}
+            className="w-full max-w-2xl p-6 gap-4 rounded-lg shadow-md"
         >
             <h1 className="text-2xl font-semibold text-center">
                 Edit advert

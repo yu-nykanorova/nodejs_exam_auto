@@ -32,11 +32,14 @@ export type IUserUpdate = Partial<Pick<IUser,
     | "surname"
     | "age"
     | "avatar"
-    | "accountType"
     | "phone"
 >>;
 
 export type IUserChangeStatus = Pick<IUser, "status">;
+
+export interface IUserUpdateAccountType {
+    accountType: AccountType;
+}
 
 export interface IUserQuery {
     pageSize?: number;

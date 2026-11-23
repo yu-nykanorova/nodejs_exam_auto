@@ -36,8 +36,8 @@ export const CreateAdvertPage = () => {
     }, [dispatch]);
 
     const loadBrandModels = useCallback(
-        (brandId: string) =>{
-            if (!brandId) {
+        (brandId: string) => {
+            if (brandId) {
                 dispatch(modelSliceActions.loadModels(brandId));
             } else {
                 dispatch(modelSliceActions.clearModels());

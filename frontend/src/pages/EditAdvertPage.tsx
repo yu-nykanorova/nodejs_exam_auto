@@ -35,7 +35,7 @@ export const EditAdvertPage = () => {
         ({ modelSlice }) => modelSlice,
     );
 
-    const { user } = useAppSelector(({ userSlice }) => userSlice);
+    const { user } = useAppSelector(({ authSlice }) => authSlice);
 
     useEffect(() => {
         if (!id) return;
@@ -87,16 +87,18 @@ export const EditAdvertPage = () => {
     }
 
     return (
-        <EditAdvertForm
-            advert={advert}
-            updateAdvertLoading={updateAdvertLoading}
-            updateAdvertError={error}
-            brands={brands}
-            brandsError={brandsError}
-            models={models}
-            modelsError={modelsError}
-            onSubmit={handleUpdateAdvert}
-            onBrandChange={loadBrandModels}
-        />
+        <div className="min-h-[calc(100vh-128px)] flex items-center justify-center p-4">
+            <EditAdvertForm
+                advert={advert}
+                updateAdvertLoading={updateAdvertLoading}
+                updateAdvertError={error}
+                brands={brands}
+                brandsError={brandsError}
+                models={models}
+                modelsError={modelsError}
+                onSubmit={handleUpdateAdvert}
+                onBrandChange={loadBrandModels}
+            />
+        </div>
     );
 };

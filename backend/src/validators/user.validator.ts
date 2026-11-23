@@ -50,6 +50,7 @@ export class UserValidator {
         name: this.name,
         surname: this.surname,
         age: this.age,
+        avatar: joi.string(),
         phone: this.phone,
     });
 
