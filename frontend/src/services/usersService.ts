@@ -30,7 +30,7 @@ export const usersService = {
     ): Promise<IUser> => {
         return await patchItem<
             IUser,
-            IUserUpdate
+            IUserUpdateAccountType
         >(
             "/users/me/account-type",
             body,

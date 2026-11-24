@@ -55,6 +55,7 @@ export const ForgotPasswordPage = () => {
                 <Form
                     onSubmit={handleSubmit(handleSendEmail)}
                     className="gap-4"
+                    noValidate
                 >
                     <div className="flex flex-col gap-1 relative">
                         <FormInputLabel htmlFor="email">

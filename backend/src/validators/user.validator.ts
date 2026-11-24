@@ -15,7 +15,7 @@ export class UserValidator {
     private static status = joi
         .string()
         .valid(...Object.values(UserStatusEnum));
-    private static phone = joi.string().pattern(/^\+?[0-9]{10,15}$/);
+    private static phone = joi.string().regex(RegexEnum.PHONE);
     private static accountType = joi
         .string()
         .valid(...Object.values(AccountTypeEnum));
@@ -51,7 +51,7 @@ export class UserValidator {
         surname: this.surname,
         age: this.age,
         avatar: joi.string(),
-        phone: this.phone,
+        phone: this.phone.allow(""),
     });
 
     public static login = joi.object({

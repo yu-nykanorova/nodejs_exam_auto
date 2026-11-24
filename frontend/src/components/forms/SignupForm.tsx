@@ -77,6 +77,7 @@ export const SignUpForm: FC<SignUpFormProps> = ({ isSeller }) => {
             <Form
                 onSubmit={handleSubmit(handleSignUp)}
                 className="w-full max-w-md p-6 gap-4 rounded-lg shadow-md"
+                noValidate
             >
                 <h1 className="text-2xl font-semibold text-center">
                     Sign up as {isSeller ? "Seller" : "Buyer"}

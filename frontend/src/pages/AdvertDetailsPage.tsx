@@ -95,7 +95,16 @@ export const AdvertDetailsPage = () => {
         setSelectedStatus(null);
     };
 
-    const handleConfirmDelete = () => {};
+    const handleConfirmDeleteAdvert = async () => {
+        if (!id) return;
+
+        try {
+            await dispatch(advertSliceActions.deleteAdvert(id));
+            navigate('/my-adverts');
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return (
         <div className="mx-auto max-w-6xl p-4">
@@ -330,7 +339,7 @@ export const AdvertDetailsPage = () => {
                                         onClose={() => {
                                             setIsDeleteModalOpen(false);
                                         }}
-                                        onConfirm={handleConfirmDelete}
+                                        onConfirm={handleConfirmDeleteAdvert}
                                     />
                                 )}
                             </div>

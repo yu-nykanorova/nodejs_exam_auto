@@ -98,6 +98,7 @@ export const EditAdvertForm: FC<EditAdvertFormProps> = ({ advert, updateAdvertLo
         <Form
             onSubmit={handleSubmit(onSubmitEditAdvert)}
             className="w-full max-w-2xl p-6 gap-4 rounded-lg shadow-md"
+            noValidate
         >
             <h1 className="text-2xl font-semibold text-center">
                 Edit advert

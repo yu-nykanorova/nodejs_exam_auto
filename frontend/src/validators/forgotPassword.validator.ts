@@ -2,8 +2,8 @@ import * as Joi from "joi";
 
 export const forgotPasswordValidator = Joi.object({
     email: Joi.string()
-        .email({ tlds: { allow: false } })
         .trim()
+        .email({ tlds: { allow: false } })
         .required()
         .messages({
             "string.empty": "Email is required",

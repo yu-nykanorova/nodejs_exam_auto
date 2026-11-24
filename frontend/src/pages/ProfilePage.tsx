@@ -17,9 +17,12 @@ export const ProfilePage = () => {
 
     const {
         user,
-        userLoading,
-        accountTypeLoading,
+        loading: userLoading,
         error,
+    } = useAppSelector(({ authSlice }) => authSlice);
+
+    const {
+        accountTypeLoading,
     } = useAppSelector(({ userSlice }) => userSlice);
 
     const isPremium = user?.accountType === sellerAccountTypes.PREMIUM;
@@ -43,14 +46,27 @@ export const ProfilePage = () => {
     }
 
     const handlePremium = async () => {
-        await dispatch(
-            userSliceActions.updateAccountType({
-                accountType: sellerAccountTypes.PREMIUM,
-            }),
-        );
-    }
+        try {
+            await dispatch(
+                userSliceActions.updateAccountType({
+                    accountType: sellerAccountTypes.PREMIUM,
+                }),
+            ).unwrap();
 
-    const handleConfirmDelete = () => {};
+            setIsUpgradeModalOpen(false);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleConfirmDeleteProfile = async () => {
+        try {
+            await dispatch(userSliceActions.deleteMe()).unwrap();
+            navigate('/');
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return (
         <div className="min-h-[calc(100vh-128px)] bg-gray-50 px-4 py-8">
@@ -206,7 +222,7 @@ export const ProfilePage = () => {
                                 onClose={() => {
                                     setIsDeleteModalOpen(false);
                                 }}
-                                onConfirm={handleConfirmDelete}
+                                onConfirm={handleConfirmDeleteProfile}
                             />
                         )}
                     </div>

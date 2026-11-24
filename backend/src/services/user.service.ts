@@ -12,6 +12,7 @@ import { UserRoleEnum } from "../enums/user-role.enum";
 import { UserStatusEnum } from "../enums/user-status.enum";
 import { ApiError } from "../errors/api.errors";
 import { IPaginatedResponse } from "../interfaces/paginated-response.interface";
+import { ITokenPayload } from "../interfaces/token.interface";
 import {
     IUser,
     IUserCreateManagerDTO,
@@ -59,16 +60,30 @@ class UserService {
     }
 
     public async updateById(
-        userId: string,
+        payload: ITokenPayload,
         dto: IUserUpdateDTO,
     ): Promise<IUser> {
-        const user = await userRepository.getById(userId);
+        const user = await userRepository.getById(payload.userId);
 
         if (!user || user.status === UserStatusEnum.DELETED) {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        const updatedUser = await userRepository.updateById(userId, dto);
+        if (payload.role === UserRoleEnum.SELLER && dto.phone === "") {
+            throw new ApiError(
+                "Phone is required",
+                StatusCodesEnum.BAD_REQUEST,
+            );
+        }
+
+        if (dto.email && dto.email !== user.email) {
+            await this.isEmailUnique(dto.email);
+        }
+
+        const updatedUser = await userRepository.updateById(
+            payload.userId,
+            dto,
+        );
 
         if (!updatedUser) {
             throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);

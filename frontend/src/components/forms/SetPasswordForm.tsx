@@ -45,6 +45,7 @@ export const SetPasswordForm = ({
             <Form
                 onSubmit={handleSubmit(submitForm)}
                 className="w-full max-w-md p-6 gap-5 rounded-lg shadow-md"
+                noValidate
             >
                 <h1 className="text-2xl font-semibold text-center">
                     {title}

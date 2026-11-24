@@ -3,7 +3,7 @@ import { NAME_REGEX } from "../constants/regEx.ts";
 
 export const createManagerValidator = Joi.object({
     email: Joi.string()
-        .email()
+        .email({ tlds: { allow: false } })
         .trim()
         .required()
         .messages({
@@ -13,8 +13,8 @@ export const createManagerValidator = Joi.object({
         }),
 
     name: Joi.string()
-        .regex(NAME_REGEX)
         .trim()
+        .regex(NAME_REGEX)
         .required()
         .messages({
             "string.empty": "Name is required",
@@ -24,8 +24,8 @@ export const createManagerValidator = Joi.object({
         }),
 
     surname: Joi.string()
-        .regex(NAME_REGEX)
         .trim()
+        .regex(NAME_REGEX)
         .required()
         .messages({
             "string.empty": "Surname is required",

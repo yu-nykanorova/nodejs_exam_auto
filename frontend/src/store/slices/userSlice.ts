@@ -128,7 +128,7 @@ export const deleteAvatar = createAsyncThunk(
     },
 );
 
-const deleteMe = createAsyncThunk(
+export const deleteMe = createAsyncThunk(
     'userSlice/deleteMe',
     async (_, thunkAPI) => {
         try {
@@ -217,11 +217,6 @@ export const userSlice = createSlice({
                 },
             )
             // GET /users/me
-            .addCase(loadMe.pending,
-                (state) => {
-                    state.userLoading = true;
-                },
-            )
             .addCase(
                 loadMe.fulfilled,
                 (
@@ -236,7 +231,6 @@ export const userSlice = createSlice({
             .addCase(
                 loadUser.pending,
                 (state) => {
-                    state.userLoading = true;
                     state.selectedUser = null;
                 },
             )
@@ -258,6 +252,7 @@ export const userSlice = createSlice({
                     action: PayloadAction<IUser>,
                 ) => {
                     state.user = action.payload;
+                    state.userLoading = false;
                 },
             )
             // PATCH /users/me/account-type
@@ -344,7 +339,13 @@ export const userSlice = createSlice({
             )
             // combined
             .addMatcher(
-                isRejected(loadMe, loadUser),
+                isPending(loadMe, loadUser, updateMe),
+                (state) => {
+                    state.userLoading = true;
+                },
+            )
+            .addMatcher(
+                isRejected(loadMe, loadUser, updateMe),
                 (state) => {
                     state.userLoading = false;
                 },

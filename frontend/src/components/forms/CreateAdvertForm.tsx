@@ -58,6 +58,7 @@ export const CreateAdvertForm: FC<CreateAdvertFormProps> = ({ createAdvertLoadin
         <Form
             onSubmit={handleSubmit(onSubmit)}
             className="w-full max-w-2xl p-6 gap-4 rounded-lg shadow-md"
+            noValidate
         >
             <h1 className="text-2xl font-semibold text-center">
                 Create advert

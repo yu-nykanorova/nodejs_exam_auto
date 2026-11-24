@@ -1,7 +1,7 @@
 import * as Joi from "joi";
-import { NAME_REGEX } from "../constants/regEx.ts";
+import { NAME_REGEX, PHONE_REGEX } from "../constants/regEx.ts";
 
-export const userUpdateValidator = Joi.object({
+export const updateProfileValidator = (isSeller: boolean) =>Joi.object({
     email: Joi.string()
         .trim()
         .email({ tlds: { allow: false } })
@@ -37,7 +37,6 @@ export const userUpdateValidator = Joi.object({
         .integer()
         .min(2)
         .max(100)
-        .empty("")
         .messages({
             "number.base": "Age must be a number",
             "number.integer": "Age must be an integer",
@@ -45,13 +44,21 @@ export const userUpdateValidator = Joi.object({
             "number.max": "Maximum age is 100",
         }),
 
-    phone: Joi.string()
-        .trim()
-        .empty("")
-        .messages({
-            "string.base": "Phone number must be a string",
-        }),
-
-    avatar: Joi.string(),
+    phone: isSeller
+        ? Joi.string()
+            .trim()
+            .regex(PHONE_REGEX)
+            .required()
+            .messages({
+                "string.empty": "Phone is required",
+                "string.pattern.base": "Enter a valid Ukrainian phone number, e.g. +380971234567 or 0971234567",
+            })
+        : Joi.string()
+            .trim()
+            .allow("")
+            .regex(PHONE_REGEX)
+            .messages({
+                "string.pattern.base": "Enter a valid Ukrainian phone number, e.g. +380971234567 or 0971234567"
+            }),
 });
 

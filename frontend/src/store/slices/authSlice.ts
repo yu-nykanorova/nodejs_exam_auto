@@ -4,7 +4,7 @@ import { getError } from "../../utils/getError.ts";
 import type { IUser, IUserCreate } from "../../interfaces/IUser.ts";
 import { authService } from "../../services/authService.ts";
 import { getFromLocalStorage, removeFromLocalStorage, saveToLocalStorage } from "../../utils/localStorage.ts";
-import { userSliceActions } from "./userSlice.ts";
+import { deleteMe, userSliceActions } from "./userSlice.ts";
 import { loadMe, updateMe, updateAccountType, uploadAvatar, deleteAvatar } from "./userSlice.ts"
 
 type AuthSliceType = {
@@ -202,6 +202,14 @@ export const authSlice = createSlice({
                 (state) => {
                     if (state.user) {
                         state.user.avatar = undefined;
+                    }
+                }
+            )
+            .addCase(
+                deleteMe.fulfilled,
+                (state) => {
+                    if (state.user) {
+                        state.user = null;
                     }
                 }
             )

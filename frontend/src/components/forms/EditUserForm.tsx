@@ -8,14 +8,17 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import { type FC, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import type { IUser, IUserUpdate } from "../../interfaces/IUser.ts";
-import { userUpdateValidator } from "../../validators/user.validator.ts";
+import { updateProfileValidator } from "../../validators/updateProfile.validator.ts";
 
 type EditProfileFormProps = {
     user: IUser;
+    isSeller: boolean;
     onSubmit: (data: IUserUpdate) => void;
+    updateProfileError: string | null;
+    updateProfileLoading: boolean;
 }
 
-export const EditProfileForm: FC<EditProfileFormProps> = ({ user, onSubmit }) => {
+export const EditProfileForm: FC<EditProfileFormProps> = ({ user, isSeller, onSubmit, updateProfileError, updateProfileLoading }) => {
     const navigate = useNavigate();
 
     const {
@@ -26,7 +29,7 @@ export const EditProfileForm: FC<EditProfileFormProps> = ({ user, onSubmit }) =>
         formState: { errors, dirtyFields },
     } = useForm<IUserUpdate>({
         mode: "onSubmit",
-        resolver: joiResolver(userUpdateValidator),
+        resolver: joiResolver(updateProfileValidator(isSeller)),
     });
 
     useEffect(() => {
@@ -35,12 +38,11 @@ export const EditProfileForm: FC<EditProfileFormProps> = ({ user, onSubmit }) =>
             surname: user.surname,
             age: user.age,
             email: user.email,
-            phone: user.phone,
+            phone: user.phone ?? "",
         });
     }, [user, reset]);
 
     const onSubmitEditUser = (data: IUserUpdate) => {
-        console.log(dirtyFields);
 
         const changedData = Object.fromEntries(
             Object.keys(dirtyFields)
@@ -52,8 +54,6 @@ export const EditProfileForm: FC<EditProfileFormProps> = ({ user, onSubmit }) =>
             return;
         }
 
-        console.log(changedData);
-
         onSubmit(changedData);
     }
 
@@ -61,6 +61,7 @@ export const EditProfileForm: FC<EditProfileFormProps> = ({ user, onSubmit }) =>
         <Form
             onSubmit={handleSubmit(onSubmitEditUser)}
             className="w-full max-w-2xl p-6 gap-4 rounded-lg shadow-md"
+            noValidate
         >
             <h1 className="text-2xl font-semibold text-center">
                 Edit profile
@@ -155,9 +156,9 @@ export const EditProfileForm: FC<EditProfileFormProps> = ({ user, onSubmit }) =>
                 )}
             </div>
 
-            {/*{updateAdvertError && (*/}
-            {/*    <ErrorComponent message={updateAdvertError}/>*/}
-            {/*)}*/}
+            {updateProfileError && (
+                <ErrorComponent message={updateProfileError}/>
+            )}
 
             <Button
                 onClick={() => navigate(`/profile`)}
@@ -168,13 +169,12 @@ export const EditProfileForm: FC<EditProfileFormProps> = ({ user, onSubmit }) =>
 
             <Button
                 type="submit"
-                // disabled={updateAdvertLoading}
+                disabled={updateProfileLoading}
                 className="mt-2 bg-blue-600 text-white hover:bg-blue-700"
             >
-                {/*{updateAdvertLoading*/}
-                {/*    ? "Editing advert..."*/}
-                {/*    : "Edit advert"}*/}
-                Edit profile
+                {updateProfileLoading
+                    ? "Editing advert..."
+                    : "Edit advert"}
             </Button>
         </Form>
     );

@@ -48,6 +48,7 @@ export const CreateManagerPage = () => {
                     handleCreateManager,
                 )}
                 className="gap-4 rounded-lg border border-gray-200 p-6 shadow-sm"
+                noValidate
             >
                 <h1 className="mb-6 text-2xl font-bold text-gray-800">
                     Create Manager

@@ -90,6 +90,7 @@ export const FiltersPanel: FC<FiltersPanelProps> = ({ brands, brandsError, model
         <Form
             onSubmit={handleSubmit(handleSubmitFilters)}
             className="mx-6 mt-2 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm"
+            noValidate
         >
             <h2 className="text-xl font-semibold mb-4">
                 Filters

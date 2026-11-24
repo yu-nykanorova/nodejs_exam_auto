@@ -74,7 +74,7 @@ class UserController {
             const payload = res.locals.tokenPayload as ITokenPayload;
             const dto = req.body as IUserUpdateDTO;
 
-            const user = await userService.updateById(payload.userId, dto);
+            const user = await userService.updateById(payload, dto);
             const result = userPresenter.toPublicResDto(user);
             res.status(StatusCodesEnum.OK).json(result);
         } catch (e) {

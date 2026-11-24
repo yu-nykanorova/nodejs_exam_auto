@@ -3,3 +3,5 @@ export const PASSWORD_REGEX =
 
 export const NAME_REGEX =
     /^[A-Za-zА-Яа-яІіЇїЄєҐґ]+(?:[-'][A-Za-zА-Яа-яІіЇїЄєҐґ]+)?$/;
+
+export const PHONE_REGEX = /^\+?3?8?(096|097|098|067|039|068|077|050|095|066|075|099|063|093|073|091|092|094)\d{7}$/;

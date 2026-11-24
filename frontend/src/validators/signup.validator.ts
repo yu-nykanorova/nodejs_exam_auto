@@ -1,11 +1,11 @@
-import { NAME_REGEX, PASSWORD_REGEX } from "../constants/regEx.ts";
+import { NAME_REGEX, PASSWORD_REGEX, PHONE_REGEX } from "../constants/regEx.ts";
 import * as Joi from "joi";
 
 export const signUpValidator = (isSeller: boolean) =>
     Joi.object({
         email: Joi.string()
-            .email()
             .trim()
+            .email({ tlds: { allow: false } })
             .required()
             .messages({
                 "string.empty": "Email is required",
@@ -30,8 +30,8 @@ export const signUpValidator = (isSeller: boolean) =>
             }),
 
         name: Joi.string()
-            .regex(NAME_REGEX)
             .trim()
+            .regex(NAME_REGEX)
             .required()
             .messages({
                 "string.empty": "Name is required",
@@ -39,8 +39,8 @@ export const signUpValidator = (isSeller: boolean) =>
             }),
 
         surname: Joi.string()
-            .pattern(NAME_REGEX)
             .trim()
+            .regex(NAME_REGEX)
             .required()
             .messages({
                 "string.empty": "Surname is required",
@@ -60,16 +60,18 @@ export const signUpValidator = (isSeller: boolean) =>
 
         phone: isSeller
             ? Joi.string()
-                .pattern(/^\+?[0-9]{10,15}$/)
+                .trim()
+                .regex(PHONE_REGEX)
                 .required()
                 .messages({
                     "string.empty": "Phone is required",
-                    "string.pattern.base": "Invalid phone number",
+                    "string.pattern.base": "Enter a valid Ukrainian phone number, e.g. +380971234567 or 0971234567",
                 })
             : Joi.string()
-                .pattern(/^\+?[0-9]{10,15}$/)
-                .allow("")
+                .trim()
+                .empty("")
+                .regex(PHONE_REGEX)
                 .messages({
-                    "string.pattern.base": "Invalid phone number",
+                    "string.pattern.base": "Enter a valid Ukrainian phone number, e.g. +380971234567 or 0971234567",
                 }),
     });
