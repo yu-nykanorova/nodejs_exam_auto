@@ -1,7 +1,7 @@
 import { useAppSelector } from "../store/hooks/useAppSelector.tsx";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch } from "../store/hooks/useAppDispatch.tsx";
-import { useEffect, useRef, useState } from "react";
+import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import { advertSliceActions } from "../store/slices/advertSlice.ts";
 import { Loader } from "../components/ui/Loader.tsx";
 import { ErrorComponent } from "../components/ui/ErrorComponent.tsx";
@@ -12,6 +12,7 @@ import { AdvertStatistics } from "../components/adverts/AdvertStatistics.tsx";
 import { Button } from "../components/ui/Button.tsx";
 import { type AdvertStatus, advertStatuses } from "../constants/advertStatuses.ts";
 import { ModalConfirm } from "../components/ui/ModalConfirm.tsx";
+import { checkFileParams } from "../utils/checkFileParams.ts";
 
 export const AdvertDetailsPage = () => {
     const { id } = useParams();
@@ -19,7 +20,10 @@ export const AdvertDetailsPage = () => {
     const navigate = useNavigate();
     const [isChangeStatusModalOpen, setIsChangeStatusModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isDeletePhotoModalOpen, setIsDeletePhotoModalOpen] = useState(false);
     const [selectedStatus, setSelectedStatus] = useState<AdvertStatus | null>(null);
+    const [isPhotoLoading, setIsPhotoLoading] = useState(false);
+    const [photoError, setPhotoError] = useState<string | null>(null);
 
     const {
         advert,
@@ -38,6 +42,8 @@ export const AdvertDetailsPage = () => {
     const allowedToEdit = user?.role === roles.SELLER && user?._id === advert?._ownerId;
 
     const openedAdvertId = useRef<string | null>(null);
+
+    const photoInputRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
         if (!id) return;
@@ -76,21 +82,16 @@ export const AdvertDetailsPage = () => {
         setIsChangeStatusModalOpen(true);
     };
 
-    const handleChangeStatus = (status: AdvertStatus) => {
-        if (!id) return;
+    const handleConfirmChangeStatus = () => {
+        if (!selectedStatus || !id) return;
 
         dispatch(
             advertSliceActions.updateAdvertStatus({
                 id,
-                status,
+                status: selectedStatus,
             }),
         );
-    };
 
-    const handleConfirmChangeStatus = () => {
-        if (!selectedStatus) return;
-
-        handleChangeStatus(selectedStatus);
         setIsChangeStatusModalOpen(false);
         setSelectedStatus(null);
     };
@@ -99,10 +100,68 @@ export const AdvertDetailsPage = () => {
         if (!id) return;
 
         try {
-            await dispatch(advertSliceActions.deleteAdvert(id));
+            await dispatch(advertSliceActions.deleteAdvert(id)).unwrap();
             navigate('/my-adverts');
         } catch (error) {
             console.error(error);
+        }
+    };
+
+    const handlePhotoChange = async (
+        event: ChangeEvent<HTMLInputElement>,
+    ) => {
+        const file = event.currentTarget.files?.[0];
+
+        if (!file || !id) return;
+
+        const fileValidationError = checkFileParams(file.type, file.size, "advert");
+
+        setPhotoError(fileValidationError);
+
+        if (fileValidationError) {
+            if (photoInputRef.current) {
+                photoInputRef.current.value = "";
+            }
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("avatar", file);
+
+        setIsPhotoLoading(true);
+
+        try {
+            await dispatch(
+                advertSliceActions.uploadPhoto({
+                    id,
+                    body: formData,
+                }),
+            ).unwrap();
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsPhotoLoading(false);
+            if (photoInputRef.current) {
+                photoInputRef.current.value = "";
+            }
+        }
+    };
+
+    const handleDeletePhoto = async () => {
+        if (!id) return;
+
+        setIsPhotoLoading(true);
+
+        try {
+            await dispatch(
+                advertSliceActions.deletePhoto(id),
+            ).unwrap();
+
+            setIsDeletePhotoModalOpen(false);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsPhotoLoading(false);
         }
     };
 
@@ -110,7 +169,7 @@ export const AdvertDetailsPage = () => {
         <div className="mx-auto max-w-6xl p-4">
             <div className="overflow-hidden rounded-lg bg-white shadow-md">
 
-                <div className="flex min-h-80 items-center justify-center bg-gray-100">
+                <div className="flex min-h-80 items-center justify-center bg-gray-100 relative">
                     {advert.photo ? (
                         <img
                             src={advert.photo}
@@ -121,6 +180,53 @@ export const AdvertDetailsPage = () => {
                         <p className="text-gray-500 text-lg">
                             No photo
                         </p>
+                    )}
+
+                    {allowedToEdit && (
+                        <div>
+                            <input
+                                ref={photoInputRef}
+                                type="file"
+                                accept="image/jpeg, image/png, image/webp"
+                                className="hidden"
+                                onChange={handlePhotoChange}
+                            />
+
+                            <div className="absolute bottom-4 right-4 flex gap-2">
+                                <Button
+                                    onClick={() => photoInputRef.current?.click()}
+                                    disabled={isPhotoLoading}
+                                    className="bg-blue-600 px-3 text-white shadow-md hover:bg-blue-700"
+                                >
+                                    {isPhotoLoading
+                                        ? "Uploading..."
+                                        : advert.photo
+                                            ? "Change photo"
+                                            : "Add photo"
+                                    }
+                                </Button>
+
+                                {advert.photo && (
+                                    <Button
+                                        onClick={() => setIsDeletePhotoModalOpen(true)}
+                                        disabled={isPhotoLoading}
+                                        className="px-3 py-1 border border-black text-black bg-white hover:bg-black hover:text-white"
+                                    >
+                                        Delete photo
+                                    </Button>
+                                )}
+                            </div>
+
+                            {photoError && <ErrorComponent message={photoError}/>}
+
+                            {isDeletePhotoModalOpen && (
+                                <ModalConfirm
+                                    message="Do you confirm deleting this photo?"
+                                    onClose={() => setIsDeletePhotoModalOpen(false)}
+                                    onConfirm={handleDeletePhoto}
+                                />
+                            )}
+                        </div>
                     )}
                 </div>
 
@@ -294,21 +400,21 @@ export const AdvertDetailsPage = () => {
                             <p>
                                 <span className="text-gray-500">
                                     Name:
-                                </span>{" "}
+</span>{" "}
                                 {advert.ownerContacts.name}
                             </p>
 
                             <p>
                                 <span className="text-gray-500">
                                     Email:
-                                </span>{" "}
+</span>{" "}
                                 {advert.ownerContacts.email}
                             </p>
 
                             <p>
                                 <span className="text-gray-500">
                                     Phone:
-                                </span>{" "}
+</span>{" "}
                                 {advert.ownerContacts.phone}
                             </p>
                         </div>

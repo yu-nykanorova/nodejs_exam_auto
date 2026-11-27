@@ -187,7 +187,13 @@ class AdvertService {
             throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
         }
 
-        return updatedAdvert;
+        const result = await advertRepository.getById(advertId);
+
+        if (!result) {
+            throw new ApiError("Advert not found", StatusCodesEnum.NOT_FOUND);
+        }
+
+        return result;
     }
 
     public async deletePhoto(
